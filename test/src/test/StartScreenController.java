@@ -27,7 +27,7 @@ import lexerAndParser.Lexer;
  *
  * @author zl2511
  */
-public class FXMLDocumentController implements Initializable {
+public class StartScreenController implements Initializable {
     
     @FXML
     public String[] initStartFormulas; 
@@ -194,6 +194,7 @@ public class FXMLDocumentController implements Initializable {
                 Lexer l = new Lexer(is);
                 parser p = new parser(l);
                 goalFormula = (LogicStatement) p.parse().value;
+                System.out.println(startFormulas.toString());
                 checkTable(startFormulas, goalFormula);
             } catch (UnsupportedEncodingException e1) {
                 e1.printStackTrace();
@@ -228,14 +229,37 @@ public class FXMLDocumentController implements Initializable {
         addLists(variables, grabVariable(l)); 
         System.out.println(variables);
         int[][] truthTable = new int[(int)Math.pow(2, variables.size())][variables.size()];
+        int truth = 0;
         for (int i = 0; i < variables.size(); i++) { 
-            int divider = (int)Math.pow(2, i+1);
+            int divider = (int)Math.pow(2, i);
             for (int j = 0; j < Math.pow(2, variables.size()); j++) { 
-                truthTable[j][i] = (int)(j % Math.pow(2,i+1));
+                if(j % divider != 0) { 
+                    truthTable[j][i] = truth; 
+                } else { 
+                    truth = flip(truth);
+                    truthTable[j][i] = truth;
+                }
             }
         }
+        
+        boolean t = true; 
+        boolean f = false; 
+        System.out.println(t);
+        System.out.println(f);
+        System.out.println(t&f);
+        System.out.println(t|f);
         //TODO
         return true;
+    }
+    
+    @FXML 
+    public int flip(int i) { 
+        if (i == 1) { 
+            i = 0; 
+        } else { 
+            i = 1;
+        }
+        return i;
     }
     
     @FXML 
