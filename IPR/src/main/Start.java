@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package test;
+package main;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -16,11 +16,11 @@ import javafx.stage.Stage;
  *
  * @author zl2511
  */
-public class Test extends Application {
+public class Start extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("dialog.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("start.fxml"));
         
         Scene scene = new Scene(root);
         

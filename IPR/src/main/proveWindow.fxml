@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="858.0" prefWidth="1236.9999000000025" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="main.Controller">
+  <children>
+    <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="830.0" prefWidth="1208.9998779296875">
+      <children>
+        <GridPane layoutX="-1.0" layoutY="0.0" prefHeight="830.0" prefWidth="1209.0">
+          <children>
+            <GridPane prefHeight="150.0" prefWidth="975.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+              <children>
+                <Button fx:id="andI" mnemonicParsing="false" onAction="#applyAndI" text="∧I" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                <Button fx:id="andE" mnemonicParsing="false" onAction="#applyAndE" text="∧E" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                <Button fx:id="impliesI" mnemonicParsing="false" onAction="#applyImpliesI" text="→I" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                <Button fx:id="impliesE" mnemonicParsing="false" onAction="#applyImpliesE" text="→E" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <Button fx:id="orI" mnemonicParsing="false" onAction="#applyOrl" text="∨I" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                <Button fx:id="orE" minWidth="31.0001220703125" mnemonicParsing="false" onAction="#applyOrE" prefWidth="40.0" text="∨E" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                <Button fx:id="truthI" mnemonicParsing="false" onAction="#applyTruthI" text="⊤I" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+                <Button fx:id="truthE" mnemonicParsing="false" onAction="#applyTruthE" text="⊤E" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                <Button fx:id="falsityI" mnemonicParsing="false" onAction="#applyFalsityI" text="⊥I" GridPane.columnIndex="4" GridPane.rowIndex="0" />
+                <Button fx:id="falsityE" mnemonicParsing="false" onAction="#applyFalsityE" text="⊥E" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                <Button fx:id="IFFI" mnemonicParsing="false" onAction="#applyIFFI" text="↔I" GridPane.columnIndex="5" GridPane.rowIndex="0" />
+                <Button fx:id="IFFE" mnemonicParsing="false" onAction="#applyIFFE" text="↔E" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+                <Button fx:id="thereexistsI" mnemonicParsing="false" onAction="#applyThereexistsI" text="∃I" GridPane.columnIndex="6" GridPane.rowIndex="0" />
+                <Button fx:id="thereexistE" mnemonicParsing="false" onAction="#applyThereexistE" text="∃E" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+                <Button fx:id="forallI" mnemonicParsing="false" onAction="#applyForallI" text="∀I" GridPane.columnIndex="7" GridPane.rowIndex="0" />
+                <Button fx:id="forallE" mnemonicParsing="false" onAction="#applyForallE" text="∀E" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+                <Button fx:id="notI" mnemonicParsing="false" onAction="#applyNotI" text="¬I" GridPane.columnIndex="8" GridPane.rowIndex="0" />
+                <Button fx:id="notE" mnemonicParsing="false" onAction="#applyNotE" text="¬E" GridPane.columnIndex="8" GridPane.rowIndex="1" />
+                <Button fx:id="notnot" mnemonicParsing="false" onAction="#applyNotnot" text="¬¬" GridPane.columnIndex="9" GridPane.rowIndex="0" />
+                <Button mnemonicParsing="false" text="IPRV" GridPane.columnIndex="9" GridPane.rowIndex="1" />
+              </children>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="100.0" minHeight="10.0" prefHeight="72.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="78.0" minHeight="0.0" prefHeight="78.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+            </GridPane>
+            <SplitPane dividerPositions="0.5" focusTraversable="true" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+              <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="323.0" prefWidth="219.0">
+                  <children>
+                    <GridPane layoutX="13.0" layoutY="14.0" prefHeight="308.0" prefWidth="205.0">
+                      <children>
+                        <Button fx:id="proveAnd" mnemonicParsing="false" onAction="#proveAndAction" text="∧" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <Button fx:id="proveIFF" mnemonicParsing="false" onAction="#proveIFFAction" text="↔" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Button fx:id="proveOr" mnemonicParsing="false" onAction="#proveOrAction" text="∨" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                        <Button fx:id="proveImplies" mnemonicParsing="false" onAction="#proveImpliesAction" text="→" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <Button fx:id="proveNot" mnemonicParsing="false" onAction="#proveNotAction" text="¬" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        <Button id="proveP" fx:id="provePredicate" mnemonicParsing="false" onAction="#provePredicateAction" text="≡" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Button id="proveTrue" fx:id="proveTruth" mnemonicParsing="false" onAction="#proveTruthAction" text="⊤" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                        <Button fx:id="proveFalsity" mnemonicParsing="false" onAction="#proveFalsityAction" text="⊥" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Button fx:id="proveThereexists" mnemonicParsing="false" onAction="#proveThereexistsAction" text="∃" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                        <Button fx:id="proveForall" mnemonicParsing="false" onAction="#proveForallAction" text="∀" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                      </children>
+                      <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      </columnConstraints>
+                      <rowConstraints>
+                        <RowConstraints maxHeight="62.0" minHeight="10.0" prefHeight="62.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="70.0" minHeight="10.0" prefHeight="62.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="62.0" minHeight="10.0" prefHeight="62.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="61.0" minHeight="10.0" prefHeight="61.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="61.0" minHeight="10.0" prefHeight="61.0" vgrow="SOMETIMES" />
+                      </rowConstraints>
+                    </GridPane>
+                  </children>
+                </AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                  <children>
+                    <Button fx:id="proveCheck" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#proveCheckAction" text="Check" />
+                    <Button fx:id="proveCancel" layoutX="116.0" layoutY="14.0" mnemonicParsing="false" onAction="#proveCancelAction" text="Cancel" />
+                  </children>
+                </AnchorPane>
+              </items>
+            </SplitPane>
+            <SplitPane dividerPositions="" focusTraversable="true" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
+              <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="126.0" prefWidth="973.0">
+                  <children>
+                    <SplitPane dividerPositions="0.19940915805022155" focusTraversable="true" layoutX="-1.0" layoutY="0.0" orientation="VERTICAL" prefHeight="679.0" prefWidth="975.0">
+                      <items>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                          <children>
+                            <SplitPane dividerPositions="0.101956745623069" focusTraversable="true" layoutX="-1.0" layoutY="0.0" prefHeight="133.0" prefWidth="973.0">
+                              <items>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                  <children>
+                                    <Label layoutX="30.0" layoutY="58.0" text="Given: " />
+                                  </children>
+                                </AnchorPane>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                  <children>
+                                    <ScrollPane layoutX="0.0" layoutY="0.0" prefHeight="132.0" prefWidth="872.0">
+                                      <content>
+                                        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="676.0" prefWidth="870.0">
+                                          <children>
+                                            <GridPane layoutX="0.0" layoutY="0.0" prefHeight="676.0" prefWidth="873.0">
+                                              <children>
+                                                <Label fx:id="givenFormula0" prefHeight="36.0" prefWidth="578.0" text="" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                                <Label fx:id="givenFormula1" prefHeight="36.0" prefWidth="578.0" text="" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                                <Label fx:id="givenFormula2" prefHeight="36.0" prefWidth="578.0" text="" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                                <Label fx:id="givenFormula3" prefHeight="19.0" prefWidth="575.0000999999975" text="" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                                <Label fx:id="givenFormula4" prefHeight="30.0" prefWidth="577.9998779296875" text="" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                                                <Label fx:id="givenFormula5" prefHeight="31.000099999997474" prefWidth="577.9998779296875" text="" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                                                <Label fx:id="givenFormula6" prefHeight="33.0" prefWidth="578.0" text="" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                                                <Label fx:id="givenFormula7" prefHeight="31.0" prefWidth="577.9998779296875" text="" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                                                <Label fx:id="givenFormula8" prefHeight="30.0" prefWidth="577.9998779296875" text="" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+                                                <Label fx:id="givenFormula9" prefHeight="32.0" prefWidth="577.9998779296875" text="" GridPane.columnIndex="0" GridPane.rowIndex="9" />
+                                                <Label fx:id="givenFormula10" prefHeight="32.0" prefWidth="578.0" text="" GridPane.columnIndex="0" GridPane.rowIndex="10" />
+                                                <Label fx:id="givenFormula11" prefHeight="31.0" prefWidth="577.9998779296875" text="" GridPane.columnIndex="0" GridPane.rowIndex="11" />
+                                                <Label fx:id="givenFormula12" prefHeight="29.0" prefWidth="577.9998779296875" text="" GridPane.columnIndex="0" GridPane.rowIndex="12" />
+                                                <Label fx:id="givenFormula13" prefHeight="29.0" prefWidth="578.0" text="" GridPane.columnIndex="0" GridPane.rowIndex="13" />
+                                                <Label fx:id="givenFormula14" prefHeight="26.0" prefWidth="576.0" text="" GridPane.columnIndex="0" GridPane.rowIndex="14" />
+                                                <Label fx:id="givenFormula15" prefHeight="25.0" prefWidth="577.0" text="" GridPane.columnIndex="0" GridPane.rowIndex="15" />
+                                                <Label fx:id="givenFormula16" prefHeight="26.0" prefWidth="575.0" text="" GridPane.columnIndex="0" GridPane.rowIndex="16" />
+                                                <Label fx:id="givenFormula17" prefHeight="24.0" prefWidth="576.0" text="" GridPane.columnIndex="0" GridPane.rowIndex="17" />
+                                                <Label fx:id="givenFormula18" prefHeight="23.0" prefWidth="578.0" text="" GridPane.columnIndex="0" GridPane.rowIndex="18" />
+                                                <Label fx:id="givenFormula19" prefHeight="25.0" prefWidth="577.0" text="" GridPane.columnIndex="0" GridPane.rowIndex="19" />
+                                                <Label fx:id="giveRule0" prefHeight="28.0" prefWidth="274.0001220703125" text="" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                                <Label fx:id="giveRule1" prefHeight="24.0" prefWidth="279.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <Label fx:id="giveRule2" prefHeight="24.0" prefWidth="279.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                <Label fx:id="giveRule3" prefHeight="23.0" prefWidth="280.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                <Label fx:id="giveRule4" prefHeight="26.0" prefWidth="292.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                <Label fx:id="giveRule5" prefHeight="26.0" prefWidth="289.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                <Label fx:id="giveRule6" prefHeight="22.0" prefWidth="294.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                <Label fx:id="giveRule7" prefHeight="24.0" prefWidth="294.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                                <Label fx:id="giveRule8" prefHeight="24.0" prefWidth="283.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                                <Label fx:id="giveRule9" prefHeight="26.0" prefWidth="281.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                                                <Label fx:id="giveRule10" prefHeight="26.0" prefWidth="289.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                                                <Label fx:id="giveRule11" prefHeight="25.0" prefWidth="289.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                                                <Label fx:id="giveRule12" prefHeight="24.0" prefWidth="285.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                                                <Label fx:id="giveRule13" prefHeight="24.0" prefWidth="295.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+                                                <Label fx:id="giveRule14" prefHeight="26.0" prefWidth="286.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+                                                <Label fx:id="giveRule15" prefHeight="25.0" prefWidth="276.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="15" />
+                                                <Label fx:id="giveRule16" prefHeight="21.0" prefWidth="284.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="16" />
+                                                <Label fx:id="giveRule17" prefHeight="22.0" prefWidth="285.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="17" />
+                                                <Label fx:id="giveRule18" prefHeight="22.0" prefWidth="289.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="18" />
+                                                <Label fx:id="giveRule19" prefHeight="21.0" prefWidth="286.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="19" />
+                                              </children>
+                                              <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="613.0" minWidth="10.0" prefWidth="577.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="433.0" minWidth="10.0" prefWidth="296.0" />
+                                              </columnConstraints>
+                                              <rowConstraints>
+                                                <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="36.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="33.0" minHeight="10.0" prefHeight="33.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="33.0" minHeight="10.0" prefHeight="33.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="33.0" minHeight="10.0" prefHeight="33.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="33.0" minHeight="10.0" prefHeight="33.0" vgrow="SOMETIMES" />
+                                              </rowConstraints>
+                                            </GridPane>
+                                          </children>
+                                        </AnchorPane>
+                                      </content>
+                                    </ScrollPane>
+                                  </children>
+                                </AnchorPane>
+                              </items>
+                            </SplitPane>
+                          </children>
+                        </AnchorPane>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                          <children>
+                            <SplitPane dividerPositions="0.9337016574585635" focusTraversable="true" layoutX="-1.0" layoutY="-5.0" orientation="VERTICAL" prefHeight="545.0" prefWidth="976.0">
+                              <items>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                  <children>
+                                    <SplitPane dividerPositions="0.10092687950566426" focusTraversable="true" layoutX="0.0" layoutY="2.0" prefHeight="503.0" prefWidth="973.0">
+                                      <items>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                          <children>
+                                            <Label layoutX="30.0" layoutY="58.0" text="Prove: " />
+                                          </children>
+                                        </AnchorPane>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                          <children>
+                                            <ScrollPane layoutX="0.0" layoutY="0.0" prefHeight="504.0" prefWidth="872.0">
+                                              <content>
+                                                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="676.0" prefWidth="870.0">
+                                                  <children>
+                                                    <GridPane layoutX="0.0" layoutY="0.0" prefHeight="676.0" prefWidth="873.0">
+                                                      <children>
+                                                        <TextField fx:id="proveFormula0" onMouseClicked="#setProveFocus00" prefHeight="30.0" prefWidth="578.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                                        <TextField fx:id="proveFormula1" onMouseClicked="#setProveFocus01" prefHeight="30.0" prefWidth="578.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                        <TextField fx:id="proveFormula2" onMouseClicked="#setProveFocus02" prefHeight="30.0" prefWidth="578.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                        <TextField fx:id="proveFormula3" onMouseClicked="#setProveFocus03" prefHeight="30.0" prefWidth="575.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                        <TextField fx:id="proveFormula4" onMouseClicked="#setProveFocus04" prefHeight="30.0" prefWidth="577.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                        <TextField fx:id="proveFormula5" onMouseClicked="#setProveFocus05" prefHeight="30.0" prefWidth="577.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                        <TextField fx:id="proveFormula6" onMouseClicked="#setProveFocus06" prefHeight="30.0" prefWidth="578.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                        <TextField fx:id="proveFormula7" onMouseClicked="#setProveFocus07" prefHeight="30.0" prefWidth="578.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                                        <TextField fx:id="proveFormula8" onMouseClicked="#setProveFocus08" prefHeight="30.0" prefWidth="578.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                                        <TextField fx:id="proveFormula9" onMouseClicked="#setProveFocus09" prefHeight="30.0" prefWidth="578.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                                                        <TextField fx:id="proveFormula10" onMouseClicked="#setProveFocus010" prefHeight="30.0" prefWidth="578.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                                                        <TextField fx:id="proveFormula11" onMouseClicked="#setProveFocus011" prefHeight="30.0" prefWidth="578.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                                                        <TextField fx:id="proveFormula12" onMouseClicked="#setProveFocus012" prefHeight="30.0" prefWidth="578.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                                                        <TextField fx:id="proveFormula13" onMouseClicked="#setProveFocus013" prefHeight="30.0" prefWidth="578.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+                                                        <TextField fx:id="proveFormula14" onMouseClicked="#setProveFocus014" prefHeight="30.0" prefWidth="576.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+                                                        <TextField fx:id="proveFormula15" onMouseClicked="#setProveFocus015" prefHeight="30.0" prefWidth="577.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="15" />
+                                                        <TextField fx:id="proveFormula16" onMouseClicked="#setProveFocus016" prefHeight="30.0" prefWidth="575.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="16" />
+                                                        <TextField fx:id="proveFormula17" onMouseClicked="#setProveFocus017" prefHeight="30.0" prefWidth="576.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="17" />
+                                                        <TextField fx:id="proveFormula18" onMouseClicked="#setProveFocus018" prefHeight="30.0" prefWidth="578.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="18" />
+                                                        <TextField fx:id="proveFormula19" onMouseClicked="#setProveFocus019" prefHeight="30.0" prefWidth="577.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="19" />
+                                                        <TextField fx:id="proveRule0" onMouseClicked="#setProveFocus10" prefHeight="30.0" prefWidth="274.0" text="" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                                                        <TextField fx:id="proveRule1" onMouseClicked="#setProveFocus11" prefHeight="30.0" prefWidth="279.0" text="" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                        <TextField fx:id="proveRule2" onMouseClicked="#setProveFocus12" prefHeight="30.0" prefWidth="279.0" text="" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                        <TextField fx:id="proveRule3" onMouseClicked="#setProveFocus13" prefHeight="30.0" prefWidth="280.0" text="" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                        <TextField fx:id="proveRule4" onMouseClicked="#setProveFocus14" prefHeight="30.0" prefWidth="292.0" text="" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                        <TextField fx:id="proveRule5" onMouseClicked="#setProveFocus15" prefHeight="30.0" prefWidth="289.0" text="" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                                                        <TextField fx:id="proveRule6" onMouseClicked="#setProveFocus16" prefHeight="30.0" prefWidth="294.0" text="" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                                                        <TextField fx:id="proveRule7" onMouseClicked="#setProveFocus17" prefHeight="30.0" prefWidth="294.0" text="" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+                                                        <TextField fx:id="proveRule8" onMouseClicked="#setProveFocus18" prefHeight="30.0" prefWidth="283.0" text="" GridPane.columnIndex="2" GridPane.rowIndex="8" />
+                                                        <TextField fx:id="proveRule9" onMouseClicked="#setProveFocus19" prefHeight="30.0" prefWidth="281.0" text="" GridPane.columnIndex="2" GridPane.rowIndex="9" />
+                                                        <TextField fx:id="proveRule10" onMouseClicked="#setProveFocus110" prefHeight="30.0" prefWidth="289.0" text="" GridPane.columnIndex="2" GridPane.rowIndex="10" />
+                                                        <TextField fx:id="proveRule11" onMouseClicked="#setProveFocus111" prefHeight="30.0" prefWidth="289.0" text="" GridPane.columnIndex="2" GridPane.rowIndex="11" />
+                                                        <TextField fx:id="proveRule12" onMouseClicked="#setProveFocus112" prefHeight="30.0" prefWidth="285.0" text="" GridPane.columnIndex="2" GridPane.rowIndex="12" />
+                                                        <TextField fx:id="proveRule13" onMouseClicked="#setProveFocus113" prefHeight="30.0" prefWidth="295.0" text="" GridPane.columnIndex="2" GridPane.rowIndex="13" />
+                                                        <TextField fx:id="proveRule14" onMouseClicked="#setProveFocus114" prefHeight="30.0" prefWidth="286.0" text="" GridPane.columnIndex="2" GridPane.rowIndex="14" />
+                                                        <TextField fx:id="proveRule15" onMouseClicked="#setProveFocus115" prefHeight="30.0" prefWidth="276.0" text="" GridPane.columnIndex="2" GridPane.rowIndex="15" />
+                                                        <TextField fx:id="proveRule16" onMouseClicked="#setProveFocus116" prefHeight="30.0" prefWidth="284.0" text="" GridPane.columnIndex="2" GridPane.rowIndex="16" />
+                                                        <TextField fx:id="proveRule17" onMouseClicked="#setProveFocus117" prefHeight="30.0" prefWidth="285.0" text="" GridPane.columnIndex="2" GridPane.rowIndex="17" />
+                                                        <TextField fx:id="proveRule18" onMouseClicked="#setProveFocus118" prefHeight="30.0" prefWidth="289.0" text="" GridPane.columnIndex="2" GridPane.rowIndex="18" />
+                                                        <TextField fx:id="proveRule19" onMouseClicked="#setProveFocus119" prefHeight="30.0" prefWidth="286.0" text="" GridPane.columnIndex="2" GridPane.rowIndex="19" />
+                                                        <Button fx:id="proveButton0" mnemonicParsing="false" onAction="#applyProveButton0" text="0" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                                        <Button fx:id="proveButton1" mnemonicParsing="false" onAction="#applyProveButton1" text="0" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                                        <Button fx:id="proveButton2" mnemonicParsing="false" onAction="#applyProveButton2" text="0" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                                        <Button fx:id="proveButton3" mnemonicParsing="false" onAction="#applyProveButton3" text="0" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                                        <Button fx:id="proveButton4" mnemonicParsing="false" onAction="#applyProveButton4" text="0" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                                                        <Button fx:id="proveButton5" mnemonicParsing="false" onAction="#applyProveButton5" text="0" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                                                        <Button fx:id="proveButton6" mnemonicParsing="false" onAction="#applyProveButton6" text="0" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                                                        <Button fx:id="proveButton7" mnemonicParsing="false" onAction="#applyProveButton7" text="0" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                                                        <Button fx:id="proveButton8" mnemonicParsing="false" onAction="#applyProveButton8" text="0" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+                                                        <Button fx:id="proveButton9" mnemonicParsing="false" onAction="#applyProveButton9" text="0" GridPane.columnIndex="0" GridPane.rowIndex="9" />
+                                                        <Button fx:id="proveButton10" mnemonicParsing="false" onAction="#applyProveButton10" text="0" GridPane.columnIndex="0" GridPane.rowIndex="10" />
+                                                        <Button fx:id="proveButton11" mnemonicParsing="false" onAction="#applyProveButton11" text="0" GridPane.columnIndex="0" GridPane.rowIndex="11" />
+                                                        <Button fx:id="proveButton12" mnemonicParsing="false" onAction="#applyProveButton12" text="0" GridPane.columnIndex="0" GridPane.rowIndex="12" />
+                                                        <Button fx:id="proveButton13" mnemonicParsing="false" onAction="#applyProveButton13" text="0" GridPane.columnIndex="0" GridPane.rowIndex="13" />
+                                                        <Button fx:id="proveButton14" mnemonicParsing="false" onAction="#applyProveButton14" text="0" GridPane.columnIndex="0" GridPane.rowIndex="14" />
+                                                        <Button fx:id="proveButton15" mnemonicParsing="false" onAction="#applyProveButton15" text="0" GridPane.columnIndex="0" GridPane.rowIndex="15" />
+                                                        <Button fx:id="proveButton16" mnemonicParsing="false" onAction="#applyProveButton16" text="0" GridPane.columnIndex="0" GridPane.rowIndex="16" />
+                                                        <Button fx:id="proveButton17" mnemonicParsing="false" onAction="#applyProveButton17" text="0" GridPane.columnIndex="0" GridPane.rowIndex="17" />
+                                                        <Button fx:id="proveButton18" mnemonicParsing="false" onAction="#applyProveButton18" text="0" GridPane.columnIndex="0" GridPane.rowIndex="18" />
+                                                        <Button fx:id="proveButton19" mnemonicParsing="false" onAction="#applyProveButton19" text="0" GridPane.columnIndex="0" GridPane.rowIndex="19" />
+                                                      </children>
+                                                      <columnConstraints>
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="613.0" minWidth="10.0" prefWidth="44.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="733.0" minWidth="10.0" prefWidth="534.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="433.0" minWidth="10.0" prefWidth="295.0" />
+                                                      </columnConstraints>
+                                                      <rowConstraints>
+                                                        <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="36.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="33.0" minHeight="10.0" prefHeight="33.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="33.0" minHeight="10.0" prefHeight="33.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="33.0" minHeight="10.0" prefHeight="33.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="33.0" minHeight="10.0" prefHeight="33.0" vgrow="SOMETIMES" />
+                                                      </rowConstraints>
+                                                    </GridPane>
+                                                  </children>
+                                                </AnchorPane>
+                                              </content>
+                                            </ScrollPane>
+                                          </children>
+                                        </AnchorPane>
+                                      </items>
+                                    </SplitPane>
+                                  </children>
+                                </AnchorPane>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="41.0" prefWidth="974.0">
+                                  <children>
+                                    <SplitPane dividerPositions="0.10082304526748971" focusTraversable="true" layoutX="0.0" layoutY="-5.0" prefHeight="41.0" prefWidth="974.0">
+                                      <items>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="53.9998779296875" prefWidth="95.0">
+                                          <children>
+                                            <Label layoutX="30.0" layoutY="12.0" text="Goal: " />
+                                          </children>
+                                        </AnchorPane>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                          <children>
+                                            <GridPane layoutX="8.0" layoutY="5.0" prefHeight="34.0" prefWidth="865.0">
+                                              <children>
+                                                <Label fx:id="proveGoalRule" prefHeight="28.0" prefWidth="297.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                                <Label fx:id="proveGoalFormula" prefHeight="27.0" prefWidth="569.0" text="" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                              </children>
+                                              <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="580.0" minWidth="10.0" prefWidth="580.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="437.0" minWidth="10.0" prefWidth="299.0" />
+                                              </columnConstraints>
+                                              <rowConstraints>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                              </rowConstraints>
+                                            </GridPane>
+                                          </children>
+                                        </AnchorPane>
+                                      </items>
+                                    </SplitPane>
+                                  </children>
+                                </AnchorPane>
+                              </items>
+                            </SplitPane>
+                          </children>
+                        </AnchorPane>
+                      </items>
+                    </SplitPane>
+                  </children>
+                </AnchorPane>
+              </items>
+            </SplitPane>
+          </children>
+          <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1043.0" minWidth="10.0" prefWidth="975.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="604.0" minWidth="10.0" prefWidth="234.0" />
+          </columnConstraints>
+          <rowConstraints>
+            <RowConstraints maxHeight="413.0" minHeight="10.0" prefHeight="150.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="688.0" minHeight="10.0" prefHeight="680.0" vgrow="SOMETIMES" />
+          </rowConstraints>
+        </GridPane>
+      </children>
+    </AnchorPane>
+  </children>
+</AnchorPane>
