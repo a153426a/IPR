@@ -7,10 +7,10 @@
 package main;
 
 import ast.*;
-import java.awt.event.FocusEvent;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import javafx.application.Platform;
 import javafx.event.*;
 import javafx.fxml.*;
 import javafx.scene.Node;
@@ -30,36 +30,67 @@ public class Controller implements Initializable {
     
     @FXML
     public String[] initStartFormulas; 
+
     public List<LogicStatement> startFormulas = new ArrayList();
+
     public TextField[][] proveTextfields=  new TextField[2][20]; 
+
     public TextField[] proveFormulaText = new TextField[20]; 
+
     public TextField[] proveRuleText = new TextField[20]; 
-    public LogicStatement goalFormula;
+
+    public LogicStatement goalFormula; 
+
     public int textFieldFocus = 0;
+
     public int proveFocus = 0; 
+
     public int proveSubFocus = 0; 
+    @FXML
     public Button andButton;
+    @FXML
     public Button orButton;
+    @FXML
     public Button impliesButton;
+    @FXML
     public Button notButton;
+    @FXML
     public Button truthButton;
+    @FXML
     public Button thereesistsButton;
+    @FXML
     public Button iffButton;
+    @FXML
     public Button equalsButton;
+    @FXML
     public Button falsityButton;
+    @FXML
     public Button forallButton;
+    @FXML
     public Button checkButton;
+    @FXML
     public Button cancelButton;
+    @FXML
     public TextArea startArea;
+    @FXML
     public TextField goalArea;
+    @FXML
     public Button proveAnd, proveIFF, proveOr, proveImplies, proveNot, proveP, proveTrue, proveFalsity, proveThereexists, proveForall; 
-    public Button proveCheck, proveCancel;
+    @FXML
+    public Button proveCheck, proveCancel, proveStartButton;
+    @FXML
     public Button proveButton0, proveButton1, proveButton2, proveButton3, proveButton4, proveButton5, proveButton6, proveButton7, proveButton8, proveButton9, proveButton10, proveButton11, proveButton12, proveButton13, proveButton14, proveButton15, proveButton16, proveButton17, proveButton18, proveButton19;
+    @FXML
     public Button andI, andE, impliesI, impliesE, orI, orE, truthI, truthE, falsityI, falsityE, IFFI, IFFE, thereexistsI, thereexistE, forallI, forallE, notI, notE, notnot;
+    @FXML
     public Label givenFormula0, givenFormula1, givenFormula2, givenFormula3, givenFormula4, givenFormula5, givenFormula6, givenFormula7, givenFormula8, givenFormula9, givenFormula10, givenFormula11, givenFormula12, givenFormula13, givenFormula14, givenFormula15, givenFormula16, givenFormula17, givenFormula18, givenFormula19; 
+    @FXML
     public Label giveRule0, giveRule1, giveRule2, giveRule3, giveRule4, giveRule5, giveRule6, giveRule7, giveRule8, giveRule9, giveRule10, giveRule11, giveRule12, giveRule13, giveRule14, giveRule15, giveRule16, giveRule17, giveRule18, giveRule19;
+    @FXML
     public Label proveGoalFormula, proveGoalRule; 
+    @FXML
     public TextField proveFormula0, proveFormula1, proveFormula2, proveFormula3, proveFormula4, proveFormula5, proveFormula6, proveFormula7, proveFormula8, proveFormula9, proveFormula10, proveFormula11, proveFormula12, proveFormula13, proveFormula14, proveFormula15, proveFormula16, proveFormula17, proveFormula18, proveFormula19; 
+    @FXML
     public TextField proveRule0, proveRule1, proveRule2, proveRule3, proveRule4, proveRule5, proveRule6, proveRule7, proveRule8, proveRule9, proveRule10, proveRule11, proveRule12, proveRule13, proveRule14, proveRule15, proveRule16, proveRule17, proveRule18, proveRule19;
     
     @FXML
@@ -206,16 +237,15 @@ public class Controller implements Initializable {
                 Lexer l = new Lexer(is);
                 parser p = new parser(l);
                 goalFormula = (LogicStatement) p.parse().value;
-                System.out.println(startFormulas.toString());
             } catch (UnsupportedEncodingException e1) {
                 e1.printStackTrace();
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
         }
-        
         //TODO
-        
+        System.out.println(startFormulas.toString());
+        System.out.println(goalFormula.toString());
         Parent root2 = FXMLLoader.load(getClass().getResource("proveWindow.fxml"));
         Stage proveStage = new Stage();
         Scene scene = new Scene(root2);
@@ -227,6 +257,30 @@ public class Controller implements Initializable {
         Node  currenSource = (Node)  event.getSource(); 
         Stage currentStage  = (Stage) currenSource.getScene().getWindow();
         currentStage.close();
+        
+        
+        
+    }
+    
+    @FXML
+    public void printGiven(ActionEvent event) {
+        
+        System.out.println(goalFormula.toString());
+        System.out.println(startFormulas.get(1).toString());
+        
+        Platform.runLater(new Runnable() {
+            @Override public void run() {
+                proveGoalFormula.setText("YES!");
+                proveGoalRule.setText("Given");
+                for (int i = 0; i < startFormulas.size(); i++) {
+            
+                    proveTextfields[0][i].setText(startFormulas.get(i).toString());
+                    proveTextfields[1][i].setText("Given");
+            
+                }
+            }
+        });
+   
     }
     
     @FXML
@@ -252,7 +306,6 @@ public class Controller implements Initializable {
             addLists(variables, grabVariable(str));
         }
         addLists(variables, grabVariable(l)); 
-        System.out.println(variables);
         int[][] truthTable = new int[(int)Math.pow(2, variables.size())][variables.size()];
         int truth = 0;
         for (int i = 0; i < variables.size(); i++) { 
@@ -267,13 +320,6 @@ public class Controller implements Initializable {
             }
         }
         
-        boolean t = true; 
-        boolean f = false; 
-        System.out.println(t);
-        System.out.println(f);
-        System.out.println(t&f);
-        System.out.println(t|f);
-        //TODO
         return true;
     }
     

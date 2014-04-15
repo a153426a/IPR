@@ -8,9 +8,9 @@
 
 <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="858.0" prefWidth="1236.9999000000025" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="main.Controller">
   <children>
-    <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="830.0" prefWidth="1208.9998779296875">
+    <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="830.0" prefWidth="1210">
       <children>
-        <GridPane layoutX="-1.0" layoutY="0.0" prefHeight="830.0" prefWidth="1209.0">
+        <GridPane layoutX="-1.0" layoutY="0.0" prefHeight="830.0" prefWidth="1210">
           <children>
             <GridPane prefHeight="150.0" prefWidth="975.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
               <children>
@@ -352,6 +352,7 @@
                 </AnchorPane>
               </items>
             </SplitPane>
+            <Button fx:id="proveStartButton" mnemonicParsing="false" onAction="#printGiven" prefHeight="86.0" prefWidth="235.0" text="Start" GridPane.columnIndex="1" GridPane.rowIndex="0" />
           </children>
           <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="1043.0" minWidth="10.0" prefWidth="975.0" />
