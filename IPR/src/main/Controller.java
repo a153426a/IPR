@@ -26,45 +26,69 @@ import lexerAndParser.*;
  *
  * @author zl2511
  */
-public class Controller implements Initializable {
+public class Controller {
     
     @FXML
-    public String[] initStartFormulas; 
+    private String[] initStartFormulas; 
 
-    public List<LogicStatement> startFormulas = new ArrayList();
+    private List<LogicStatement> startFormulas = new ArrayList();
     
-    public LogicStatement goalFormula; 
+    private LogicStatement goalFormula; 
     
-    public int textFieldFocus = 0;
+    private int textFieldFocus = 0;
 
     @FXML
-    public Button andButton;
+    private Button andButton;
     @FXML
-    public Button orButton;
+    private Button orButton;
     @FXML
-    public Button impliesButton;
+    private Button impliesButton;
     @FXML
-    public Button notButton;
+    private Button notButton;
     @FXML
-    public Button truthButton;
+    private Button truthButton;
     @FXML
-    public Button thereesistsButton;
+    private Button thereesistsButton;
     @FXML
-    public Button iffButton;
+    private Button iffButton;
     @FXML
-    public Button equalsButton;
+    private Button equalsButton;
     @FXML
-    public Button falsityButton;
+    private Button falsityButton;
     @FXML
-    public Button forallButton;
+    private Button forallButton;
     @FXML
-    public Button checkButton;
+    private Button checkButton;
     @FXML
-    public Button cancelButton;
+    private Button cancelButton;
     @FXML
-    public TextArea startArea;
+    private TextArea startArea;
     @FXML
-    public TextField goalArea;
+    private TextField goalArea;
+    
+    private Parent parent;
+    private Scene scene;
+    private Stage stage;
+    
+    public Controller() {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("start.fxml"));
+        fxmlLoader.setController(this);
+        try {
+            parent = (Parent) fxmlLoader.load();
+            scene = new Scene(parent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void launchController(Stage stage) {
+        this.stage = stage;
+        stage.setTitle("start");
+        stage.setScene(scene);
+        stage.setResizable(true);
+        stage.hide();
+        stage.show();
+    }
 
     @FXML
     public void andButtonAction(ActionEvent event) {
@@ -221,11 +245,15 @@ public class Controller implements Initializable {
         System.out.println(startFormulas.toString());
         System.out.println(goalFormula.toString());
         
-        //Node  currenSource = (Node)  event.getSource(); 
-        //Stage currentStage = (Stage) currenSource.getScene().getWindow();
+        Node  currenSource = (Node)  event.getSource(); 
+        Stage currentStage = (Stage) currenSource.getScene().getWindow();
+        if(startFormulas != null && goalFormula != null) { 
+            
+            ProveController prove = new ProveController(); 
+            prove.redirectprove(currentStage, startFormulas, goalFormula);
+            
+        }
         
-        ProveController prove = new ProveController(); 
-        //prove.redirectprove(currentStage, startFormulas, goalFormula);
         
         
         /*
@@ -239,7 +267,7 @@ public class Controller implements Initializable {
         
         //Close the current stage
         
-        //currentStage.close();
+        currentStage.close();
         
         
         
@@ -326,9 +354,5 @@ public class Controller implements Initializable {
     }
     
     
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        
-    }
     
 }

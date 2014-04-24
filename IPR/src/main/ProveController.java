@@ -28,7 +28,7 @@ import javafx.stage.Stage;
  *
  * @author zl2511
  */
-public class ProveController implements Initializable {
+public class ProveController {
     
     private Parent parent;
     private Scene scene;
@@ -37,38 +37,38 @@ public class ProveController implements Initializable {
     private LogicStatement goalFormula;
 
     @FXML
-    public Button proveAnd, proveIFF, proveOr, proveImplies, proveNot, proveP, proveTrue, proveFalsity, proveThereexists, proveForall; 
+    private Button proveAnd, proveIFF, proveOr, proveImplies, proveNot, proveP, proveTrue, proveFalsity, proveThereexists, proveForall; 
     @FXML
-    public Button proveCheck, proveCancel, proveStartButton;
+    private Button proveCheck, proveCancel, proveStartButton;
     @FXML
-    public Button proveButton0, proveButton1, proveButton2, proveButton3, proveButton4, proveButton5, proveButton6, proveButton7, proveButton8, proveButton9, proveButton10, proveButton11, proveButton12, proveButton13, proveButton14, proveButton15, proveButton16, proveButton17, proveButton18, proveButton19;
+    private Button proveButton0, proveButton1, proveButton2, proveButton3, proveButton4, proveButton5, proveButton6, proveButton7, proveButton8, proveButton9, proveButton10, proveButton11, proveButton12, proveButton13, proveButton14, proveButton15, proveButton16, proveButton17, proveButton18, proveButton19;
     @FXML
-    public Button andI, andE, impliesI, impliesE, orI, orE, truthI, truthE, falsityI, falsityE, IFFI, IFFE, thereexistsI, thereexistE, forallI, forallE, notI, notE, notnot;
+    private Button andI, andE, impliesI, impliesE, orI, orE, truthI, truthE, falsityI, falsityE, IFFI, IFFE, thereexistsI, thereexistE, forallI, forallE, notI, notE, notnot;
     @FXML
-    public Label givenFormula0, givenFormula1, givenFormula2, givenFormula3, givenFormula4, givenFormula5, givenFormula6, givenFormula7, givenFormula8, givenFormula9, givenFormula10, givenFormula11, givenFormula12, givenFormula13, givenFormula14, givenFormula15, givenFormula16, givenFormula17, givenFormula18, givenFormula19; 
+    private Label givenFormula0, givenFormula1, givenFormula2, givenFormula3, givenFormula4, givenFormula5, givenFormula6, givenFormula7, givenFormula8, givenFormula9, givenFormula10, givenFormula11, givenFormula12, givenFormula13, givenFormula14, givenFormula15, givenFormula16, givenFormula17, givenFormula18, givenFormula19; 
     @FXML
-    public Label giveRule0, giveRule1, giveRule2, giveRule3, giveRule4, giveRule5, giveRule6, giveRule7, giveRule8, giveRule9, giveRule10, giveRule11, giveRule12, giveRule13, giveRule14, giveRule15, giveRule16, giveRule17, giveRule18, giveRule19;
+    private Label giveRule0, giveRule1, giveRule2, giveRule3, giveRule4, giveRule5, giveRule6, giveRule7, giveRule8, giveRule9, giveRule10, giveRule11, giveRule12, giveRule13, giveRule14, giveRule15, giveRule16, giveRule17, giveRule18, giveRule19;
     @FXML
-    public Label proveGoalFormula, proveGoalRule; 
+    private Label proveGoalFormula, proveGoalRule; 
     @FXML
-    public TextField proveFormula0, proveFormula1, proveFormula2, proveFormula3, proveFormula4, proveFormula5, proveFormula6, proveFormula7, proveFormula8, proveFormula9, proveFormula10, proveFormula11, proveFormula12, proveFormula13, proveFormula14, proveFormula15, proveFormula16, proveFormula17, proveFormula18, proveFormula19; 
+    private TextField proveFormula0, proveFormula1, proveFormula2, proveFormula3, proveFormula4, proveFormula5, proveFormula6, proveFormula7, proveFormula8, proveFormula9, proveFormula10, proveFormula11, proveFormula12, proveFormula13, proveFormula14, proveFormula15, proveFormula16, proveFormula17, proveFormula18, proveFormula19; 
     @FXML
-    public TextField proveRule0, proveRule1, proveRule2, proveRule3, proveRule4, proveRule5, proveRule6, proveRule7, proveRule8, proveRule9, proveRule10, proveRule11, proveRule12, proveRule13, proveRule14, proveRule15, proveRule16, proveRule17, proveRule18, proveRule19;
+    private TextField proveRule0, proveRule1, proveRule2, proveRule3, proveRule4, proveRule5, proveRule6, proveRule7, proveRule8, proveRule9, proveRule10, proveRule11, proveRule12, proveRule13, proveRule14, proveRule15, proveRule16, proveRule17, proveRule18, proveRule19;
     
-    public TextField[][] proveTextfields=  new TextField[2][20]; 
+    private TextField[][] proveTextfields=  new TextField[2][20]; 
 
-    public TextField[] proveFormulaText = new TextField[20]; 
+    private TextField[] proveFormulaText = new TextField[20]; 
 
-    public TextField[] proveRuleText = new TextField[20];  
+    private TextField[] proveRuleText = new TextField[20];  
 
-    public int proveFocus = 0; 
+    private int proveFocus = 0; 
 
-    public int proveSubFocus = 0; 
+    private int proveSubFocus = 0; 
     
     public ProveController() throws IOException { 
         
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("proveWindow.fxml"));
-        fxmlLoader.setController(this);
+        //fxmlLoader.setController(this);
         try {
             parent = (Parent) fxmlLoader.load();
         
@@ -77,6 +77,59 @@ public class ProveController implements Initializable {
                 e.printStackTrace();
         }
         
+        proveFormulaText[0] = proveFormula0; 
+        proveFormulaText[1] = proveFormula1; 
+        proveFormulaText[2] = proveFormula2;
+        proveFormulaText[3] = proveFormula3; 
+        proveFormulaText[4] = proveFormula4; 
+        proveFormulaText[5] = proveFormula5; 
+        proveFormulaText[6] = proveFormula6; 
+        proveFormulaText[7] = proveFormula7; 
+        proveFormulaText[8] = proveFormula8; 
+        proveFormulaText[9] = proveFormula9; 
+        proveFormulaText[10] = proveFormula10; 
+        proveFormulaText[11] = proveFormula11; 
+        proveFormulaText[12] = proveFormula12;
+        proveFormulaText[13] = proveFormula13; 
+        proveFormulaText[14] = proveFormula14; 
+        proveFormulaText[15] = proveFormula15; 
+        proveFormulaText[16] = proveFormula16; 
+        proveFormulaText[17] = proveFormula17; 
+        proveFormulaText[18] = proveFormula18; 
+        proveFormulaText[19] = proveFormula19;  
+        proveRuleText[0] = proveRule0; 
+        proveRuleText[1] = proveRule1; 
+        proveRuleText[2] = proveRule2; 
+        proveRuleText[3] = proveRule3; 
+        proveRuleText[4] = proveRule4; 
+        proveRuleText[5] = proveRule5; 
+        proveRuleText[6] = proveRule6; 
+        proveRuleText[7] = proveRule7; 
+        proveRuleText[8] = proveRule8; 
+        proveRuleText[9] = proveRule9; 
+        proveRuleText[10] = proveRule10; 
+        proveRuleText[11] = proveRule11; 
+        proveRuleText[12] = proveRule12; 
+        proveRuleText[13] = proveRule13; 
+        proveRuleText[14] = proveRule14; 
+        proveRuleText[15] = proveRule15; 
+        proveRuleText[16] = proveRule16; 
+        proveRuleText[17] = proveRule17; 
+        proveRuleText[18] = proveRule18; 
+        proveRuleText[19] = proveRule19; 
+        proveTextfields[0] = proveFormulaText;
+        proveTextfields[1] = proveRuleText;
+                
+        
+    }
+    
+    public void launchController(Stage stage) {
+        this.stage = stage;
+        stage.setTitle("start");
+        stage.setScene(scene);
+        stage.setResizable(true);
+        stage.hide();
+        stage.show();
     }
     
     public void redirectprove(Stage stage, List<LogicStatement> startFormulas, LogicStatement goalFormula) { 
@@ -587,50 +640,6 @@ public class ProveController implements Initializable {
         proveSubFocus = 19; 
     }
     
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        proveFormulaText[0] = proveFormula0; 
-        proveFormulaText[1] = proveFormula1; 
-        proveFormulaText[2] = proveFormula2;
-        proveFormulaText[3] = proveFormula3; 
-        proveFormulaText[4] = proveFormula4; 
-        proveFormulaText[5] = proveFormula5; 
-        proveFormulaText[6] = proveFormula6; 
-        proveFormulaText[7] = proveFormula7; 
-        proveFormulaText[8] = proveFormula8; 
-        proveFormulaText[9] = proveFormula9; 
-        proveFormulaText[10] = proveFormula10; 
-        proveFormulaText[11] = proveFormula11; 
-        proveFormulaText[12] = proveFormula12;
-        proveFormulaText[13] = proveFormula13; 
-        proveFormulaText[14] = proveFormula14; 
-        proveFormulaText[15] = proveFormula15; 
-        proveFormulaText[16] = proveFormula16; 
-        proveFormulaText[17] = proveFormula17; 
-        proveFormulaText[18] = proveFormula18; 
-        proveFormulaText[19] = proveFormula19;  
-        proveRuleText[0] = proveRule0; 
-        proveRuleText[1] = proveRule1; 
-        proveRuleText[2] = proveRule2; 
-        proveRuleText[3] = proveRule3; 
-        proveRuleText[4] = proveRule4; 
-        proveRuleText[5] = proveRule5; 
-        proveRuleText[6] = proveRule6; 
-        proveRuleText[7] = proveRule7; 
-        proveRuleText[8] = proveRule8; 
-        proveRuleText[9] = proveRule9; 
-        proveRuleText[10] = proveRule10; 
-        proveRuleText[11] = proveRule11; 
-        proveRuleText[12] = proveRule12; 
-        proveRuleText[13] = proveRule13; 
-        proveRuleText[14] = proveRule14; 
-        proveRuleText[15] = proveRule15; 
-        proveRuleText[16] = proveRule16; 
-        proveRuleText[17] = proveRule17; 
-        proveRuleText[18] = proveRule18; 
-        proveRuleText[19] = proveRule19; 
-        proveTextfields[0] = proveFormulaText;
-        proveTextfields[1] = proveRuleText;
-    }
+ 
     
 }
