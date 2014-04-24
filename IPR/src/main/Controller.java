@@ -249,7 +249,7 @@ public class Controller {
         Stage currentStage = (Stage) currenSource.getScene().getWindow();
         if(startFormulas != null && goalFormula != null) { 
             
-            ProveController prove = new ProveController(); 
+            Prove prove = new Prove(); 
             prove.redirectprove(currentStage, startFormulas, goalFormula);
             
         }
@@ -267,7 +267,7 @@ public class Controller {
         
         //Close the current stage
         
-        currentStage.close();
+        //currentStage.close();
         
         
         

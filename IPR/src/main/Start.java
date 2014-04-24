@@ -1,7 +1,10 @@
-
-
 package main;
 
+import ast.AndStatement;
+import ast.LogicStatement;
+import ast.Variable;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,7 +16,7 @@ public class Start extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-        ProveController Controller = new ProveController();
+        Controller Controller = new Controller();
         Controller.launchController(stage);
     }
 
