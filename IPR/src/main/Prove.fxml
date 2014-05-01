@@ -30,11 +30,14 @@
             <Button fx:id="notE" mnemonicParsing="false" onAction="#applyNotE" text="¬E" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
             <Button fx:id="truthI" mnemonicParsing="false" onAction="#applyTruthI" text="⊤I" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
             <Button fx:id="notnot" mnemonicParsing="false" onAction="#applyNotnot" text="¬¬" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-            <Button fx:id="ass" mnemonicParsing="false" onAction="#applyAss" text="ass" GridPane.columnIndex="9" GridPane.rowIndex="0" />
-            <Button fx:id="lemma" mnemonicParsing="false" onAction="#applyLemma" text="lemma" GridPane.columnIndex="9" GridPane.rowIndex="1" />
-            <Button fx:id="correct" mnemonicParsing="false" onAction="#applyCorrect" text="yes" GridPane.columnIndex="10" GridPane.rowIndex="0" />
+            <Button fx:id="ass" mnemonicParsing="false" onAction="#applyAss" text="ass" GridPane.columnIndex="9" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
+            <Button fx:id="lemma" mnemonicParsing="false" onAction="#applyLemma" text="lemma" GridPane.columnIndex="9" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Button fx:id="correct" mnemonicParsing="false" onAction="#applyCorrect" text="yes" GridPane.columnIndex="11" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
+            <Button id="box" fx:id="createBox" mnemonicParsing="false" onAction="#applyCreateBox" text="C box" GridPane.columnIndex="10" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
+            <Button fx:id="leaveBox" mnemonicParsing="false" onAction="#applyLeaveBox" text="L box" GridPane.columnIndex="10" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
           </children>
           <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -55,6 +58,17 @@
         <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
           <children>
             <GridPane GridPane.columnIndex="0" GridPane.rowIndex="0">
+              <children>
+                <Button fx:id="andButton" mnemonicParsing="false" onAction="#andAction" text="∧" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
+                <Button fx:id="impliesButton" mnemonicParsing="false" onAction="#impliesAction" text="→" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
+                <Button fx:id="orButton" mnemonicParsing="false" onAction="#orAction" text="∨" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                <Button fx:id="falsityButton" mnemonicParsing="false" onAction="#falsityAction" text="⊥" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                <Button fx:id="IFFButton" mnemonicParsing="false" onAction="#IFFAction" text="↔" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+                <Button fx:id="thereexistsButton" mnemonicParsing="false" onAction="#thereexistsAction" text="∃" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+                <Button fx:id="forallButton" mnemonicParsing="false" onAction="#forallAction" text="∀" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+                <Button fx:id="notButton" mnemonicParsing="false" onAction="#notAction" text="¬" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+                <Button fx:id="truthButton" mnemonicParsing="false" onAction="#truthAction" text="⊤" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+              </children>
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

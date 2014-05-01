@@ -53,9 +53,12 @@ public class Prove {
     @FXML
     private GridPane provePane;
     @FXML
-    private Button andI, andE, impliesI, impliesE, orI, orE, truthI, falsityI, falsityE, IFFI, IFFE, thereexistsI, thereexistE, forallI, forallE, notI, notE, notnot, ass, lemma, correct; 
+    private Button andI, andE, impliesI, impliesE, orI, orE, truthI, falsityI, falsityE, IFFI, IFFE, thereexistsI, thereexistE, forallI, forallE, notI, notE, notnot, ass, lemma, correct, createBox, leaveBox; 
     @FXML 
     private Button checkButton, cancelButton;
+    @FXML
+    private Button andButton, IFFButton, orButton, impliesButton, notButton, truthButton, falsityButton, thereexistsButton, forallButton; 
+    
     public Prove() throws IOException { 
         
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Prove.fxml"));
@@ -291,6 +294,62 @@ public class Prove {
         
         items.add(currentLine-givenLineNum-1, new ProveLine(currentLine));
         proveView.setItems(items);
+    }
+    
+    @FXML 
+    public void applyCreateBox(ActionEvent event) {
+        //TODO
+    }
+    
+    @FXML 
+    public void applyLeaveBox(ActionEvent event) {
+        //TODO
+    }
+    
+    
+    @FXML 
+    public void andAction(ActionEvent event) {
+        System.out.println("1");
+    }
+    
+    @FXML 
+    public void IFFAction(ActionEvent event) {
+        System.out.println("1");
+    }
+    
+    @FXML 
+    public void orAction(ActionEvent event) {
+        System.out.println("1");
+    }
+    
+    @FXML 
+    public void impliesAction(ActionEvent event) {
+        System.out.println("1");
+    }
+    
+    @FXML 
+    public void notAction(ActionEvent event) {
+       System.out.println("1");
+    }
+    
+    @FXML 
+    public void truthAction(ActionEvent event) {
+        System.out.println("1");
+    }
+    
+    @FXML 
+    public void falsityAction(ActionEvent event) {
+        System.out.println("1");
+    }
+    
+    @FXML 
+    public void thereexistsAction(ActionEvent event) {
+        System.out.println("1");
+    }
+    
+    @FXML 
+    public void forallAction(ActionEvent event) {
+       System.out.println("1");
     }
     
 }
