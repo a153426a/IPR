@@ -34,7 +34,8 @@
             <Button fx:id="lemma" mnemonicParsing="false" onAction="#applyLemma" text="lemma" GridPane.columnIndex="9" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
             <Button fx:id="correct" mnemonicParsing="false" onAction="#applyCorrect" text="yes" GridPane.columnIndex="11" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
             <Button id="box" fx:id="createBox" mnemonicParsing="false" onAction="#applyCreateBox" text="C box" GridPane.columnIndex="10" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
-            <Button fx:id="leaveBox" mnemonicParsing="false" onAction="#applyLeaveBox" text="L box" GridPane.columnIndex="10" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Button id="leaveBox" fx:id="createBoxTwo" mnemonicParsing="false" onAction="#applyCreateBoxTwo" text="C2 box" GridPane.columnIndex="10" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Button id="create" fx:id="createNewLine" mnemonicParsing="false" onAction="#createNewLineButton" text="New" GridPane.columnIndex="11" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
           </children>
           <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

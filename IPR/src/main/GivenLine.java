@@ -9,37 +9,39 @@ package main;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 /**
  *
  * @author zl2511
  */
-public class GivenLine extends HBox { 
+public class GivenLine extends VBox { 
     
     private int number; 
     private String formula; 
     private String rule; 
     private Label num;
     private Label rul;
-
+    private Label fml;
     
     public GivenLine(int number, String formula, String rule) { 
-        
+        HBox hb = new HBox();
         this.number = number; 
         this.formula = formula; 
         this.rule = rule; 
         num = new Label(new Integer(number).toString());
         //Label num = new Label(new Integer(number).toString());
-        Label fml = new Label(formula);
+        fml = new Label(formula);
         rul = new Label(rule);
         num.setPrefWidth(50);
         fml.setPrefWidth(450);
-        rul.setPrefWidth(200);
-        this.getChildren().add(num);
-        this.getChildren().add(fml);
-        this.getChildren().add(rul);
+        //rul.setPrefWidth(200);
+        hb.getChildren().add(num);
+        hb.getChildren().add(fml);
+        hb.getChildren().add(rul);
         
-        this.setAlignment(Pos.CENTER);
+        hb.setAlignment(Pos.CENTER_LEFT);
+        this.getChildren().add(hb);
         
     }
     

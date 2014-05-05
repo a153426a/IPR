@@ -5,11 +5,20 @@
  */
 package main;
 
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
+import java.awt.event.MouseAdapter;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos; 
+import javafx.scene.control.Label; 
 import javafx.scene.control.TextField; 
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 
 
 /**
@@ -24,16 +33,51 @@ public class ProveLine extends VBox {
     private HBox rulhb;
     private String ruleName;
     private TextField[] arguments; 
+    private boolean haveArgu;
+    private boolean ruled;
+    private int focus;
+    private int caretIndex;
     
     public ProveLine(int number) { 
         this.hb = new HBox();
         num = new Label();
         fml = new TextField();
-        
+        focus = 0;
+        caretIndex = 0; 
         rulhb = new HBox();
         
-        num.setText(new Integer(number).toString());
+        fml.focusedProperty().addListener(new ChangeListener<Boolean>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if(newValue) {
+                    focus = 1;
+                } 
+            }
         
+        });
+        
+        fml.addEventFilter(MouseEvent.MOUSE_CLICKED, 
+                    new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent m) { 
+                            caretIndex = fml.getCaretPosition();
+                            System.out.println(Integer.toString(caretIndex));
+                        };
+                    });
+        
+        fml.addEventFilter(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
+
+            @Override
+            public void handle(KeyEvent event) {
+                caretIndex = fml.getCaretPosition();
+                System.out.println(Integer.toString(caretIndex));
+            }
+        
+        });
+        
+        
+        num.setText(new Integer(number).toString());
         num.setPrefWidth(50);
         fml.setPrefWidth(450);
         
@@ -47,6 +91,9 @@ public class ProveLine extends VBox {
         this.getChildren().add(hb);
         this.setAlignment(Pos.CENTER);
         
+        haveArgu = false;
+        ruled = false; 
+        
     }
     
     public int getNum() { 
@@ -55,9 +102,9 @@ public class ProveLine extends VBox {
         
     }
     
-    public String getFml() {
+    public TextField getFml() {
         
-        return fml.getText();
+        return fml;
         
     }
     
@@ -75,7 +122,9 @@ public class ProveLine extends VBox {
         if(argumentNum == 0) {
             ruleNameLabel.setText(s);
             rulhb.getChildren().add(ruleNameLabel);
+            haveArgu = false;
         } else {
+            haveArgu = true;
             arguments = new TextField[argumentNum];
             Label endBracketLabel = new Label();
 
@@ -90,29 +139,89 @@ public class ProveLine extends VBox {
             rulhb.getChildren().add(ruleNameLabel); 
 
             for (int i = 0; i < argumentNum; i++) { 
-
+                final int currentItem = i;
                 if(i==argumentNum-1) { 
-
+                    final int p = i;
                     TextField tf = new TextField();
-
+                    
                     tf.setPrefWidth(40); 
 
-                    this.getRulhb().getChildren().add(tf);
-                    this.arguments[i] = tf;
+                    getRulhb().getChildren().add(tf);
+                    arguments[p] = tf;
+                    
+                    arguments[p].focusedProperty().addListener(new ChangeListener<Boolean>() {
+
+                        @Override
+                        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                            if(newValue) {
+                                focus = currentItem+2;
+                            } 
+                        }
+
+                    });
+                    
+                    arguments[p].addEventFilter(MouseEvent.MOUSE_CLICKED, 
+                    new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent m) { 
+                            caretIndex = arguments[p].getCaretPosition();
+                            System.out.println(Integer.toString(caretIndex));
+                        };
+                    });
+        
+                    arguments[p].addEventFilter(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
+
+                        @Override
+                        public void handle(KeyEvent event) {
+                            caretIndex = arguments[p].getCaretPosition();
+                            System.out.println(Integer.toString(caretIndex));
+                        }
+
+                    });
 
                 } else { 
-
+                    final int p = i;
                     TextField tf = new TextField();
                     Label l = new Label(); 
-
+                    
                     l.setText(", "); 
-
+                    
                     tf.setPrefWidth(40); 
                     l.setPrefWidth(20);
 
-                    this.getRulhb().getChildren().add(tf);
-                    this.getRulhb().getChildren().add(l); 
-                    this.arguments[i] = tf;
+                    getRulhb().getChildren().add(tf);
+                    getRulhb().getChildren().add(l); 
+                    arguments[p] = tf;
+                    
+                    arguments[p].focusedProperty().addListener(new ChangeListener<Boolean>() {
+
+                        @Override
+                        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                            if(newValue) {
+                                focus = currentItem+2;
+                            } 
+                        }
+
+                    });
+                    
+                    arguments[p].addEventFilter(MouseEvent.MOUSE_CLICKED, 
+                    new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent m) { 
+                            caretIndex = arguments[p].getCaretPosition();
+                            System.out.println(Integer.toString(caretIndex));
+                        };
+                    });
+        
+                    arguments[p].addEventFilter(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
+
+                        @Override
+                        public void handle(KeyEvent event) {
+                            caretIndex = arguments[p].getCaretPosition();
+                            System.out.println(Integer.toString(caretIndex));
+                        }
+
+                    });
 
                 }
 
@@ -122,10 +231,22 @@ public class ProveLine extends VBox {
         }
     }
     
+    public void removeRule() {
+        if(!haveArgu) {
+            rulhb.getChildren().remove(rulhb.getChildren().size()-1);
+        } else { 
+            rulhb.getChildren().remove(0, rulhb.getChildren().size());
+        }
+    }
+    
     public HBox getRulhb() { 
         
         return rulhb;
         
+    }
+    
+    public boolean haveArguments() { 
+        return haveArgu;
     }
     
     public int[] getArguments() {
@@ -154,4 +275,28 @@ public class ProveLine extends VBox {
         
     }
     
+    public void setRuled() {
+        
+        ruled = true;
+        
+    }
+    
+    public boolean getRuled() { 
+        
+        return ruled;
+        
+    }
+    
+    public TextField getCurrentTextField() { 
+        if (focus == 1) { 
+            return fml; 
+        } else { 
+            
+            return arguments[focus - 2];
+        }
+    }
+
+    public int getCaretIndex() { 
+        return caretIndex;
+    }
 }
