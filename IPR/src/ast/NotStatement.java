@@ -11,4 +11,14 @@ public class NotStatement extends UnaryOpStatement {
 		return "(" + symbol.toString() + nestedStatement + ")";
 	}
 
+    @Override
+    public boolean equalsTo(LogicStatement l) {
+        if(l instanceof NotStatement) { 
+            if(((NotStatement) l).nestedStatement.equalsTo(nestedStatement)) { 
+                return true; 
+            }
+        }
+        return false;
+    }
+
 }

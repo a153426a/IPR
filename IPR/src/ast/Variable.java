@@ -14,4 +14,18 @@ public class Variable extends LogicStatement {
 		return "(" + name + ")";
 	}
 
+    @Override
+    public boolean equalsTo(LogicStatement l) {
+        if(l instanceof Variable) { 
+            if (((Variable) l).name.equals(name)) { 
+                return true;
+            }
+        }
+        return false; 
+    }
+        
+        
+
+    
+
 }

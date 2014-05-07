@@ -1,7 +1,10 @@
 package main;
 
 import ast.*;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.value.ChangeListener;
@@ -29,6 +32,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lexerAndParser.Lexer;
+import lexerAndParser.parser;
 
 /**
  *
@@ -59,7 +64,7 @@ public class Prove {
     @FXML
     private GridPane provePane;
     @FXML
-    private Button andI, andE, impliesI, impliesE, orI, orE, truthI, falsityI, falsityE, IFFI, IFFE, thereexistsI, thereexistE, forallI, forallE, notI, notE, notnot, ass, lemma, correct, createBox, createBoxTwo, createNewLine; 
+    private Button andI, andE, impliesI, impliesE, orI, orE, truthI, falsityI, falsityE, IFFI, IFFE, thereexistsI, thereexistE, forallI, forallE, notI, notE, notnot, ass, lemma, tick, createBox, createBoxTwo, createNewLine; 
     @FXML 
     private Button checkButton, cancelButton;
     @FXML
@@ -93,11 +98,11 @@ public class Prove {
         
         starBox = new VBox();
         for (LogicStatement l:sf) { 
+            
             givenLineNum++;
             currentMaxLine++;
             GivenLine gl = new GivenLine(currentMaxLine, l.toString(), "Given"); 
             starBox.getChildren().add(gl); 
-            
             
         }
         
@@ -116,10 +121,237 @@ public class Prove {
     }
     
     @FXML 
-    public void checkButtonAction(ActionEvent event) { 
+    public void checkButtonAction(ActionEvent event) throws Exception{ 
         
+        boolean result = true; 
         
+        for (ProveLine p:items) { 
+            System.out.println("Checking line number " + p.getNum());
+            if (!checkProveLine(p)) { 
+                System.out.println("Line " + p.getNum() + " is wrong");
+            }
+        }
+    }
+    
+    private boolean checkProveLine(ProveLine p) throws Exception{ 
+        // lots of shit to do 
+        String ruleName = p.getRule(); 
+        if (p.getFml().getText().equals("")) { 
+            System.out.println("The Line number " + p.getNum()+ " is empty. ");
+            return false; 
+        }
+        LogicStatement fml = stringToLS(p.getFml().getText());
+        //if it has arguments 
+        if(p.haveArguments()) { 
+            //get array of arguments
+            LogicStatement[] argumentsStatement = new LogicStatement[p.getArguments().length];
+            for(int i = 0; i < p.getArguments().length; i++) { 
+                argumentsStatement[i] = stringToLS(findLine(p.getArguments()[i]));
+            }
+            switch(ruleName) {
+                case "∧I": return checkAndI(fml, new AndStatement(argumentsStatement[0], argumentsStatement[1])); 
+                case "∧E": return checkAndE(fml, argumentsStatement[0]);
+                case "→I": //2 args, need a box 
+                case "→E": return checkImpliesE(fml, new ImpliesStatement(argumentsStatement[0], argumentsStatement[1]));
+                case "∨I": return checkOrI(fml,argumentsStatement[0]); 
+                case "∨E": //5 args, need two boxes 
+                case "⊥I": return checkFalsityI(fml, argumentsStatement[0], argumentsStatement[1]);
+                case "⊥E": return checkFalsityE(fml, argumentsStatement[0]);
+                case "↔I": return checkIFFI(fml, argumentsStatement[0], argumentsStatement[1]);
+                case "↔E": return checkIFFE(fml, argumentsStatement[0], argumentsStatement[1]); 
+                case "¬I": //2 args, need a box
+                case "¬E": return checkNotE(fml, argumentsStatement[0], argumentsStatement[1]);
+                case "¬¬": return checkNotNot(fml, argumentsStatement[0]);
+                default: return false;  
+            } 
+        }        else { 
+            switch(ruleName) {
+                case "⊤I": return checkTruthI(fml);
+                case "ass": return true;
+                case "lemma": //need to ask
+                case "tick": //need to ask
+            }
+        }
+        return false;
+    }
+    
+    private String findLine(int i) { 
+        if(i<=givenLineNum) { 
+            return ((GivenLine)starBox.getChildren().get(i-1)).getfml();
+        } else { 
+            return items.get(i-givenLineNum-1).getFml().getText();
+        }
+    }
+    
+    private LogicStatement stringToLS(String s) throws Exception { 
         
+        LogicStatement ls = null; 
+        InputStream is; 
+        try {
+            is = new ByteArrayInputStream(s.getBytes("UTF-8"));
+            Lexer l = new Lexer(is);
+            parser p = new parser(l);
+            ls = (LogicStatement) p.parse().value;
+        } catch (UnsupportedEncodingException e1) {
+            e1.printStackTrace();
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+        return ls;
+        
+    }
+    
+    
+    private boolean checkAndI(LogicStatement s, AndStatement a) { 
+        if(s instanceof AndStatement) { 
+             if(((AndStatement)s).equalsTo(a)) { 
+                 return true;
+             } else { 
+                 return false; 
+             }
+        } else { 
+            return false;
+        }
+    }
+    
+    private boolean checkAndE(LogicStatement s, LogicStatement a){ 
+        if(a instanceof AndStatement) { 
+            if(((AndStatement) a).nestedStatementLeft.equalsTo(s) || ((AndStatement) a).nestedStatementRight.equalsTo(s)) { 
+                return true;
+            } else { 
+                return false; 
+            }
+        } else { 
+            return false;
+        }
+    }
+    
+    private boolean checkImpliesE(LogicStatement s, ImpliesStatement a) { 
+        if(s instanceof ImpliesStatement) { 
+             if(((ImpliesStatement)s).equalsTo(a)) { 
+                 return true;
+             } else { 
+                 return false; 
+             }
+        } else { 
+            return false;
+        }
+    }
+    
+    private boolean checkOrI(LogicStatement s, LogicStatement a) { 
+        if(s instanceof OrStatement) { 
+            if(((OrStatement) s).nestedStatementLeft.equalsTo(a) || ((OrStatement) s).nestedStatementRight.equalsTo(a)) { 
+                return true;
+            } else { 
+                return false; 
+            }
+        } else { 
+            return false;
+        }
+    }
+    
+    private boolean checkTruthI(LogicStatement s) { 
+        if (s instanceof Truth) { 
+            return true;
+        } else { 
+            return false; 
+        }
+    }
+    
+    private boolean checkFalsityI(LogicStatement s, LogicStatement a1, LogicStatement a2) { 
+        if (s instanceof Falsity) {
+            if (a2 instanceof NotStatement) {
+                if (new NotStatement(a1).equalsTo(((NotStatement) a2))) { 
+                    return true;
+                } else { 
+                    return false; 
+                }
+            } else { 
+                return false; 
+            }
+        } else { 
+            return false; 
+        }
+    }
+    
+    private boolean checkFalsityE(LogicStatement s, LogicStatement a) { 
+        if (a instanceof Falsity) { 
+            return true;
+        } else { 
+            return false; 
+        }
+    }
+    
+    private boolean checkIFFI(LogicStatement s, LogicStatement a1, LogicStatement a2) { 
+        if(s instanceof IFFStatement && a1 instanceof ImpliesStatement && a2 instanceof ImpliesStatement) { 
+            if (((ImpliesStatement) a1).nestedStatementLeft.equalsTo(((ImpliesStatement) a2).nestedStatementRight) 
+                    &&((ImpliesStatement) a1).nestedStatementRight.equalsTo(((ImpliesStatement) a2).nestedStatementLeft)) { 
+                if(((ImpliesStatement) s).nestedStatementLeft.equalsTo(((ImpliesStatement) a1).nestedStatementLeft) 
+                    && ((ImpliesStatement) s).nestedStatementRight.equalsTo(((ImpliesStatement) a1).nestedStatementRight) 
+                        || ((ImpliesStatement) s).nestedStatementLeft.equalsTo(((ImpliesStatement) a1).nestedStatementRight) 
+                            && ((ImpliesStatement) s).nestedStatementRight.equalsTo(((ImpliesStatement) a1).nestedStatementLeft)) { 
+                    return true;
+                } else { 
+                    return false; 
+                } 
+            } else { 
+                return false; 
+            }
+        } else { 
+            return false; 
+        }
+    }
+    
+    private boolean checkIFFE(LogicStatement s, LogicStatement a1, LogicStatement a2) { 
+        if (a1 instanceof IFFStatement) { 
+            if (((IFFStatement) a1).nestedStatementLeft.equalsTo(s) && ((IFFStatement) a1).nestedStatementRight.equalsTo(a2) 
+                    || ((IFFStatement) a1).nestedStatementRight.equalsTo(s) && ((IFFStatement) a1).nestedStatementLeft.equalsTo(a2)) { 
+                return true;
+            } else { 
+                return false;
+            }
+        } else if (a2 instanceof IFFStatement) { 
+            if (((IFFStatement) a2).nestedStatementLeft.equalsTo(s) && ((IFFStatement) a2).nestedStatementRight.equalsTo(a1) 
+                    || ((IFFStatement) a2).nestedStatementRight.equalsTo(s) && ((IFFStatement) a2).nestedStatementLeft.equalsTo(a1)) { 
+                return true;
+            } else { 
+                return false; 
+            }
+        } else { 
+            return false;
+        }
+    }
+    
+    private boolean checkNotE(LogicStatement s, LogicStatement a1, LogicStatement a2) { 
+        if (s instanceof Falsity) { 
+            if (a1 instanceof NotStatement) { 
+                if (new NotStatement(a2).equalsTo(a1)) { 
+                    return true;
+                } else { 
+                    return false; 
+                }
+            } else { 
+                return false;
+            }
+        } else { 
+            return false; 
+        }
+    }
+    
+    private boolean checkNotNot(LogicStatement s, LogicStatement a) { 
+        if (a instanceof NotStatement) { 
+            if (((NotStatement) a).nestedStatement instanceof NotStatement) { 
+                if (((NotStatement) ((NotStatement) a).nestedStatement).equalsTo(s)) { 
+                    return true;
+                } else { 
+                    return false; 
+                }
+            } else { 
+                return false; 
+            }
+        } else { 
+            return false; 
+        }
     }
     
     @FXML 
@@ -146,6 +378,7 @@ public class Prove {
         items.add(currentMaxLine-givenLineNum-1, pl);
         proveView.setItems(items);
     }
+    
     public void applyRule(String s, int i) { 
         int idx = getCurrentFocus();
         if (idx != -1) {
@@ -261,7 +494,7 @@ public class Prove {
     }
     
     @FXML 
-    public void applyCorrect(ActionEvent event) {
+    public void applyTick(ActionEvent event) {
         applyRule("yes",0);
     }
     

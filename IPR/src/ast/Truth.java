@@ -11,4 +11,12 @@ public class Truth extends Constant {
 		return "(" + symbol.toString() + ")";
 	}
 
+    @Override
+    public boolean equalsTo(LogicStatement l) {
+        if(l instanceof Truth) { 
+            return true;
+        } 
+        return false; 
+    }
+
 }

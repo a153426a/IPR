@@ -62,7 +62,6 @@ public class ProveLine extends VBox {
                         @Override
                         public void handle(MouseEvent m) { 
                             caretIndex = fml.getCaretPosition();
-                            System.out.println(Integer.toString(caretIndex));
                         };
                     });
         
@@ -71,7 +70,6 @@ public class ProveLine extends VBox {
             @Override
             public void handle(KeyEvent event) {
                 caretIndex = fml.getCaretPosition();
-                System.out.println(Integer.toString(caretIndex));
             }
         
         });
@@ -165,7 +163,6 @@ public class ProveLine extends VBox {
                         @Override
                         public void handle(MouseEvent m) { 
                             caretIndex = arguments[p].getCaretPosition();
-                            System.out.println(Integer.toString(caretIndex));
                         };
                     });
         
@@ -174,7 +171,6 @@ public class ProveLine extends VBox {
                         @Override
                         public void handle(KeyEvent event) {
                             caretIndex = arguments[p].getCaretPosition();
-                            System.out.println(Integer.toString(caretIndex));
                         }
 
                     });
@@ -209,7 +205,6 @@ public class ProveLine extends VBox {
                         @Override
                         public void handle(MouseEvent m) { 
                             caretIndex = arguments[p].getCaretPosition();
-                            System.out.println(Integer.toString(caretIndex));
                         };
                     });
         
@@ -218,7 +213,6 @@ public class ProveLine extends VBox {
                         @Override
                         public void handle(KeyEvent event) {
                             caretIndex = arguments[p].getCaretPosition();
-                            System.out.println(Integer.toString(caretIndex));
                         }
 
                     });

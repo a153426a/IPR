@@ -11,4 +11,12 @@ public class Falsity extends Constant {
 		return "(" + symbol.toString() + ")";
 	}
 
+    @Override
+    public boolean equalsTo(LogicStatement l) {
+        if(l instanceof Falsity) { 
+            return true; 
+        }
+        return false; 
+    }
+
 }
