@@ -1,6 +1,7 @@
 package main;
 
 import ast.*;
+import java.awt.Color;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,6 +55,9 @@ public class Prove {
     private ObservableList<ProveLine> items;
     private GivenLine goalLine;
     
+    private List<boxStartingLine> boxes;
+    private String[] boxColors;
+    
     /*
     @FXML
     private TextArea StartFomulars; 
@@ -92,6 +96,30 @@ public class Prove {
         this.goalStatement = gf; 
         proveView = new ListView<ProveLine>();
         items = observableArrayList();
+        boxes = new ArrayList<boxStartingLine>();
+        boxColors = new String[20];
+        boxColors[0] = "-fx-border-color: red";
+        boxColors[1] = "-fx-border-color: blue";
+        boxColors[2] = "-fx-border-color: blueviolet";
+        boxColors[3] = "-fx-border-color: black";
+        boxColors[4] = "-fx-border-color: brown";
+        boxColors[5] = "-fx-border-color: chartreuse";
+        boxColors[6] = "-fx-border-color: coral";
+        boxColors[7] = "-fx-border-color: darkorchid";
+        boxColors[8] = "-fx-border-color: darkslategray";
+        boxColors[9] = "-fx-border-color: deeppink";
+        boxColors[10] = "-fx-border-color: forestgreen";
+        boxColors[11] = "-fx-border-color: gold";
+        boxColors[12] = "-fx-border-color: gray";
+        boxColors[13] = "-fx-border-color: lightcoral";
+        boxColors[14] = "-fx-border-color: mediumblue";
+        boxColors[15] = "-fx-border-color: aqua";
+        boxColors[16] = "-fx-border-color: yellow";
+        boxColors[17] = "-fx-border-color: steelblue";
+        boxColors[18] = "-fx-border-color: tan";
+        boxColors[19] = "-fx-border-color: silver";
+        
+        
         
         //StartFomulars.setText(startStatements.toString());
         //GoalFomular.setText(goalStatement.toString());
@@ -124,11 +152,15 @@ public class Prove {
     public void checkButtonAction(ActionEvent event) throws Exception{ 
         
         boolean result = true; 
+        //check args
         
+        //check meaning 
         for (ProveLine p:items) { 
-            System.out.println("Checking line number " + p.getNum());
+            System.out.println("Checking line number " + p.getNum() + ". ");
             if (!checkProveLine(p)) { 
-                System.out.println("Line " + p.getNum() + " is wrong");
+                System.out.println("Line number " + p.getNum() + " is wrong. ");
+            } else { 
+                System.out.println("Line number " + p.getNum() + " is correct. ");
             }
         }
     }
@@ -151,17 +183,21 @@ public class Prove {
             switch(ruleName) {
                 case "∧I": return checkAndI(fml, new AndStatement(argumentsStatement[0], argumentsStatement[1])); 
                 case "∧E": return checkAndE(fml, argumentsStatement[0]);
-                case "→I": //2 args, need a box 
-                case "→E": return checkImpliesE(fml, new ImpliesStatement(argumentsStatement[0], argumentsStatement[1]));
+                case "→E": return checkImpliesE(argumentsStatement[0], new ImpliesStatement(argumentsStatement[1], fml));
                 case "∨I": return checkOrI(fml,argumentsStatement[0]); 
-                case "∨E": //5 args, need two boxes 
                 case "⊥I": return checkFalsityI(fml, argumentsStatement[0], argumentsStatement[1]);
                 case "⊥E": return checkFalsityE(fml, argumentsStatement[0]);
                 case "↔I": return checkIFFI(fml, argumentsStatement[0], argumentsStatement[1]);
                 case "↔E": return checkIFFE(fml, argumentsStatement[0], argumentsStatement[1]); 
-                case "¬I": //2 args, need a box
                 case "¬E": return checkNotE(fml, argumentsStatement[0], argumentsStatement[1]);
                 case "¬¬": return checkNotNot(fml, argumentsStatement[0]);
+                    //2 args, need a box
+                case "→I": return checkImpliesI(p, p.getArguments()[0], p.getArguments()[1]);
+                    //2 args, need a box
+                case "¬I": return checkNotI(p, p.getArguments()[0], p.getArguments()[1]);
+                    //5 args, need two boxes 
+                case "∨E": 
+                
                 default: return false;  
             } 
         }        else { 
@@ -174,7 +210,7 @@ public class Prove {
         }
         return false;
     }
-    
+    //input Line number, return the given/prove line with that line number 
     private String findLine(int i) { 
         if(i<=givenLineNum) { 
             return ((GivenLine)starBox.getChildren().get(i-1)).getfml();
@@ -204,12 +240,15 @@ public class Prove {
     
     private boolean checkAndI(LogicStatement s, AndStatement a) { 
         if(s instanceof AndStatement) { 
-             if(((AndStatement)s).equalsTo(a)) { 
-                 return true;
-             } else { 
-                 return false; 
-             }
+            
+            if(((AndStatement)s).equalsTo(a)) { 
+                return true;
+            } else { 
+                System.out.println("The given two lines can not produce this line by AndI. ");
+                return false; 
+            }
         } else { 
+            System.out.println("AndI can not be applied on a none AndStatemnet. ");
             return false;
         }
     }
@@ -219,21 +258,25 @@ public class Prove {
             if(((AndStatement) a).nestedStatementLeft.equalsTo(s) || ((AndStatement) a).nestedStatementRight.equalsTo(s)) { 
                 return true;
             } else { 
+                System.out.println("The given line can not produce ths line by AndI. ");
                 return false; 
             }
         } else { 
+            System.out.println("The given line is not an AndStatement. ");
             return false;
         }
     }
     
     private boolean checkImpliesE(LogicStatement s, ImpliesStatement a) { 
         if(s instanceof ImpliesStatement) { 
-             if(((ImpliesStatement)s).equalsTo(a)) { 
+            if(((ImpliesStatement)s).equalsTo(a)) { 
                  return true;
-             } else { 
-                 return false; 
-             }
+            } else { 
+                System.out.println("The given line can not produce ths line by ImpliesI. ");
+                return false; 
+            }
         } else { 
+            System.out.println("The given line is not an ImpliesStatement. ");
             return false;
         }
     }
@@ -243,9 +286,11 @@ public class Prove {
             if(((OrStatement) s).nestedStatementLeft.equalsTo(a) || ((OrStatement) s).nestedStatementRight.equalsTo(a)) { 
                 return true;
             } else { 
+                System.out.println("The given line is not part of this OrStatement. ");
                 return false; 
             }
         } else { 
+            System.out.println("The given line is not an OrStatement. ");
             return false;
         }
     }
@@ -254,6 +299,7 @@ public class Prove {
         if (s instanceof Truth) { 
             return true;
         } else { 
+            System.out.println("Truth should be introduced. ");
             return false; 
         }
     }
@@ -264,12 +310,15 @@ public class Prove {
                 if (new NotStatement(a1).equalsTo(((NotStatement) a2))) { 
                     return true;
                 } else { 
+                    System.out.println("The second given line should be a NotStatement created by first given line. ");
                     return false; 
                 }
             } else { 
+                System.out.println("The second given line should be a NotStatement. ");
                 return false; 
             }
         } else { 
+            System.out.println("Falsity should be introduced. ");
             return false; 
         }
     }
@@ -278,46 +327,59 @@ public class Prove {
         if (a instanceof Falsity) { 
             return true;
         } else { 
+            System.out.println("The givne line should be falsity. ");
             return false; 
         }
     }
     
     private boolean checkIFFI(LogicStatement s, LogicStatement a1, LogicStatement a2) { 
-        if(s instanceof IFFStatement && a1 instanceof ImpliesStatement && a2 instanceof ImpliesStatement) { 
-            if (((ImpliesStatement) a1).nestedStatementLeft.equalsTo(((ImpliesStatement) a2).nestedStatementRight) 
-                    &&((ImpliesStatement) a1).nestedStatementRight.equalsTo(((ImpliesStatement) a2).nestedStatementLeft)) { 
-                if(((ImpliesStatement) s).nestedStatementLeft.equalsTo(((ImpliesStatement) a1).nestedStatementLeft) 
-                    && ((ImpliesStatement) s).nestedStatementRight.equalsTo(((ImpliesStatement) a1).nestedStatementRight) 
-                        || ((ImpliesStatement) s).nestedStatementLeft.equalsTo(((ImpliesStatement) a1).nestedStatementRight) 
-                            && ((ImpliesStatement) s).nestedStatementRight.equalsTo(((ImpliesStatement) a1).nestedStatementLeft)) { 
-                    return true;
+        if(s instanceof IFFStatement) { 
+            if(a1 instanceof ImpliesStatement) {
+                if(a2 instanceof ImpliesStatement) { 
+                    if (((ImpliesStatement) a1).nestedStatementLeft.equalsTo(((ImpliesStatement) a2).nestedStatementRight) 
+                        &&((ImpliesStatement) a1).nestedStatementRight.equalsTo(((ImpliesStatement) a2).nestedStatementLeft)) { 
+                        if(((IFFStatement) s).nestedStatementLeft.equalsTo(((ImpliesStatement) a1).nestedStatementLeft) 
+                            && ((IFFStatement) s).nestedStatementRight.equalsTo(((ImpliesStatement) a1).nestedStatementRight)) { 
+                            return true;
+                        } else { 
+                            System.out.println("The given two lines can not produce this formula by IFFI. ");
+                            return false; 
+                        } 
+                    } else { 
+                        System.out.println("The left part of the first given line should be same as the right part of the right part of the second given line and vise versa. ");
+                        return false; 
+                    }
                 } else { 
+                    System.out.println("The second given line should be a ImpliesStatement. ");
                     return false; 
-                } 
+                }
             } else { 
+                System.out.println("The first given line should be a ImpliesStatement. ");
                 return false; 
             }
         } else { 
+            System.out.println("This given line should be a IFFStatement. ");
             return false; 
         }
     }
     
     private boolean checkIFFE(LogicStatement s, LogicStatement a1, LogicStatement a2) { 
         if (a1 instanceof IFFStatement) { 
-            if (((IFFStatement) a1).nestedStatementLeft.equalsTo(s) && ((IFFStatement) a1).nestedStatementRight.equalsTo(a2) 
-                    || ((IFFStatement) a1).nestedStatementRight.equalsTo(s) && ((IFFStatement) a1).nestedStatementLeft.equalsTo(a2)) { 
-                return true;
+            if (((IFFStatement) a1).nestedStatementLeft.equalsTo(a2) || ((IFFStatement) a1).nestedStatementRight.equalsTo(a2)) { 
+                if(((IFFStatement) a1).nestedStatementLeft.equalsTo(a2) && ((IFFStatement) a1).nestedStatementRight.equalsTo(s)) { 
+                    return true;
+                } else if(((IFFStatement) a1).nestedStatementLeft.equalsTo(s) && ((IFFStatement) a1).nestedStatementRight.equalsTo(a2)) { 
+                    return true; 
+                } else { 
+                    System.out.println("The second given line should not be on the same side with this line");
+                    return false; 
+                }
             } else { 
+                System.out.println("The second given line should be a part of the first given line. ");
                 return false;
             }
-        } else if (a2 instanceof IFFStatement) { 
-            if (((IFFStatement) a2).nestedStatementLeft.equalsTo(s) && ((IFFStatement) a2).nestedStatementRight.equalsTo(a1) 
-                    || ((IFFStatement) a2).nestedStatementRight.equalsTo(s) && ((IFFStatement) a2).nestedStatementLeft.equalsTo(a1)) { 
-                return true;
-            } else { 
-                return false; 
-            }
         } else { 
+            System.out.println("The first given line should be a IFFStatement. ");
             return false;
         }
     }
@@ -328,12 +390,15 @@ public class Prove {
                 if (new NotStatement(a2).equalsTo(a1)) { 
                     return true;
                 } else { 
+                    System.out.println("The first given line should be a NotStatement produced by the second given line. ");
                     return false; 
                 }
             } else { 
+                System.out.println("The first given line should be a NotStatement. ");
                 return false;
             }
         } else { 
+            System.out.println("This line should be falsity. ");
             return false; 
         }
     }
@@ -341,17 +406,68 @@ public class Prove {
     private boolean checkNotNot(LogicStatement s, LogicStatement a) { 
         if (a instanceof NotStatement) { 
             if (((NotStatement) a).nestedStatement instanceof NotStatement) { 
-                if (((NotStatement) ((NotStatement) a).nestedStatement).equalsTo(s)) { 
+                if (((NotStatement) ((NotStatement) a).nestedStatement).nestedStatement.equalsTo(s)) { 
                     return true;
                 } else { 
+                    System.out.println("This line should be a NotNotStatement produced by the first given line. ");
                     return false; 
                 }
             } else { 
+                System.out.println("The given line should be a NotNotStatement. ");
                 return false; 
             }
         } else { 
+            System.out.println("The given line should be a NotNotStatement. ");
             return false; 
         }
+    }
+    
+    private boolean checkImpliesI(ProveLine p, int i1, int i2) throws Exception { 
+        if(i1 > givenLineNum && i2 >givenLineNum) { 
+            ProveLine p1 = items.get(i1-givenLineNum-1); 
+            ProveLine p2 = items.get(i2-givenLineNum-1);
+            if(p.getNum()-1 == i2 &&  p2 instanceof boxClosingLine && p1 instanceof boxStartingLine 
+                    && ((boxClosingLine) p2).getStartLine().equals((boxStartingLine)p1) && p1.getRule().equals("ass")) { 
+                LogicStatement l1 = stringToLS(findLine(i1)); 
+                LogicStatement l2 = stringToLS(findLine(i2)); 
+                LogicStatement pp = stringToLS(p.getFml().getText());
+                if(pp instanceof ImpliesStatement) { 
+                    if(((ImpliesStatement) pp).nestedStatementLeft.equalsTo(l1) && ((ImpliesStatement) pp).nestedStatementRight.equalsTo(l2)) { 
+                        return true;
+                    } else { 
+                        return false;
+                    }
+                } else { 
+                    return false;
+                }
+            } else { 
+                return false;
+            } 
+        } else { 
+            return false;
+        }
+    }
+    
+    private boolean checkNotI(ProveLine p, int i1, int i2) throws Exception { 
+        if(i1 > givenLineNum && i2 >givenLineNum) { 
+            ProveLine p1 = items.get(i1-givenLineNum-1); 
+            ProveLine p2 = items.get(i2-givenLineNum-1);
+            if(p.getNum()-1 == i2 &&  p2 instanceof boxClosingLine && p1 instanceof boxStartingLine 
+                    && ((boxClosingLine) p2).getStartLine().equals((boxStartingLine)p1) && p1.getRule().equals("ass")) { 
+                LogicStatement l1 = stringToLS(findLine(i1)); 
+                LogicStatement l2 = stringToLS(findLine(i2)); 
+                LogicStatement pp = stringToLS(p.getFml().getText());
+                if(pp instanceof NotStatement) { 
+                    if(l2 instanceof Falsity && pp.equalsTo(new NotStatement(l1))) { 
+                        return true;
+                    }
+                    return false;
+                }
+                return false;
+            }
+            return false;
+        }
+        return false;
     }
     
     @FXML 
@@ -363,20 +479,46 @@ public class Prove {
     
     private int getCurrentFocus() { 
         int idx = proveView.getSelectionModel().getSelectedIndex(); 
-        if (idx == -1) { 
-            return 0; 
-        } else { 
-            return idx;
-        }
+        return idx;
     }
     
     @FXML 
     public void createNewLineButton(ActionEvent event) {
         currentMaxLine++;
-        ProveLine pl = new ProveLine(currentMaxLine);
         
-        items.add(currentMaxLine-givenLineNum-1, pl);
-        proveView.setItems(items);
+        int selectedLine = proveView.getSelectionModel().getSelectedIndex(); 
+        if(selectedLine == -1) { 
+            ProveLine pl = new ProveLine(currentMaxLine);
+        
+            items.add(currentMaxLine-givenLineNum-1, pl);
+        } else { 
+            ProveLine pl = new ProveLine(selectedLine+1+givenLineNum+1); 
+            items.add(selectedLine+1, pl);
+            for(int i = selectedLine+2; i<items.size(); i++) { 
+                items.get(i).reAssignNum(i+givenLineNum+1);
+            }
+            assignBox(pl, items.get(selectedLine));
+        }
+    }
+    
+    private void assignBox(ProveLine pl, ProveLine upper) { 
+        if(upper instanceof boxStartingLine || upper.isInBox()) { 
+            pl.setInBox();
+            findParentBox(pl).addLineInBox(pl);
+            for(boxStartingLine bs: findParentBox(pl).getParentBox()) { 
+                bs.addLineInBox(pl);
+            }
+            pl.setStyle("-fx-border-color: black");
+        }
+    }
+    
+    private boxStartingLine findParentBox(ProveLine pl) { 
+        ProveLine upper = items.get(pl.getNum()-givenLineNum-2);
+        if(!(upper instanceof boxStartingLine)) { 
+            return findParentBox(upper);
+        } else { 
+            return (boxStartingLine) upper;
+        }
     }
     
     public void applyRule(String s, int i) { 
@@ -500,7 +642,67 @@ public class Prove {
     
     @FXML 
     public void applyCreateBox(ActionEvent event) {
-        //TODO
+        currentMaxLine++;
+        int selectedLine = proveView.getSelectionModel().getSelectedIndex(); 
+        
+        if(selectedLine == -1) { 
+            
+            boxStartingLine bs = new boxStartingLine(currentMaxLine);
+            items.add(currentMaxLine-givenLineNum-1, bs);
+            
+            currentMaxLine++;
+            boxClosingLine bc = new boxClosingLine(currentMaxLine);
+            
+            bs.setEndLine(bc);
+            bc.setStartLine(bs);
+            boxes.add(bs);
+            applyColor(bs);
+            
+            items.add(currentMaxLine-givenLineNum-1, bc);
+            
+        } else { 
+            
+            boxStartingLine bs = new boxStartingLine(selectedLine+1+givenLineNum+1); 
+            items.add(selectedLine+1, bs); 
+            currentMaxLine++;
+            boxClosingLine bc = new boxClosingLine(selectedLine+1+givenLineNum+2);
+            
+            bs.setEndLine(bc);
+            bc.setStartLine(bs);
+            applyColor(bs);
+            boxes.add(bs);
+            
+            items.add(selectedLine+2, bc);
+            for(int i = selectedLine+3; i<items.size(); i++) { 
+                items.get(i).reAssignNum(i+givenLineNum+1);
+            }
+            
+            assignBoxToBox(bs, bc, items.get(selectedLine));
+            
+        }
+        
+    }
+    
+    private void assignBoxToBox(boxStartingLine bs, boxClosingLine bc, ProveLine upper) { 
+        if(upper instanceof boxStartingLine || upper.isInBox()) { 
+            bs.setInBox();
+            bc.setInBox();
+            //items.get(pl.getNum()-givenLineNum-2);
+            findParentBox(bs).addSubBoxes(bs);
+            bs.addParentBox(findParentBox(bs));
+            findParentBox(bs).addLineInBox(bs);
+            findParentBox(bs).addLineInBox(bc);
+            for(boxStartingLine bsl:findParentBox(bs).getParentBox()) { 
+                bs.addParentBox(bsl);
+                bsl.addLineInBox(bs);
+                bsl.addLineInBox(bc);
+            }
+        }
+    }
+    
+    private void applyColor(boxStartingLine bs) { 
+        bs.setStyle(boxColors[boxes.size()]);
+        bs.getEndLine().setStyle(boxColors[boxes.size()]);
     }
     
     @FXML 
@@ -512,56 +714,93 @@ public class Prove {
     @FXML 
     public void andAction(ActionEvent event) {
         int i = getCurrentFocus();
+        if(i==-1) { 
+            items.get(0).getFml().insertText(0, Symbol.AND.toString());
+        } else { 
+            items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.AND.toString());
+        }
         //items.get(i).getCurrentTextField().setText(items.get(i).getCurrentTextField().getText() + Symbol.AND);
-        items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.AND.toString());
+        
     }
     
     @FXML 
     public void IFFAction(ActionEvent event) {
         int i = getCurrentFocus();
-        items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.IFF.toString());
+        if(i==-1) { 
+            items.get(0).getFml().insertText(0, Symbol.IFF.toString());
+        } else { 
+            items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.IFF.toString());
+        }
     }
     
     @FXML 
     public void orAction(ActionEvent event) {
         int i = getCurrentFocus();
-        items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.OR.toString());
+        if(i==-1) { 
+            items.get(0).getFml().insertText(0, Symbol.OR.toString());
+        } else { 
+            items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.OR.toString());
+        }
     }
     
     @FXML 
     public void impliesAction(ActionEvent event) {
         int i = getCurrentFocus();
-        items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.IMPLIES.toString());
+        if(i==-1) { 
+            items.get(0).getFml().insertText(0, Symbol.IMPLIES.toString());
+        } else { 
+            items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.IMPLIES.toString());
+        }
     }
     
     @FXML 
     public void notAction(ActionEvent event) {
         int i = getCurrentFocus();
-        items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.NOT.toString());
+        if(i==-1) { 
+            items.get(0).getFml().insertText(0, Symbol.NOT.toString());
+        } else { 
+            items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.NOT.toString());
+        }
     }
     
     @FXML 
     public void truthAction(ActionEvent event) {
         int i = getCurrentFocus();
-        items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.TRUTH.toString());
+        if(i==-1) { 
+            items.get(0).getFml().insertText(0, Symbol.TRUTH.toString());
+        } else { 
+            items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.TRUTH.toString());
+        }
     }
     
     @FXML 
     public void falsityAction(ActionEvent event) {
         int i = getCurrentFocus();
-        items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.FALSITY.toString());
+        if(i==-1) { 
+            items.get(0).getFml().insertText(0, Symbol.FALSITY.toString());
+        } else { 
+            items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.FALSITY.toString());
+        }
     }
     
     @FXML 
     public void thereexistsAction(ActionEvent event) {
         int i = getCurrentFocus();
-        items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.THEREEXISTS.toString());
+        if(i==-1) { 
+            items.get(0).getFml().insertText(0, Symbol.THEREEXISTS.toString());
+        } else { 
+            items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.THEREEXISTS.toString());
+        }
     }
     
     @FXML 
     public void forallAction(ActionEvent event) {
         int i = getCurrentFocus();
-        items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.FORALL.toString());
+        if(i==-1) { 
+            items.get(0).getFml().insertText(0, Symbol.FORALL.toString());
+        } else { 
+            items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.FORALL.toString());
+        }
     }
     
 }

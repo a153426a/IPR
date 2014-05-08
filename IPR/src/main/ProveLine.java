@@ -6,6 +6,7 @@
 package main;
 
 import java.awt.event.MouseAdapter;
+import java.util.List;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -28,23 +29,27 @@ import javax.swing.event.CaretListener;
 public class ProveLine extends VBox {
     
     private HBox hb; 
-    private Label num;
-    private TextField fml;
-    private HBox rulhb;
-    private String ruleName;
+    private Label num; 
+    private TextField fml; 
+    private HBox rulhb; 
+    private String ruleName; 
     private TextField[] arguments; 
-    private boolean haveArgu;
-    private boolean ruled;
-    private int focus;
-    private int caretIndex;
+    private boolean haveArgu; 
+    private boolean ruled; 
+    private int focus; 
+    private int caretIndex; 
+    private List<Integer> legalArgs; 
+    private boolean inBox;
+    private boxStartingLine parentBox;
     
     public ProveLine(int number) { 
         this.hb = new HBox();
         num = new Label();
         fml = new TextField();
-        focus = 0;
+        focus = 1;
         caretIndex = 0; 
         rulhb = new HBox();
+        inBox = false; 
         
         fml.focusedProperty().addListener(new ChangeListener<Boolean>() {
 
@@ -258,13 +263,11 @@ public class ProveLine extends VBox {
         for (TextField tf:arguments) {
             
             if (tf.getText().equals("")) {
-                System.out.println("it is empty");
                 return true; 
                 
             }
             
         }
-        System.out.println("it is not empty");
         return false;
         
     }
@@ -292,5 +295,26 @@ public class ProveLine extends VBox {
 
     public int getCaretIndex() { 
         return caretIndex;
+    }
+    
+    public void reAssignNum(int i) { 
+        num.setText(new Integer(i).toString());
+    }
+    
+    public boolean isInBox() { 
+        return inBox; 
+    }
+    
+    public void setInBox() { 
+        inBox = true;
+    }
+    /*
+    public boxStartingLine getParentBox() { 
+        return new boxStartingLine(1, 1);
+    }
+    */
+    
+    public void setBox(boxStartingLine bs) { 
+        parentBox = bs; 
     }
 }
