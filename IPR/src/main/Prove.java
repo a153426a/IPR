@@ -136,8 +136,8 @@ public class Prove {
         
         goalLine = new GivenLine(0,gf.toString(), "");
         
-        currentMaxLine++;
-        items.add(new ProveLine(currentMaxLine));
+        //currentMaxLine++;
+        //items.add(new ProveLine(currentMaxLine));
         proveView.setItems(items);
         provePane.add(starBox,1,0);
         provePane.add(goalLine, 1, 2);
@@ -158,28 +158,45 @@ public class Prove {
         for (ProveLine p:items) { 
             System.out.println("Checking line number " + p.getNum() + ". ");
             if (!checkProveLine(p)) { 
+                result = false; 
                 System.out.println("Line number " + p.getNum() + " is wrong. ");
             } else { 
                 System.out.println("Line number " + p.getNum() + " is correct. ");
             }
         }
+        if(result && !stringToLS(items.get(items.size()-1).getFml().getText()).equalsTo(goalStatement)) { 
+            System.out.println("You did well, carry on and get the result. ");
+        } else if (result && stringToLS(items.get(items.size()-1).getFml().getText()).equalsTo(goalStatement)) { 
+            System.out.println("Congratulations! You have got the solution! ");
+        }
     }
     
     private boolean checkProveLine(ProveLine p) throws Exception{ 
-        // lots of shit to do 
+        //check if empty
         String ruleName = p.getRule(); 
         if (p.getFml().getText().equals("")) { 
             System.out.println("The Line number " + p.getNum()+ " is empty. ");
             return false; 
         }
+        //check if correct
         LogicStatement fml = stringToLS(p.getFml().getText());
         //if it has arguments 
         if(p.haveArguments()) { 
+            //check if the given aruments is valid
             //get array of arguments
             LogicStatement[] argumentsStatement = new LogicStatement[p.getArguments().length];
+            List<Integer> argumentLineNumber = new ArrayList<Integer>();
             for(int i = 0; i < p.getArguments().length; i++) { 
+                argumentLineNumber.add(p.getArguments()[i]);
                 argumentsStatement[i] = stringToLS(findLine(p.getArguments()[i]));
+            } 
+            if(!checkLegalArgs(argumentLineNumber, p.getLegalArgs())) { 
+                System.out.println("The given lines is invalid to be the arguments for the current line(You can not use these given lines as argument. )");
+                return false; 
             }
+            
+            
+            //check if the rules is applied correctly
             switch(ruleName) {
                 case "∧I": return checkAndI(fml, new AndStatement(argumentsStatement[0], argumentsStatement[1])); 
                 case "∧E": return checkAndE(fml, argumentsStatement[0]);
@@ -210,6 +227,81 @@ public class Prove {
         }
         return false;
     }
+    
+    private boolean checkLegalArgs(List<Integer> l1, List<Integer> l2) { 
+        if(l2.containsAll(l1)) { 
+            return true;
+        } else { 
+            return false; 
+        }
+    }
+    
+    private void updateLegalArgs(ProveLine pl) {
+        int position = pl.getNum()-givenLineNum-1;
+        List<ProveLine> below = new ArrayList<ProveLine>(); 
+        for(int j = position; j<items.size()-1; j++) { 
+            below.add(items.get(j));
+        }
+        if(checkIfFirstLine(pl) && !(pl instanceof boxStartingLine)) { 
+            for(int i = 1; i < givenLineNum+1; i++) { 
+                pl.addLegalArgs(i);
+            }
+            for(ProveLine plpl: below) { 
+                plpl.addLegalArgs(position);
+            }
+        } else if(checkIfFirstLine(pl) && pl instanceof boxStartingLine) { 
+            for(int i = 1; i < givenLineNum+1; i++) { 
+                pl.addLegalArgs(i);
+            }
+        } else { 
+            ProveLine upper = items.get(pl.getNum()-givenLineNum-2);
+            if(pl instanceof boxStartingLine || pl instanceof boxClosingLine) { 
+                for(int k:upper.getLegalArgs()) { 
+                    pl.addLegalArgs(k);
+                }
+                pl.addLegalArgs(upper.getNum());
+            } else if(pl.isInBox()) { 
+                for(int k:upper.getLegalArgs()) { 
+                    pl.addLegalArgs(k);
+                }
+                pl.addLegalArgs(upper.getNum());
+                for(ProveLine plpl:findParentBox(pl).getLineInBox()) { 
+                    if(below.contains(plpl)) { 
+                        plpl.addLegalArgs(pl.getNum());
+                    }
+                }
+            } else if(upper instanceof boxClosingLine) { 
+                pl.addLegalArgs(upper.getNum());
+                for(int k:upper.getLegalArgs()) { 
+                    pl.addLegalArgs(k);
+                }
+                pl.addLegalArgs(((boxClosingLine) upper).getStartLine().getNum());
+                for(ProveLine plpl: below) { 
+                    plpl.addLegalArgs(position);
+                }
+            } else { 
+                pl.addLegalArgs(upper.getNum());
+                for(int k:upper.getLegalArgs()) { 
+                    pl.addLegalArgs(k);
+                }
+                for(ProveLine plpl: below) { 
+                    plpl.addLegalArgs(position);
+                }
+            }
+        }
+            
+            
+            
+    } 
+    
+    private boolean checkIfFirstLine(ProveLine pl) { 
+        if (pl.getNum()-givenLineNum-1==0) { 
+            return true;
+        } else { 
+            return false; 
+        }
+    }
+    
     //input Line number, return the given/prove line with that line number 
     private String findLine(int i) { 
         if(i<=givenLineNum) { 
@@ -715,7 +807,7 @@ public class Prove {
     public void andAction(ActionEvent event) {
         int i = getCurrentFocus();
         if(i==-1) { 
-            items.get(0).getFml().insertText(0, Symbol.AND.toString());
+            //items.get(0).getFml().insertText(0, Symbol.AND.toString());
         } else { 
             items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.AND.toString());
         }
@@ -727,7 +819,7 @@ public class Prove {
     public void IFFAction(ActionEvent event) {
         int i = getCurrentFocus();
         if(i==-1) { 
-            items.get(0).getFml().insertText(0, Symbol.IFF.toString());
+            //items.get(0).getFml().insertText(0, Symbol.IFF.toString());
         } else { 
             items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.IFF.toString());
         }
@@ -737,7 +829,7 @@ public class Prove {
     public void orAction(ActionEvent event) {
         int i = getCurrentFocus();
         if(i==-1) { 
-            items.get(0).getFml().insertText(0, Symbol.OR.toString());
+            //items.get(0).getFml().insertText(0, Symbol.OR.toString());
         } else { 
             items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.OR.toString());
         }
@@ -747,7 +839,7 @@ public class Prove {
     public void impliesAction(ActionEvent event) {
         int i = getCurrentFocus();
         if(i==-1) { 
-            items.get(0).getFml().insertText(0, Symbol.IMPLIES.toString());
+            //items.get(0).getFml().insertText(0, Symbol.IMPLIES.toString());
         } else { 
             items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.IMPLIES.toString());
         }
@@ -757,7 +849,7 @@ public class Prove {
     public void notAction(ActionEvent event) {
         int i = getCurrentFocus();
         if(i==-1) { 
-            items.get(0).getFml().insertText(0, Symbol.NOT.toString());
+            //items.get(0).getFml().insertText(0, Symbol.NOT.toString());
         } else { 
             items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.NOT.toString());
         }
@@ -767,7 +859,7 @@ public class Prove {
     public void truthAction(ActionEvent event) {
         int i = getCurrentFocus();
         if(i==-1) { 
-            items.get(0).getFml().insertText(0, Symbol.TRUTH.toString());
+            //items.get(0).getFml().insertText(0, Symbol.TRUTH.toString());
         } else { 
             items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.TRUTH.toString());
         }
@@ -777,7 +869,7 @@ public class Prove {
     public void falsityAction(ActionEvent event) {
         int i = getCurrentFocus();
         if(i==-1) { 
-            items.get(0).getFml().insertText(0, Symbol.FALSITY.toString());
+            //items.get(0).getFml().insertText(0, Symbol.FALSITY.toString());
         } else { 
             items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.FALSITY.toString());
         }
@@ -787,7 +879,7 @@ public class Prove {
     public void thereexistsAction(ActionEvent event) {
         int i = getCurrentFocus();
         if(i==-1) { 
-            items.get(0).getFml().insertText(0, Symbol.THEREEXISTS.toString());
+            //items.get(0).getFml().insertText(0, Symbol.THEREEXISTS.toString());
         } else { 
             items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.THEREEXISTS.toString());
         }
@@ -797,7 +889,7 @@ public class Prove {
     public void forallAction(ActionEvent event) {
         int i = getCurrentFocus();
         if(i==-1) { 
-            items.get(0).getFml().insertText(0, Symbol.FORALL.toString());
+            //items.get(0).getFml().insertText(0, Symbol.FORALL.toString());
         } else { 
             items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.FORALL.toString());
         }

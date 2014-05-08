@@ -6,6 +6,7 @@
 package main;
 
 import java.awt.event.MouseAdapter;
+import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -40,7 +41,6 @@ public class ProveLine extends VBox {
     private int caretIndex; 
     private List<Integer> legalArgs; 
     private boolean inBox;
-    private boxStartingLine parentBox;
     
     public ProveLine(int number) { 
         this.hb = new HBox();
@@ -50,6 +50,7 @@ public class ProveLine extends VBox {
         caretIndex = 0; 
         rulhb = new HBox();
         inBox = false; 
+        legalArgs = new ArrayList<Integer>();
         
         fml.focusedProperty().addListener(new ChangeListener<Boolean>() {
 
@@ -308,13 +309,25 @@ public class ProveLine extends VBox {
     public void setInBox() { 
         inBox = true;
     }
-    /*
-    public boxStartingLine getParentBox() { 
-        return new boxStartingLine(1, 1);
-    }
-    */
     
-    public void setBox(boxStartingLine bs) { 
-        parentBox = bs; 
+    public List<Integer> getLegalArgs() { 
+        return legalArgs; 
     }
+    
+    public void addLegalArgs(int i) { 
+        boolean alreadyHas = false; 
+        for(int j:legalArgs) { 
+            if(j==i){
+                alreadyHas = true;
+            }
+        }
+        if(!alreadyHas) { 
+            legalArgs.add(i);
+        }
+    }
+    
+    public void removeLegalArgs(int i){ 
+        legalArgs.remove(i);
+    }
+    
 }
