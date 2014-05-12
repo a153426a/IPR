@@ -85,8 +85,6 @@ public class Prove {
         } catch (IOException e) {
         }
         
-        
-        
     }
     
     @FXML
@@ -142,6 +140,8 @@ public class Prove {
         provePane.add(starBox,1,0);
         provePane.add(goalLine, 1, 2);
         provePane.add(proveView, 1, 1);
+        starBox.setAlignment(Pos.CENTER);
+        goalLine.setAlignment(Pos.CENTER);
         stage.setScene(scene);
         stage.hide();
         stage.show();
@@ -185,11 +185,14 @@ public class Prove {
             //check if the given aruments is valid
             //get array of arguments
             LogicStatement[] argumentsStatement = new LogicStatement[p.getArguments().length];
-            List<Integer> argumentLineNumber = new ArrayList<Integer>();
+            List<VBox> argumentLineNumber = new ArrayList<VBox>();
             for(int i = 0; i < p.getArguments().length; i++) { 
-                argumentLineNumber.add(p.getArguments()[i]);
-                argumentsStatement[i] = stringToLS(findLine(p.getArguments()[i]));
+                argumentLineNumber.add(findLine(p.getArguments()[i]));
+                argumentsStatement[i] = stringToLS(findLineToString(p.getArguments()[i]));
             } 
+            
+            
+            System.out.println(p.getLegalArgs().toString());
             if(!checkLegalArgs(argumentLineNumber, p.getLegalArgs())) { 
                 System.out.println("The given lines is invalid to be the arguments for the current line(You can not use these given lines as argument. )");
                 return false; 
@@ -228,7 +231,7 @@ public class Prove {
         return false;
     }
     
-    private boolean checkLegalArgs(List<Integer> l1, List<Integer> l2) { 
+    private boolean checkLegalArgs(List<VBox> l1, List<VBox> l2) { 
         if(l2.containsAll(l1)) { 
             return true;
         } else { 
@@ -237,60 +240,166 @@ public class Prove {
     }
     
     private void updateLegalArgs(ProveLine pl) {
+        System.out.println("The legalargs for line number " + pl.getNum() + " is updating. ");
         int position = pl.getNum()-givenLineNum-1;
         List<ProveLine> below = new ArrayList<ProveLine>(); 
-        for(int j = position; j<items.size()-1; j++) { 
-            below.add(items.get(j));
+        
+        if(position != items.size()) {
+            for(int j = position+1; j<items.size(); j++) { 
+                below.add(items.get(j));
+            }
         }
+        //if its first line and not a boxstarting line
         if(checkIfFirstLine(pl) && !(pl instanceof boxStartingLine)) { 
-            for(int i = 1; i < givenLineNum+1; i++) { 
-                pl.addLegalArgs(i);
+            for(int i = 0; i < givenLineNum; i++) { 
+                pl.addLegalArgs((VBox) starBox.getChildren().get(i));
             }
             for(ProveLine plpl: below) { 
-                plpl.addLegalArgs(position);
+                plpl.addLegalArgs(pl);
             }
-        } else if(checkIfFirstLine(pl) && pl instanceof boxStartingLine) { 
-            for(int i = 1; i < givenLineNum+1; i++) { 
-                pl.addLegalArgs(i);
+        } 
+        //if its first line and a boxstarting line
+        else if(checkIfFirstLine(pl) && pl instanceof boxStartingLine) { 
+            for(int i = 0; i < givenLineNum; i++) { 
+                pl.addLegalArgs((VBox) starBox.getChildren().get(i));
             }
-        } else { 
+        } 
+        //if its not a first line 
+        else { 
             ProveLine upper = items.get(pl.getNum()-givenLineNum-2);
+            
+            //if its a boxstarting line or boxclosing line 
             if(pl instanceof boxStartingLine || pl instanceof boxClosingLine) { 
-                for(int k:upper.getLegalArgs()) { 
-                    pl.addLegalArgs(k);
+                //if upper is boxc
+                if(upper instanceof boxClosingLine) { 
+                    
+                    for(VBox v:((boxClosingLine)upper).getStartLine().getLegalArgs()) { 
+                        pl.addLegalArgs(v);
+                    }
+                    
+                    pl.addLegalArgs(upper);
+                    pl.addLegalArgs(((boxClosingLine)upper).getStartLine());
+                } else { 
+                    System.out.println("cao ni ma");
+                    //add everything from upper
+                    for(VBox k:upper.getLegalArgs()) { 
+                        pl.addLegalArgs(k);
+                    }
+                    //if upper is immediateafter, need to take boxs and boxc off
+                    if((pl.getNum()-givenLineNum-2)!=0 && items.get(pl.getNum()-givenLineNum-3) instanceof boxClosingLine) { 
+                        pl.removeLegalArgs(findParentBox((ProveLine) findLine(pl.getNum()-2)));
+                        pl.removeLegalArgs(findParentBox((ProveLine) findLine(pl.getNum()-2)).getEndLine());
+                    }
+                    //add upper
+                    pl.addLegalArgs(upper);
                 }
-                pl.addLegalArgs(upper.getNum());
-            } else if(pl.isInBox()) { 
-                for(int k:upper.getLegalArgs()) { 
-                    pl.addLegalArgs(k);
+                System.out.println(pl.getLegalArgs().toString());
+                //if one below exist, i am a boxc,
+                if(!items.get(items.size()-1).equals(pl)&&pl instanceof boxClosingLine) { 
+                    //if remove the oneBelow's previous boxs and boxc, add add current back
+                    if(items.get(pl.getNum()-givenLineNum-3) instanceof boxClosingLine) { 
+                        items.get(pl.getNum()-givenLineNum).removeLegalArgs(items.get(pl.getNum()-givenLineNum-3));
+                        items.get(pl.getNum()-givenLineNum).removeLegalArgs(((boxClosingLine)items.get(pl.getNum()-givenLineNum-3)).getStartLine());
+                        items.get(pl.getNum()-givenLineNum).addLegalArgs(pl);
+                        items.get(pl.getNum()-givenLineNum).addLegalArgs(((boxClosingLine) pl).getStartLine());
+                    } else { 
+                        items.get(pl.getNum()-givenLineNum).addLegalArgs(pl);
+                        items.get(pl.getNum()-givenLineNum).addLegalArgs(((boxClosingLine) pl).getStartLine());
+                    }
+                    
+                } 
+                
+            } 
+            //if its in box 
+            else if(pl.isInBox()) { 
+                //if upper is boxc
+                if(upper instanceof boxClosingLine) { 
+                    
+                    for(VBox v:((boxClosingLine)upper).getStartLine().getLegalArgs()) { 
+                        pl.addLegalArgs(v);
+                    }
+                    
+                    pl.addLegalArgs(upper);
+                    pl.addLegalArgs(((boxClosingLine)upper).getStartLine());
+                    
+                } else { 
+                    //add everything from upper
+                    for(VBox k:upper.getLegalArgs()) { 
+                        pl.addLegalArgs(k);
+                    }
+                    //if upper is immediateafter, need to take boxs and boxc off
+                    if((pl.getNum()-givenLineNum-2)!=0 && items.get(pl.getNum()-givenLineNum-3) instanceof boxClosingLine) { 
+                        pl.removeLegalArgs(findParentBox((ProveLine) findLine(pl.getNum()-2)));
+                        pl.removeLegalArgs(findParentBox((ProveLine) findLine(pl.getNum()-2)).getEndLine());
+                    }
+                    //add upper
+                    pl.addLegalArgs(upper);
                 }
-                pl.addLegalArgs(upper.getNum());
+                
+                
+                //everyline below self, in the same box, add self
                 for(ProveLine plpl:findParentBox(pl).getLineInBox()) { 
                     if(below.contains(plpl)) { 
-                        plpl.addLegalArgs(pl.getNum());
+                        plpl.addLegalArgs(pl);
                     }
                 }
-            } else if(upper instanceof boxClosingLine) { 
-                pl.addLegalArgs(upper.getNum());
-                for(int k:upper.getLegalArgs()) { 
-                    pl.addLegalArgs(k);
+                //if onebelow is boxc
+                if(upper instanceof boxClosingLine && findParentBox(pl).getLineInBox().contains(items.get(pl.getNum()-givenLineNum)) && !items.get(pl.getNum()-givenLineNum).equals(findParentBox(pl).getEndLine())) { 
+                    items.get(pl.getNum()-givenLineNum).removeLegalArgs(items.get(pl.getNum()-givenLineNum-3));
+                    items.get(pl.getNum()-givenLineNum).removeLegalArgs(((boxClosingLine)items.get(pl.getNum()-givenLineNum-3)).getStartLine());
                 }
-                pl.addLegalArgs(((boxClosingLine) upper).getStartLine().getNum());
-                for(ProveLine plpl: below) { 
-                    plpl.addLegalArgs(position);
+                
+            }  
+            //if its a normal line
+            else { 
+                
+                //if upper is boxc
+                if(upper instanceof boxClosingLine) { 
+                    
+                    for(VBox v:((boxClosingLine)upper).getStartLine().getLegalArgs()) { 
+                        pl.addLegalArgs(v);
+                    }
+                    
+                    pl.addLegalArgs(upper);
+                    pl.addLegalArgs(((boxClosingLine)upper).getStartLine());
+                    
+                } else { 
+                    //add everything from upper
+                    for(VBox k:upper.getLegalArgs()) { 
+                        pl.addLegalArgs(k);
+                    }
+                    //if upper is immediateafter, need to take boxs and boxc off
+                    if((pl.getNum()-givenLineNum-2)!=0 && items.get(pl.getNum()-givenLineNum-3) instanceof boxClosingLine) { 
+                        pl.removeLegalArgs(findParentBox((ProveLine) findLine(pl.getNum()-2)));
+                        pl.removeLegalArgs(findParentBox((ProveLine) findLine(pl.getNum()-2)).getEndLine());
+                    }
+                    //add upper
+                    pl.addLegalArgs(upper);
                 }
-            } else { 
-                pl.addLegalArgs(upper.getNum());
-                for(int k:upper.getLegalArgs()) { 
-                    pl.addLegalArgs(k);
+                
+                
+                //everyline below self, add self
+                for(ProveLine plpl:below) { 
+                    if(!plpl.isInBox() || plpl.isInBox() && (plpl instanceof boxStartingLine || plpl instanceof boxClosingLine)) { 
+                        plpl.addLegalArgs(pl);
+                    }
                 }
-                for(ProveLine plpl: below) { 
-                    plpl.addLegalArgs(position);
+                //if onebelow is boxc
+                if(upper instanceof boxClosingLine && findParentBox(pl).getLineInBox().contains(items.get(pl.getNum()-givenLineNum)) && !items.get(pl.getNum()-givenLineNum).equals(findParentBox(pl).getEndLine())) { 
+                    items.get(pl.getNum()-givenLineNum).removeLegalArgs(items.get(pl.getNum()-givenLineNum-3));
+                    items.get(pl.getNum()-givenLineNum).removeLegalArgs(((boxClosingLine)items.get(pl.getNum()-givenLineNum-3)).getStartLine());
                 }
             }
         }
-            
-            
+        List<Integer> jkl = new ArrayList<Integer>(); 
+        for(VBox v:pl.getLegalArgs()) { 
+            if(v instanceof GivenLine) { 
+                jkl.add(((GivenLine) v).getNum());
+            } else { 
+                jkl.add(((ProveLine) v).getNum());
+            }
+        }
+        System.out.println("It has " + jkl.toString() + ". ");
             
     } 
     
@@ -302,12 +411,21 @@ public class Prove {
         }
     }
     
-    //input Line number, return the given/prove line with that line number 
-    private String findLine(int i) { 
+    //input Line number, return the given/prove line.toString() with that line number 
+    private String findLineToString(int i) { 
         if(i<=givenLineNum) { 
             return ((GivenLine)starBox.getChildren().get(i-1)).getfml();
         } else { 
             return items.get(i-givenLineNum-1).getFml().getText();
+        }
+    }
+    
+    //input Line number, return the given/prove line.toString() with that line number 
+    private VBox findLine(int i) { 
+        if(i<=givenLineNum) { 
+            return ((GivenLine)starBox.getChildren().get(i-1));
+        } else { 
+            return items.get(i-givenLineNum-1);
         }
     }
     
@@ -520,8 +638,8 @@ public class Prove {
             ProveLine p2 = items.get(i2-givenLineNum-1);
             if(p.getNum()-1 == i2 &&  p2 instanceof boxClosingLine && p1 instanceof boxStartingLine 
                     && ((boxClosingLine) p2).getStartLine().equals((boxStartingLine)p1) && p1.getRule().equals("ass")) { 
-                LogicStatement l1 = stringToLS(findLine(i1)); 
-                LogicStatement l2 = stringToLS(findLine(i2)); 
+                LogicStatement l1 = stringToLS(findLineToString(i1)); 
+                LogicStatement l2 = stringToLS(findLineToString(i2)); 
                 LogicStatement pp = stringToLS(p.getFml().getText());
                 if(pp instanceof ImpliesStatement) { 
                     if(((ImpliesStatement) pp).nestedStatementLeft.equalsTo(l1) && ((ImpliesStatement) pp).nestedStatementRight.equalsTo(l2)) { 
@@ -546,8 +664,8 @@ public class Prove {
             ProveLine p2 = items.get(i2-givenLineNum-1);
             if(p.getNum()-1 == i2 &&  p2 instanceof boxClosingLine && p1 instanceof boxStartingLine 
                     && ((boxClosingLine) p2).getStartLine().equals((boxStartingLine)p1) && p1.getRule().equals("ass")) { 
-                LogicStatement l1 = stringToLS(findLine(i1)); 
-                LogicStatement l2 = stringToLS(findLine(i2)); 
+                LogicStatement l1 = stringToLS(findLineToString(i1)); 
+                LogicStatement l2 = stringToLS(findLineToString(i2)); 
                 LogicStatement pp = stringToLS(p.getFml().getText());
                 if(pp instanceof NotStatement) { 
                     if(l2 instanceof Falsity && pp.equalsTo(new NotStatement(l1))) { 
@@ -565,8 +683,26 @@ public class Prove {
     @FXML 
     public void cancelButtonAction(ActionEvent event) { 
         
-        
-        
+        int idx = getCurrentFocus();
+        List<Integer> test = new ArrayList<Integer>(); 
+        if (idx != -1) {
+            if(items.get(idx).getNum()-givenLineNum-1 != items.size()) {
+                for(int j = items.get(idx).getNum()-givenLineNum; j<items.size(); j++) { 
+                    test.add(items.get(j).getNum());
+                }
+            }
+            
+            List<Integer> jkl = new ArrayList<Integer>(); 
+            for(VBox v:items.get(idx).getLegalArgs()) { 
+                if(v instanceof GivenLine) { 
+                    jkl.add(((GivenLine) v).getNum());
+                } else { 
+                    jkl.add(((ProveLine) v).getNum());
+                }
+            }
+            System.out.println("Below is " + test.toString() + ". ");
+            System.out.println(jkl.toString());
+        }
     }
     
     private int getCurrentFocus() { 
@@ -581,8 +717,8 @@ public class Prove {
         int selectedLine = proveView.getSelectionModel().getSelectedIndex(); 
         if(selectedLine == -1) { 
             ProveLine pl = new ProveLine(currentMaxLine);
-        
             items.add(currentMaxLine-givenLineNum-1, pl);
+            updateLegalArgs(pl);
         } else { 
             ProveLine pl = new ProveLine(selectedLine+1+givenLineNum+1); 
             items.add(selectedLine+1, pl);
@@ -590,9 +726,10 @@ public class Prove {
                 items.get(i).reAssignNum(i+givenLineNum+1);
             }
             assignBox(pl, items.get(selectedLine));
+            updateLegalArgs(pl);
         }
     }
-    
+    //set in box for this line and update parent boxes' line in box
     private void assignBox(ProveLine pl, ProveLine upper) { 
         if(upper instanceof boxStartingLine || upper.isInBox()) { 
             pl.setInBox();
@@ -603,7 +740,7 @@ public class Prove {
             pl.setStyle("-fx-border-color: black");
         }
     }
-    
+    //find this one's parentBox
     private boxStartingLine findParentBox(ProveLine pl) { 
         ProveLine upper = items.get(pl.getNum()-givenLineNum-2);
         if(!(upper instanceof boxStartingLine)) { 
@@ -736,7 +873,6 @@ public class Prove {
     public void applyCreateBox(ActionEvent event) {
         currentMaxLine++;
         int selectedLine = proveView.getSelectionModel().getSelectedIndex(); 
-        
         if(selectedLine == -1) { 
             
             boxStartingLine bs = new boxStartingLine(currentMaxLine);
@@ -751,9 +887,14 @@ public class Prove {
             applyColor(bs);
             
             items.add(currentMaxLine-givenLineNum-1, bc);
+            if(!items.get(items.size()-1).equals(bc)) { 
+                items.get(currentMaxLine-givenLineNum).addLegalArgs(bs);
+                items.get(currentMaxLine-givenLineNum).addLegalArgs(bc);
+            }
             
+            updateLegalArgs(bs);
+            updateLegalArgs(bc);
         } else { 
-            
             boxStartingLine bs = new boxStartingLine(selectedLine+1+givenLineNum+1); 
             items.add(selectedLine+1, bs); 
             currentMaxLine++;
@@ -769,7 +910,14 @@ public class Prove {
                 items.get(i).reAssignNum(i+givenLineNum+1);
             }
             
-            assignBoxToBox(bs, bc, items.get(selectedLine));
+            assignBoxToBox(bs, bc, items.get(selectedLine)); 
+            
+            if(!items.get(items.size()-1).equals(bc)) { 
+                items.get(selectedLine+3).addLegalArgs(bs);
+                items.get(selectedLine+3).addLegalArgs(bc);
+            }
+            updateLegalArgs(bs);
+            updateLegalArgs(bc);
             
         }
         

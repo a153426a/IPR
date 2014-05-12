@@ -39,7 +39,7 @@ public class ProveLine extends VBox {
     private boolean ruled; 
     private int focus; 
     private int caretIndex; 
-    private List<Integer> legalArgs; 
+    private List<VBox> legalArgs; 
     private boolean inBox;
     
     public ProveLine(int number) { 
@@ -50,7 +50,7 @@ public class ProveLine extends VBox {
         caretIndex = 0; 
         rulhb = new HBox();
         inBox = false; 
-        legalArgs = new ArrayList<Integer>();
+        legalArgs = new ArrayList<VBox>();
         
         fml.focusedProperty().addListener(new ChangeListener<Boolean>() {
 
@@ -310,14 +310,14 @@ public class ProveLine extends VBox {
         inBox = true;
     }
     
-    public List<Integer> getLegalArgs() { 
+    public List<VBox> getLegalArgs() { 
         return legalArgs; 
     }
     
-    public void addLegalArgs(int i) { 
+    public void addLegalArgs(VBox i) { 
         boolean alreadyHas = false; 
-        for(int j:legalArgs) { 
-            if(j==i){
+        for(VBox j:legalArgs) { 
+            if(j.equals(i)){
                 alreadyHas = true;
             }
         }
@@ -326,8 +326,10 @@ public class ProveLine extends VBox {
         }
     }
     
-    public void removeLegalArgs(int i){ 
+    public void removeLegalArgs(VBox i){ 
         legalArgs.remove(i);
     }
+    
+    
     
 }

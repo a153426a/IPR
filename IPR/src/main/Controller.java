@@ -205,6 +205,7 @@ public class Controller {
     @FXML
     public void checkButtonAction(ActionEvent event) throws Exception {
         InputStream is;
+        
         Scanner sc = new Scanner(startArea.getText());
         while (sc.hasNextLine()){
             String line = sc.nextLine();
@@ -229,31 +230,37 @@ public class Controller {
                     }
                 }
             }
-            try {
+            
+        }
+        
+        try {
+            if(!goalArea.getText().isEmpty()) { 
+                
                 is = new ByteArrayInputStream(goalArea.getText().getBytes("UTF-8"));
                 Lexer l = new Lexer(is);
                 parser p = new parser(l);
                 goalFormula = (LogicStatement) p.parse().value;
-            } catch (UnsupportedEncodingException e1) {
-                e1.printStackTrace();
-            } catch (Exception e1) {
-                e1.printStackTrace();
+                
+                
+                System.out.println(startFormulas.toString());
+                System.out.println(goalFormula.toString());
+                
+                System.out.println("You should input a goal formula2");
+                Node  currentSource = (Node)  event.getSource(); 
+                Stage currentStage = (Stage) currentSource.getScene().getWindow();
+                Prove prove = new Prove(); 
+                prove.redirectprove(currentStage, startFormulas, goalFormula);
+            } else { 
+                
+                System.out.println("You should input a goal formula");
             }
+        } catch (UnsupportedEncodingException e1) {
+            e1.printStackTrace();
+        } catch (Exception e1) {
+            e1.printStackTrace();
         }
         //TODO 
         //Transfer value is a shit thing to do. 
-        System.out.println(startFormulas.toString());
-        System.out.println(goalFormula.toString());
-        
-        Node  currenSource = (Node)  event.getSource(); 
-        Stage currentStage = (Stage) currenSource.getScene().getWindow();
-        if(startFormulas != null && goalFormula != null) { 
-            
-            Prove prove = new Prove(); 
-            prove.redirectprove(currentStage, startFormulas, goalFormula);
-            
-        }
-        
         
         
         /*
