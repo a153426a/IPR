@@ -252,9 +252,11 @@ public class ProveLine extends VBox {
     public int[] getArguments() {
         int[] result = new int[arguments.length];
         for (int i = 0; i < arguments.length; i++) {
-            
-            result[i] = Integer.parseInt(arguments[i].getText());
-            
+            if(arguments[i].getText().isEmpty()) { 
+                result[i] = 0;
+            } else { 
+                result[i] = Integer.parseInt(arguments[i].getText());
+            }
         }
         return result;
     }

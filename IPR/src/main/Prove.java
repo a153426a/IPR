@@ -68,7 +68,7 @@ public class Prove {
     @FXML
     private GridPane provePane;
     @FXML
-    private Button andI, andE, impliesI, impliesE, orI, orE, truthI, falsityI, falsityE, IFFI, IFFE, thereexistsI, thereexistE, forallI, forallE, notI, notE, notnot, ass, lemma, tick, createBox, createBoxTwo, createNewLine; 
+    private Button andI, andE, impliesI, impliesE, orI, orE, truthI, falsityI, falsityE, IFFI, IFFE, thereexistsI, thereexistE, forallI, forallE, notI, notE, notnot, ass, lemma, tick, createBox, createBoxTwo, createNewLine, PC; 
     @FXML 
     private Button checkButton, cancelButton;
     @FXML
@@ -173,9 +173,14 @@ public class Prove {
     
     private boolean checkProveLine(ProveLine p) throws Exception{ 
         //check if empty
+        //TODO
         String ruleName = p.getRule(); 
         if (p.getFml().getText().equals("")) { 
             System.out.println("The Line number " + p.getNum()+ " is empty. ");
+            return false; 
+        }
+        if(!p.getRuled()) { 
+            System.out.println("The Line number " + p.getNum() + " does not have a rule. ");
             return false; 
         }
         //check if correct
@@ -187,8 +192,14 @@ public class Prove {
             LogicStatement[] argumentsStatement = new LogicStatement[p.getArguments().length];
             List<VBox> argumentLineNumber = new ArrayList<VBox>();
             for(int i = 0; i < p.getArguments().length; i++) { 
-                argumentLineNumber.add(findLine(p.getArguments()[i]));
-                argumentsStatement[i] = stringToLS(findLineToString(p.getArguments()[i]));
+                if(p.getArguments()[i]==0) { 
+                    System.out.println("The Line number " + p.getNum() + " has not enough arguments. "); 
+                    return false; 
+                } else { 
+                    argumentLineNumber.add(findLine(p.getArguments()[i]));
+                    argumentsStatement[i] = stringToLS(findLineToString(p.getArguments()[i]));
+                }
+                
             } 
             
             
@@ -216,7 +227,9 @@ public class Prove {
                     //2 args, need a box
                 case "¬I": return checkNotI(p, p.getArguments()[0], p.getArguments()[1]);
                     //5 args, need two boxes 
-                case "∨E": 
+                case "∨E": return checkOrE(fml, argumentsStatement[0], argumentsStatement[1]);
+                    //2 args, need a box
+                case "PC": return checkPC(p, p.getArguments()[0], p.getArguments()[1]); 
                 
                 default: return false;  
             } 
@@ -280,7 +293,6 @@ public class Prove {
                     pl.addLegalArgs(upper);
                     pl.addLegalArgs(((boxClosingLine)upper).getStartLine());
                 } else { 
-                    System.out.println("cao ni ma");
                     //add everything from upper
                     for(VBox k:upper.getLegalArgs()) { 
                         pl.addLegalArgs(k);
@@ -355,11 +367,9 @@ public class Prove {
                 
                 //if upper is boxc
                 if(upper instanceof boxClosingLine) { 
-                    
                     for(VBox v:((boxClosingLine)upper).getStartLine().getLegalArgs()) { 
                         pl.addLegalArgs(v);
                     }
-                    
                     pl.addLegalArgs(upper);
                     pl.addLegalArgs(((boxClosingLine)upper).getStartLine());
                     
@@ -379,18 +389,21 @@ public class Prove {
                 
                 
                 //everyline below self, add self
-                for(ProveLine plpl:below) { 
-                    if(!plpl.isInBox() || plpl.isInBox() && (plpl instanceof boxStartingLine || plpl instanceof boxClosingLine)) { 
-                        plpl.addLegalArgs(pl);
+                if (!items.get(items.size()-1).equals(pl)) { 
+                    for(ProveLine plpl:below) { 
+                        if(!plpl.isInBox() || plpl.isInBox() && (plpl instanceof boxStartingLine || plpl instanceof boxClosingLine)) { 
+                            plpl.addLegalArgs(pl);
+                        }
                     }
-                }
-                //if onebelow is boxc
-                if(upper instanceof boxClosingLine && findParentBox(pl).getLineInBox().contains(items.get(pl.getNum()-givenLineNum)) && !items.get(pl.getNum()-givenLineNum).equals(findParentBox(pl).getEndLine())) { 
-                    items.get(pl.getNum()-givenLineNum).removeLegalArgs(items.get(pl.getNum()-givenLineNum-3));
-                    items.get(pl.getNum()-givenLineNum).removeLegalArgs(((boxClosingLine)items.get(pl.getNum()-givenLineNum-3)).getStartLine());
+                    //if onebelow is boxc
+                    if(upper instanceof boxClosingLine && findParentBox(pl).getLineInBox().contains(items.get(pl.getNum()-givenLineNum)) && !items.get(pl.getNum()-givenLineNum).equals(findParentBox(pl).getEndLine())) { 
+                        items.get(pl.getNum()-givenLineNum).removeLegalArgs(items.get(pl.getNum()-givenLineNum-3));
+                        items.get(pl.getNum()-givenLineNum).removeLegalArgs(((boxClosingLine)items.get(pl.getNum()-givenLineNum-3)).getStartLine());
+                    }
                 }
             }
         }
+        
         List<Integer> jkl = new ArrayList<Integer>(); 
         for(VBox v:pl.getLegalArgs()) { 
             if(v instanceof GivenLine) { 
@@ -402,6 +415,8 @@ public class Prove {
         System.out.println("It has " + jkl.toString() + ". ");
             
     } 
+    
+    
     
     private boolean checkIfFirstLine(ProveLine pl) { 
         if (pl.getNum()-givenLineNum-1==0) { 
@@ -645,15 +660,19 @@ public class Prove {
                     if(((ImpliesStatement) pp).nestedStatementLeft.equalsTo(l1) && ((ImpliesStatement) pp).nestedStatementRight.equalsTo(l2)) { 
                         return true;
                     } else { 
+                        System.out.println("This line should be produced by the provided two lines. ");
                         return false;
                     }
                 } else { 
+                    System.out.println("This line should be a impliesStatement. ");
                     return false;
                 }
             } else { 
+                System.out.println("The provided lines should be boxStarting line. ");
                 return false;
             } 
         } else { 
+            System.out.println("The provided lines should not be givenLine. ");
             return false;
         }
     }
@@ -668,16 +687,97 @@ public class Prove {
                 LogicStatement l2 = stringToLS(findLineToString(i2)); 
                 LogicStatement pp = stringToLS(p.getFml().getText());
                 if(pp instanceof NotStatement) { 
-                    if(l2 instanceof Falsity && pp.equalsTo(new NotStatement(l1))) { 
-                        return true;
+                    if(l2 instanceof Falsity) { 
+                        if(pp.equalsTo(new NotStatement(l1))) { 
+                            return true;
+                        } else { 
+                            System.out.println("This line should be a notStatement produced by the first line. ");
+                            return false;
+                        }
+                    } else { 
+                        System.out.println("The second line should be falsity. ");
+                        return false; 
                     }
-                    return false;
+                } else { 
+                    System.out.println("This line should be a notStatement. ");
+                    return false; 
                 }
+            } else {
+                System.out.println("The provided lines should be boxStarting line. ");
                 return false;
             }
+        } else {
+            System.out.println("The provided lines should not be givenLine. ");
             return false;
         }
-        return false;
+    }
+    
+    private boolean checkOrE(LogicStatement s, LogicStatement a1, LogicStatement a2) { 
+        if(a1 instanceof OrStatement) { 
+            if(a2 instanceof NotStatement) { 
+                if(((NotStatement) a2).nestedStatement.equalsTo(((OrStatement) a1).nestedStatementLeft)) { 
+                    if(((OrStatement) a1).nestedStatementRight.equalsTo(s)) { 
+                        return true;
+                    } else { 
+                        System.out.println("This line should be a part of the first line. ");
+                        return false;
+                    }
+                } else if(((NotStatement) a2).nestedStatement.equalsTo(((OrStatement) a1).nestedStatementRight)) { 
+                    if(((OrStatement) a1).nestedStatementRight.equalsTo(s)) { 
+                        return true;
+                    } else {
+                        System.out.println("This line should be a part of the first line. ");
+                        return false;
+                    }
+                } else { 
+                    System.out.println("The second line should be a notStatement produced by a part of first line. ");
+                    return false;
+                }
+            } else { 
+                System.out.println("The second line should be notStatement. ");
+                return false; 
+            }
+        } else { 
+            System.out.println("The first line should be orStatement. ");
+            return false;
+        }
+    }
+    
+    private boolean checkPC(ProveLine p, int i1, int i2) throws Exception { 
+        
+        if(i1 > givenLineNum && i2 >givenLineNum) { 
+            ProveLine p1 = items.get(i1-givenLineNum-1); 
+            ProveLine p2 = items.get(i2-givenLineNum-1);
+            if(p.getNum()-1 == i2 &&  p2 instanceof boxClosingLine && p1 instanceof boxStartingLine 
+                    && ((boxClosingLine) p2).getStartLine().equals((boxStartingLine)p1) && p1.getRule().equals("ass")) { 
+                LogicStatement l1 = stringToLS(findLineToString(i1)); 
+                LogicStatement l2 = stringToLS(findLineToString(i2)); 
+                LogicStatement pp = stringToLS(p.getFml().getText());
+                
+                if(l1 instanceof NotStatement) { 
+                    if(l2 instanceof Falsity) { 
+                        if(((NotStatement) l1).nestedStatement.equalsTo(pp)) { 
+                            return true; 
+                        } else {
+                            System.out.println("This line should be a part from the first line. ");
+                            return false;
+                        }
+                    } else { 
+                        System.out.println("The second line should be falsity. ");
+                        return false; 
+                    }
+                } else {
+                    System.out.println("The first line should be a notStatment. ");
+                    return false; 
+                }
+            } else {
+                System.out.println("The provided lines should be boxStarting line. ");
+                return false;
+            }
+        } else {
+            System.out.println("The provided lines should not be givenLine. ");
+            return false;
+        }
     }
     
     @FXML 
@@ -794,7 +894,7 @@ public class Prove {
     @FXML 
     public void applyOrE(ActionEvent event) {
         //need 2 boxes 
-        applyRule("∨E",5);
+        applyRule("∨E",2);
     }
     
     @FXML 
@@ -867,6 +967,11 @@ public class Prove {
     @FXML 
     public void applyTick(ActionEvent event) {
         applyRule("yes",0);
+    }
+    
+    @FXML 
+    public void applyPC(ActionEvent event) { 
+        applyRule("PC", 2);
     }
     
     @FXML 

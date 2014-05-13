@@ -245,7 +245,6 @@ public class Controller {
                 System.out.println(startFormulas.toString());
                 System.out.println(goalFormula.toString());
                 
-                System.out.println("You should input a goal formula2");
                 Node  currentSource = (Node)  event.getSource(); 
                 Stage currentStage = (Stage) currentSource.getScene().getWindow();
                 Prove prove = new Prove(); 
