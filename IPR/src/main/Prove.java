@@ -203,7 +203,6 @@ public class Prove {
             } 
             
             
-            System.out.println(p.getLegalArgs().toString());
             if(!checkLegalArgs(argumentLineNumber, p.getLegalArgs())) { 
                 System.out.println("The given lines is invalid to be the arguments for the current line(You can not use these given lines as argument. )");
                 return false; 
@@ -214,7 +213,7 @@ public class Prove {
             switch(ruleName) {
                 case "∧I": return checkAndI(fml, new AndStatement(argumentsStatement[0], argumentsStatement[1])); 
                 case "∧E": return checkAndE(fml, argumentsStatement[0]);
-                case "→E": return checkImpliesE(argumentsStatement[0], new ImpliesStatement(argumentsStatement[1], fml));
+                case "→E": return checkImpliesE(fml, argumentsStatement[0], argumentsStatement[1]);
                 case "∨I": return checkOrI(fml,argumentsStatement[0]); 
                 case "⊥I": return checkFalsityI(fml, argumentsStatement[0], argumentsStatement[1]);
                 case "⊥E": return checkFalsityE(fml, argumentsStatement[0]);
@@ -253,7 +252,6 @@ public class Prove {
     }
     
     private void updateLegalArgs(ProveLine pl) {
-        System.out.println("The legalargs for line number " + pl.getNum() + " is updating. ");
         int position = pl.getNum()-givenLineNum-1;
         List<ProveLine> below = new ArrayList<ProveLine>(); 
         
@@ -305,7 +303,6 @@ public class Prove {
                     //add upper
                     pl.addLegalArgs(upper);
                 }
-                System.out.println(pl.getLegalArgs().toString());
                 //if one below exist, i am a boxc,
                 if(!items.get(items.size()-1).equals(pl)&&pl instanceof boxClosingLine) { 
                     //if remove the oneBelow's previous boxs and boxc, add add current back
@@ -404,15 +401,6 @@ public class Prove {
             }
         }
         
-        List<Integer> jkl = new ArrayList<Integer>(); 
-        for(VBox v:pl.getLegalArgs()) { 
-            if(v instanceof GivenLine) { 
-                jkl.add(((GivenLine) v).getNum());
-            } else { 
-                jkl.add(((ProveLine) v).getNum());
-            }
-        }
-        System.out.println("It has " + jkl.toString() + ". ");
             
     } 
     
@@ -469,7 +457,7 @@ public class Prove {
             if(((AndStatement)s).equalsTo(a)) { 
                 return true;
             } else { 
-                System.out.println("The given two lines can not produce this line by AndI. ");
+                System.out.println("The provided two lines can not produce this line by AndI. ");
                 return false; 
             }
         } else { 
@@ -483,26 +471,29 @@ public class Prove {
             if(((AndStatement) a).nestedStatementLeft.equalsTo(s) || ((AndStatement) a).nestedStatementRight.equalsTo(s)) { 
                 return true;
             } else { 
-                System.out.println("The given line can not produce ths line by AndI. ");
+                System.out.println("The provided line can not produce this line by AndE. ");
                 return false; 
             }
         } else { 
-            System.out.println("The given line is not an AndStatement. ");
+            System.out.println("The provided line is not an AndStatement. ");
             return false;
         }
     }
     
-    private boolean checkImpliesE(LogicStatement s, ImpliesStatement a) { 
-        if(s instanceof ImpliesStatement) { 
-            if(((ImpliesStatement)s).equalsTo(a)) { 
-                 return true;
-            } else { 
-                System.out.println("The given line can not produce ths line by ImpliesI. ");
+    private boolean checkImpliesE(LogicStatement s, LogicStatement a1, LogicStatement a2) { 
+        if(a1 instanceof ImpliesStatement && ((ImpliesStatement) a1).nestedStatementLeft.equalsTo(a2)|| a2 instanceof ImpliesStatement && ((ImpliesStatement) a2).nestedStatementLeft.equalsTo(a1)) { 
+            if(a1 instanceof ImpliesStatement && ((ImpliesStatement) a1).nestedStatementLeft.equalsTo(a2) && !((ImpliesStatement) a1).nestedStatementRight.equalsTo(s)) { 
+                System.out.println("This line should be on the right hand side of the first provided line. ");
                 return false; 
+            } else if (a2 instanceof ImpliesStatement && ((ImpliesStatement) a2).nestedStatementLeft.equalsTo(a1) && !((ImpliesStatement) a2).nestedStatementRight.equalsTo(s)) { 
+                System.out.println("This line should be on the right hand side of the second provided line. ");
+                return false; 
+            } else { 
+                return true; 
             }
         } else { 
-            System.out.println("The given line is not an ImpliesStatement. ");
-            return false;
+            System.out.println("One of the provided lines should be an impliesStatement produced by the other. ");
+            return false; 
         }
     }
     
@@ -535,11 +526,18 @@ public class Prove {
                 if (new NotStatement(a1).equalsTo(((NotStatement) a2))) { 
                     return true;
                 } else { 
-                    System.out.println("The second given line should be a NotStatement created by first given line. ");
+                    System.out.println("The second provided line should be a NotStatement created by first given line. ");
+                    return false; 
+                }
+            } else if (a1 instanceof NotStatement) {
+                if (new NotStatement(a2).equalsTo(((NotStatement) a1))) { 
+                    return true;
+                } else { 
+                    System.out.println("The first provided line should be a NotStatement created by second given line. ");
                     return false; 
                 }
             } else { 
-                System.out.println("The second given line should be a NotStatement. ");
+                System.out.println("One of the provided line should be a NotStatement. ");
                 return false; 
             }
         } else { 
@@ -567,23 +565,23 @@ public class Prove {
                             && ((IFFStatement) s).nestedStatementRight.equalsTo(((ImpliesStatement) a1).nestedStatementRight)) { 
                             return true;
                         } else { 
-                            System.out.println("The given two lines can not produce this formula by IFFI. ");
+                            System.out.println("The provided two lines can not produce this formula by IFFI. ");
                             return false; 
                         } 
                     } else { 
-                        System.out.println("The left part of the first given line should be same as the right part of the right part of the second given line and vise versa. ");
+                        System.out.println("The left part of the first provided line should be same as the right part of the right part of the second provided line and vise versa. ");
                         return false; 
                     }
                 } else { 
-                    System.out.println("The second given line should be a ImpliesStatement. ");
+                    System.out.println("The second provided line should be a ImpliesStatement. ");
                     return false; 
                 }
             } else { 
-                System.out.println("The first given line should be a ImpliesStatement. ");
+                System.out.println("The first provided line should be a ImpliesStatement. ");
                 return false; 
             }
         } else { 
-            System.out.println("This given line should be a IFFStatement. ");
+            System.out.println("This line should be a IFFStatement. ");
             return false; 
         }
     }
@@ -603,25 +601,42 @@ public class Prove {
                 System.out.println("The second given line should be a part of the first given line. ");
                 return false;
             }
+        } else if (a2 instanceof IFFStatement) { 
+            if (((IFFStatement) a2).nestedStatementLeft.equalsTo(a1) || ((IFFStatement) a2).nestedStatementRight.equalsTo(a1)) { 
+                if(((IFFStatement) a2).nestedStatementLeft.equalsTo(a1) && ((IFFStatement) a2).nestedStatementRight.equalsTo(s)) { 
+                    return true;
+                } else if(((IFFStatement) a2).nestedStatementLeft.equalsTo(s) && ((IFFStatement) a2).nestedStatementRight.equalsTo(a1)) { 
+                    return true; 
+                } else { 
+                    System.out.println("The first provided line should not be on the same side with this line");
+                    return false; 
+                }
+            } else { 
+                System.out.println("The first provided line should be a part of the second provided line. ");
+                return false;
+            }
         } else { 
-            System.out.println("The first given line should be a IFFStatement. ");
+            System.out.println("One of the provided line should be a IFFStatement. ");
             return false;
         }
     }
     
     private boolean checkNotE(LogicStatement s, LogicStatement a1, LogicStatement a2) { 
         if (s instanceof Falsity) { 
-            if (a1 instanceof NotStatement) { 
-                if (new NotStatement(a2).equalsTo(a1)) { 
+            if(a1 instanceof NotStatement || a2 instanceof NotStatement) { 
+                if(a1 instanceof NotStatement && new NotStatement(a2).equalsTo(a1)) { 
                     return true;
+                } else if(a2 instanceof NotStatement && new NotStatement(a1).equalsTo(a2)) { 
+                    return true; 
                 } else { 
-                    System.out.println("The first given line should be a NotStatement produced by the second given line. ");
+                    System.out.println("One of the provided line should be a NotStatement produced by the other provided line. ");
                     return false; 
                 }
+                
             } else { 
-                System.out.println("The first given line should be a NotStatement. ");
-                return false;
-            }
+                System.out.println("One or the provided line should be a notStatement. ");
+                return false; 
+            }  
         } else { 
             System.out.println("This line should be falsity. ");
             return false; 
@@ -651,26 +666,70 @@ public class Prove {
         if(i1 > givenLineNum && i2 >givenLineNum) { 
             ProveLine p1 = items.get(i1-givenLineNum-1); 
             ProveLine p2 = items.get(i2-givenLineNum-1);
-            if(p.getNum()-1 == i2 &&  p2 instanceof boxClosingLine && p1 instanceof boxStartingLine 
-                    && ((boxClosingLine) p2).getStartLine().equals((boxStartingLine)p1) && p1.getRule().equals("ass")) { 
-                LogicStatement l1 = stringToLS(findLineToString(i1)); 
-                LogicStatement l2 = stringToLS(findLineToString(i2)); 
-                LogicStatement pp = stringToLS(p.getFml().getText());
-                if(pp instanceof ImpliesStatement) { 
-                    if(((ImpliesStatement) pp).nestedStatementLeft.equalsTo(l1) && ((ImpliesStatement) pp).nestedStatementRight.equalsTo(l2)) { 
-                        return true;
+            if(p.getNum()-1 == i2 &&  p2 instanceof boxClosingLine) { 
+                if(p1 instanceof boxStartingLine) { 
+                    if(((boxClosingLine) p2).getStartLine().equals((boxStartingLine)p1)) { 
+                        if(p1.getRule()=="ass") { 
+                            LogicStatement l1 = stringToLS(findLineToString(i1)); 
+                            LogicStatement l2 = stringToLS(findLineToString(i2)); 
+                            LogicStatement pp = stringToLS(p.getFml().getText());
+                            if(pp instanceof ImpliesStatement) { 
+                                if(((ImpliesStatement) pp).nestedStatementLeft.equalsTo(l1) && ((ImpliesStatement) pp).nestedStatementRight.equalsTo(l2)) { 
+                                    return true;
+                                } else { 
+                                    System.out.println("This line should be produced by the provided two lines. ");
+                                    return false;
+                                }
+                            } else { 
+                                System.out.println("This line should be a impliesStatement. ");
+                                return false;
+                            }
+                        } else { 
+                            System.out.println("The given line's rule shoud be assume. ");
+                            return false;
+                        }
                     } else { 
-                        System.out.println("This line should be produced by the provided two lines. ");
-                        return false;
+                        System.out.println("The provided lines should be the boxs and boxc for the same box. ");
+                        return false; 
                     }
                 } else { 
-                    System.out.println("This line should be a impliesStatement. ");
-                    return false;
+                    System.out.println("The provided line should be boxs. ");
+                    return false; 
+                }
+            } else if(p.getNum()-1 == i1 &&  p1 instanceof boxClosingLine) { 
+                if(p2 instanceof boxStartingLine) { 
+                    if(((boxClosingLine) p1).getStartLine().equals((boxStartingLine)p2)) { 
+                        if(p2.getRule()=="ass") { 
+                            LogicStatement l1 = stringToLS(findLineToString(i2)); 
+                            LogicStatement l2 = stringToLS(findLineToString(i1)); 
+                            LogicStatement pp = stringToLS(p.getFml().getText());
+                            if(pp instanceof ImpliesStatement) { 
+                                if(((ImpliesStatement) pp).nestedStatementLeft.equalsTo(l1) && ((ImpliesStatement) pp).nestedStatementRight.equalsTo(l2)) { 
+                                    return true;
+                                } else { 
+                                    System.out.println("This line should be produced by the provided two lines. ");
+                                    return false;
+                                }
+                            } else { 
+                                System.out.println("This line should be a impliesStatement. ");
+                                return false;
+                            }
+                        } else { 
+                            System.out.println("The provided line's rule shoud be assume. ");
+                            return false;
+                        }
+                    } else { 
+                        System.out.println("The provided lines should be the boxs and boxc for the same box. ");
+                        return false; 
+                    }
+                } else { 
+                    System.out.println("The provided line should be boxs. ");
+                    return false; 
                 }
             } else { 
                 System.out.println("The provided lines should be boxStarting line. ");
                 return false;
-            } 
+            }
         } else { 
             System.out.println("The provided lines should not be givenLine. ");
             return false;
@@ -681,32 +740,81 @@ public class Prove {
         if(i1 > givenLineNum && i2 >givenLineNum) { 
             ProveLine p1 = items.get(i1-givenLineNum-1); 
             ProveLine p2 = items.get(i2-givenLineNum-1);
-            if(p.getNum()-1 == i2 &&  p2 instanceof boxClosingLine && p1 instanceof boxStartingLine 
-                    && ((boxClosingLine) p2).getStartLine().equals((boxStartingLine)p1) && p1.getRule().equals("ass")) { 
-                LogicStatement l1 = stringToLS(findLineToString(i1)); 
-                LogicStatement l2 = stringToLS(findLineToString(i2)); 
-                LogicStatement pp = stringToLS(p.getFml().getText());
-                if(pp instanceof NotStatement) { 
-                    if(l2 instanceof Falsity) { 
-                        if(pp.equalsTo(new NotStatement(l1))) { 
-                            return true;
+            if(p.getNum()-1 == i2 &&  p2 instanceof boxClosingLine) { 
+                if(p1 instanceof boxStartingLine) { 
+                    if(((boxClosingLine) p2).getStartLine().equals((boxStartingLine)p1)) { 
+                        if(p1.getRule()=="ass") { 
+                            LogicStatement l1 = stringToLS(findLineToString(i1)); 
+                            LogicStatement l2 = stringToLS(findLineToString(i2)); 
+                            LogicStatement pp = stringToLS(p.getFml().getText());
+                            if(pp instanceof NotStatement) { 
+                                if(l2 instanceof Falsity) { 
+                                    if(pp.equalsTo(new NotStatement(l1))) { 
+                                        return true;
+                                    } else { 
+                                        System.out.println("This line should be a notStatement produced by the first line. ");
+                                        return false;
+                                    }
+                                } else { 
+                                    System.out.println("The second line should be falsity. ");
+                                    return false; 
+                                }
+                            } else { 
+                                System.out.println("This line should be a notStatement. ");
+                                return false; 
+                            }
                         } else { 
-                            System.out.println("This line should be a notStatement produced by the first line. ");
+                            System.out.println("The given line's rule shoud be assume. ");
                             return false;
                         }
                     } else { 
-                        System.out.println("The second line should be falsity. ");
+                        System.out.println("The provided lines should be the boxs and boxc for the same box. ");
                         return false; 
                     }
                 } else { 
-                    System.out.println("This line should be a notStatement. ");
+                    System.out.println("The provided line should be boxs. ");
                     return false; 
                 }
-            } else {
+            } else if(p.getNum()-1 == i1 &&  p1 instanceof boxClosingLine) { 
+                if(p2 instanceof boxStartingLine) { 
+                    if(((boxClosingLine) p1).getStartLine().equals((boxStartingLine)p2)) { 
+                        if(p2.getRule()=="ass") { 
+                            LogicStatement l1 = stringToLS(findLineToString(i2)); 
+                            LogicStatement l2 = stringToLS(findLineToString(i1)); 
+                            LogicStatement pp = stringToLS(p.getFml().getText());
+                            if(pp instanceof NotStatement) { 
+                                if(l2 instanceof Falsity) { 
+                                    if(pp.equalsTo(new NotStatement(l1))) { 
+                                        return true;
+                                    } else { 
+                                        System.out.println("This line should be a notStatement produced by the first line. ");
+                                        return false;
+                                    }
+                                } else { 
+                                    System.out.println("The second line should be falsity. ");
+                                    return false; 
+                                }
+                            } else { 
+                                System.out.println("This line should be a notStatement. ");
+                                return false; 
+                            }
+                        } else { 
+                            System.out.println("The given line's rule shoud be assume. ");
+                            return false;
+                        }
+                    } else { 
+                        System.out.println("The provided lines should be the boxs and boxc for the same box. ");
+                        return false; 
+                    }
+                } else { 
+                    System.out.println("The provided line should be boxs. ");
+                    return false; 
+                }
+            } else { 
                 System.out.println("The provided lines should be boxStarting line. ");
                 return false;
             }
-        } else {
+        } else { 
             System.out.println("The provided lines should not be givenLine. ");
             return false;
         }
@@ -745,36 +853,109 @@ public class Prove {
     
     private boolean checkPC(ProveLine p, int i1, int i2) throws Exception { 
         
+        
         if(i1 > givenLineNum && i2 >givenLineNum) { 
             ProveLine p1 = items.get(i1-givenLineNum-1); 
             ProveLine p2 = items.get(i2-givenLineNum-1);
-            if(p.getNum()-1 == i2 &&  p2 instanceof boxClosingLine && p1 instanceof boxStartingLine 
-                    && ((boxClosingLine) p2).getStartLine().equals((boxStartingLine)p1) && p1.getRule().equals("ass")) { 
-                LogicStatement l1 = stringToLS(findLineToString(i1)); 
-                LogicStatement l2 = stringToLS(findLineToString(i2)); 
-                LogicStatement pp = stringToLS(p.getFml().getText());
-                
-                if(l1 instanceof NotStatement) { 
-                    if(l2 instanceof Falsity) { 
-                        if(((NotStatement) l1).nestedStatement.equalsTo(pp)) { 
-                            return true; 
-                        } else {
-                            System.out.println("This line should be a part from the first line. ");
+            if(p.getNum()-1 == i2 &&  p2 instanceof boxClosingLine) { 
+                if(p1 instanceof boxStartingLine) { 
+                    if(((boxClosingLine) p2).getStartLine().equals((boxStartingLine)p1)) { 
+                        if(p1.getRule()=="ass") { 
+                            LogicStatement l1 = stringToLS(findLineToString(i1)); 
+                            LogicStatement l2 = stringToLS(findLineToString(i2)); 
+                            LogicStatement pp = stringToLS(p.getFml().getText());
+                            if(l1 instanceof NotStatement || pp instanceof NotStatement) { 
+                                if(l2 instanceof Falsity) { 
+                                    if(l1 instanceof NotStatement) { 
+                                        if(((NotStatement) l1).nestedStatement.equalsTo(pp)) { 
+                                            return true; 
+                                        } else {
+                                            System.out.println("This line should be a part from the first line. ");
+                                            return false;
+                                        }
+                                    } else if(pp instanceof NotStatement) {
+                                        if(((NotStatement) pp).nestedStatement.equalsTo(l1)) { 
+                                            return true; 
+                                        } else {
+                                            System.out.println("the first line should be a part from this line. ");
+                                            return false;
+                                        }
+                                    } else { 
+                                        return false; 
+                                    }
+                                     
+                                } else { 
+                                    System.out.println("The second line should be falsity. ");
+                                    return false; 
+                                }
+                            } else {
+                                System.out.println("The top provided line or this line should be a notStatment. ");
+                                return false; 
+                            }
+                        } else { 
+                            System.out.println("The given line's rule shoud be assume. ");
                             return false;
                         }
                     } else { 
-                        System.out.println("The second line should be falsity. ");
+                        System.out.println("The provided lines should be the boxs and boxc for the same box. ");
                         return false; 
                     }
-                } else {
-                    System.out.println("The first line should be a notStatment. ");
+                } else { 
+                    System.out.println("The provided line should be boxs. ");
                     return false; 
                 }
-            } else {
+            } else if(p.getNum()-1 == i1 &&  p1 instanceof boxClosingLine) { 
+                if(p2 instanceof boxStartingLine) { 
+                    if(((boxClosingLine) p1).getStartLine().equals((boxStartingLine)p2)) { 
+                        if(p2.getRule()=="ass") { 
+                            LogicStatement l1 = stringToLS(findLineToString(i2)); 
+                            LogicStatement l2 = stringToLS(findLineToString(i1)); 
+                            LogicStatement pp = stringToLS(p.getFml().getText());
+                            if(l1 instanceof NotStatement || pp instanceof NotStatement) { 
+                                if(l2 instanceof Falsity) { 
+                                    if(l1 instanceof NotStatement) { 
+                                        if(((NotStatement) l1).nestedStatement.equalsTo(pp)) { 
+                                            return true; 
+                                        } else {
+                                            System.out.println("This line should be a part from the first line. ");
+                                            return false;
+                                        }
+                                    } else if(pp instanceof NotStatement) {
+                                        if(((NotStatement) pp).nestedStatement.equalsTo(l1)) { 
+                                            return true; 
+                                        } else {
+                                            System.out.println("the first line should be a part from this line. ");
+                                            return false;
+                                        }
+                                    } else { 
+                                        return false; 
+                                    }
+                                     
+                                } else { 
+                                    System.out.println("The second line should be falsity. ");
+                                    return false; 
+                                }
+                            } else {
+                                System.out.println("The top provided line or this line should be a notStatment. ");
+                                return false; 
+                            }
+                        } else { 
+                            System.out.println("The given line's rule shoud be assume. ");
+                            return false;
+                        }
+                    } else { 
+                        System.out.println("The provided lines should be the boxs and boxc for the same box. ");
+                        return false; 
+                    }
+                } else { 
+                    System.out.println("The provided line should be boxs. ");
+                    return false; 
+                }
+            } else { 
                 System.out.println("The provided lines should be boxStarting line. ");
                 return false;
-            }
-        } else {
+            } 
+        } else { 
             System.out.println("The provided lines should not be givenLine. ");
             return false;
         }
@@ -786,22 +967,12 @@ public class Prove {
         int idx = getCurrentFocus();
         List<Integer> test = new ArrayList<Integer>(); 
         if (idx != -1) {
-            if(items.get(idx).getNum()-givenLineNum-1 != items.size()) {
-                for(int j = items.get(idx).getNum()-givenLineNum; j<items.size(); j++) { 
-                    test.add(items.get(j).getNum());
-                }
+            
+            if(items.get(idx) instanceof boxStartingLine) { 
+                System.out.println("Parent box is " + ((boxStartingLine)items.get(idx)).getParentBox().toString() + ". ");
+                System.out.println("Sub box is " + ((boxStartingLine)items.get(idx)).getSubBoxes().toString() + ". ");
             }
             
-            List<Integer> jkl = new ArrayList<Integer>(); 
-            for(VBox v:items.get(idx).getLegalArgs()) { 
-                if(v instanceof GivenLine) { 
-                    jkl.add(((GivenLine) v).getNum());
-                } else { 
-                    jkl.add(((ProveLine) v).getNum());
-                }
-            }
-            System.out.println("Below is " + test.toString() + ". ");
-            System.out.println(jkl.toString());
         }
     }
     
@@ -837,13 +1008,17 @@ public class Prove {
             for(boxStartingLine bs: findParentBox(pl).getParentBox()) { 
                 bs.addLineInBox(pl);
             }
-            pl.setStyle("-fx-border-color: black");
+            for(int i = 0; i < findParentBox(pl).getIndent(); i++) { 
+                pl.indent();
+            }
         }
     }
     //find this one's parentBox
     private boxStartingLine findParentBox(ProveLine pl) { 
         ProveLine upper = items.get(pl.getNum()-givenLineNum-2);
-        if(!(upper instanceof boxStartingLine)) { 
+        if(upper instanceof boxClosingLine) { 
+            return findParentBox(((boxClosingLine) upper).getStartLine());
+        } else if(!(upper instanceof boxStartingLine)) { 
             return findParentBox(upper);
         } else { 
             return (boxStartingLine) upper;
@@ -997,6 +1172,9 @@ public class Prove {
                 items.get(currentMaxLine-givenLineNum).addLegalArgs(bc);
             }
             
+            bs.indent();
+            bc.indent();
+            
             updateLegalArgs(bs);
             updateLegalArgs(bc);
         } else { 
@@ -1015,6 +1193,8 @@ public class Prove {
                 items.get(i).reAssignNum(i+givenLineNum+1);
             }
             
+            bs.indent();
+            bc.indent();
             assignBoxToBox(bs, bc, items.get(selectedLine)); 
             
             if(!items.get(items.size()-1).equals(bc)) { 
@@ -1030,19 +1210,27 @@ public class Prove {
     
     private void assignBoxToBox(boxStartingLine bs, boxClosingLine bc, ProveLine upper) { 
         if(upper instanceof boxStartingLine || upper.isInBox()) { 
+            
+            
+            bs.indent();
+            bc.indent();
+            
             bs.setInBox();
             bc.setInBox();
-            //items.get(pl.getNum()-givenLineNum-2);
+            
             findParentBox(bs).addSubBoxes(bs);
             bs.addParentBox(findParentBox(bs));
             findParentBox(bs).addLineInBox(bs);
             findParentBox(bs).addLineInBox(bc);
+            
             for(boxStartingLine bsl:findParentBox(bs).getParentBox()) { 
                 bs.addParentBox(bsl);
                 bsl.addLineInBox(bs);
                 bsl.addLineInBox(bc);
+                bs.indent();
+                bc.indent();
             }
-        }
+        } 
     }
     
     private void applyColor(boxStartingLine bs) { 

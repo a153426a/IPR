@@ -34,7 +34,7 @@ public class GivenLine extends VBox {
         fml = new Label(formula);
         rul = new Label(rule);
         num.setPrefWidth(50);
-        fml.setPrefWidth(450);
+        fml.setPrefWidth(250);
         //rul.setPrefWidth(200);
         hb.getChildren().add(num);
         hb.getChildren().add(fml);

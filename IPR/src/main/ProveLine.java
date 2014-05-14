@@ -41,6 +41,7 @@ public class ProveLine extends VBox {
     private int caretIndex; 
     private List<VBox> legalArgs; 
     private boolean inBox;
+    private int indentTime;
     
     public ProveLine(int number) { 
         this.hb = new HBox();
@@ -51,6 +52,7 @@ public class ProveLine extends VBox {
         rulhb = new HBox();
         inBox = false; 
         legalArgs = new ArrayList<VBox>();
+        indentTime = 0; 
         
         fml.focusedProperty().addListener(new ChangeListener<Boolean>() {
 
@@ -83,7 +85,7 @@ public class ProveLine extends VBox {
         
         num.setText(new Integer(number).toString());
         num.setPrefWidth(50);
-        fml.setPrefWidth(450);
+        fml.setPrefWidth(250);
         
         hb.getChildren().add(num);
         hb.getChildren().add(fml);
@@ -332,6 +334,15 @@ public class ProveLine extends VBox {
         legalArgs.remove(i);
     }
     
+    public void indent() { 
+        Label l = new Label(); 
+        l.setPrefWidth(50); 
+        hb.getChildren().add(0, l);
+        indentTime++;
+    }
     
+    public int getIndent() { 
+        return indentTime;
+    }
     
 }

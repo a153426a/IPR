@@ -36,7 +36,7 @@
             <Button id="box" fx:id="createBox" mnemonicParsing="false" onAction="#applyCreateBox" text="C box" GridPane.columnIndex="10" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
             <Button id="leaveBox" fx:id="createBoxTwo" mnemonicParsing="false" onAction="#applyCreateBoxTwo" text="C2 box" GridPane.columnIndex="10" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
             <Button id="create" fx:id="createNewLine" mnemonicParsing="false" onAction="#createNewLineButton" text="New" GridPane.columnIndex="11" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-            <Button fx:id="PC" mnemonicParsing="false" onAction="#applyPC" text="PC" GridPane.columnIndex="12" GridPane.rowIndex="0" GridPane.halignment="CENTER"/>
+            <Button fx:id="PC" mnemonicParsing="false" onAction="#applyPC" text="PC" GridPane.columnIndex="12" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
           </children>
           <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -84,7 +84,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
             </GridPane>
-            <GridPane GridPane.columnIndex="0" GridPane.rowIndex="1">
+            <GridPane prefHeight="325.0" prefWidth="165.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
               <children>
                 <Button fx:id="checkButton" mnemonicParsing="false" onAction="#checkButtonAction" text="Check" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
                 <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#cancelButtonAction" text="Cancel" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
@@ -119,9 +119,9 @@
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="802.0" minWidth="10.0" prefWidth="790.0" />
           </columnConstraints>
           <rowConstraints>
-            <RowConstraints maxHeight="188.0" minHeight="10.0" prefHeight="156.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="364.0" minHeight="10.0" prefHeight="364.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="186.0" minHeight="10.0" prefHeight="43.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="188.0" minHeight="10.0" prefHeight="129.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="461.0" minHeight="10.0" prefHeight="450.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="186.0" minHeight="10.0" prefHeight="42.0" vgrow="SOMETIMES" />
           </rowConstraints>
         </GridPane>
       </children>
@@ -130,8 +130,8 @@
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="539.0" minWidth="10.0" prefWidth="165.0" />
       </columnConstraints>
       <rowConstraints>
-        <RowConstraints maxHeight="359.0" minHeight="10.0" prefHeight="157.0" vgrow="SOMETIMES" />
-        <RowConstraints maxHeight="582.0" minHeight="10.0" prefHeight="563.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="359.0" minHeight="10.0" prefHeight="99.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="621.0" minHeight="10.0" prefHeight="621.0" vgrow="SOMETIMES" />
       </rowConstraints>
     </GridPane>
   </children>
