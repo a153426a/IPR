@@ -94,111 +94,94 @@ public class Controller {
     public void andButtonAction(ActionEvent event) {
         
         if(textFieldFocus == 1) { 
-            goalArea.setText(goalArea.getText() + Symbol.AND);
-            goalArea.requestFocus();
+            goalArea.insertText(goalArea.getCaretPosition(), Symbol.AND.toString());
         } else { 
-            startArea.setText(startArea.getText() + Symbol.AND);
-            startArea.requestFocus();
+            //startArea.setText(startArea.getText() + Symbol.AND);
+            //startArea.requestFocus();
+            startArea.insertText(startArea.getCaretPosition(), Symbol.AND.toString());
         }
+        
         
     }
     
     @FXML
     public void orButtonAction(ActionEvent event) {
         if(textFieldFocus == 1) { 
-            goalArea.setText(goalArea.getText() + Symbol.OR);
-            goalArea.requestFocus();
+            goalArea.insertText(goalArea.getCaretPosition(), Symbol.OR.toString());
         } else { 
-            startArea.setText(startArea.getText() + Symbol.OR);
-            startArea.requestFocus();
+            startArea.insertText(startArea.getCaretPosition(), Symbol.OR.toString());
         }
     }
     
     @FXML
     public void impliesButtonAction(ActionEvent event) {
         if(textFieldFocus == 1) { 
-            goalArea.setText(goalArea.getText() + Symbol.IMPLIES);
-            goalArea.requestFocus();
+            goalArea.insertText(goalArea.getCaretPosition(), Symbol.IMPLIES.toString());
         } else { 
-            startArea.setText(startArea.getText() + Symbol.IMPLIES);
-            startArea.requestFocus();
+            startArea.insertText(startArea.getCaretPosition(), Symbol.IMPLIES.toString());
         }
     }
     
     @FXML
     public void notButtonAction(ActionEvent event) {
         if(textFieldFocus == 1) { 
-            goalArea.setText(goalArea.getText() + Symbol.NOT);
-            goalArea.requestFocus();
+            goalArea.insertText(goalArea.getCaretPosition(), Symbol.NOT.toString());
         } else { 
-            startArea.setText(startArea.getText() + Symbol.NOT);
-            startArea.requestFocus();
+            startArea.insertText(startArea.getCaretPosition(), Symbol.NOT.toString());
         }
     }
     
     @FXML
     public void truthButtonAction(ActionEvent event) {
         if(textFieldFocus == 1) { 
-            goalArea.setText(goalArea.getText() + Symbol.TRUTH);
-            goalArea.requestFocus();
+            goalArea.insertText(goalArea.getCaretPosition(), Symbol.TRUTH.toString());
         } else { 
-            startArea.setText(startArea.getText() + Symbol.TRUTH);
-            startArea.requestFocus();
+            startArea.insertText(startArea.getCaretPosition(), Symbol.TRUTH.toString());
         }
     }
     
     @FXML
     public void thereesistsButtonAction(ActionEvent event) {
         if(textFieldFocus == 1) { 
-            goalArea.setText(goalArea.getText() + Symbol.THEREEXISTS);
-            goalArea.requestFocus();
+            goalArea.insertText(goalArea.getCaretPosition(), Symbol.THEREEXISTS.toString());
         } else { 
-            startArea.setText(startArea.getText() + Symbol.THEREEXISTS);
-            startArea.requestFocus();
+            startArea.insertText(startArea.getCaretPosition(), Symbol.THEREEXISTS.toString());
         }
     }
     
     @FXML
     public void iffButtonAction(ActionEvent event) {
         if(textFieldFocus == 1) { 
-            goalArea.setText(goalArea.getText() + Symbol.IFF);
-            goalArea.requestFocus();
+            goalArea.insertText(goalArea.getCaretPosition(), Symbol.IFF.toString());
         } else { 
-            startArea.setText(startArea.getText() + Symbol.IFF);
-            startArea.requestFocus();
+            startArea.insertText(startArea.getCaretPosition(), Symbol.IFF.toString());
         }
     }
     
     @FXML
     public void equalsButtonAction(ActionEvent event) {
         if(textFieldFocus == 1) { 
-            goalArea.setText(goalArea.getText() + Symbol.PREDICATE);
-            goalArea.requestFocus();
+            goalArea.insertText(goalArea.getCaretPosition(), Symbol.EQUALS.toString());
         } else { 
-            startArea.setText(startArea.getText() + Symbol.PREDICATE);
-            startArea.requestFocus();
+            startArea.insertText(startArea.getCaretPosition(), Symbol.EQUALS.toString());
         }
     }
     
     @FXML
     public void falsityButtonAction(ActionEvent event) {
         if(textFieldFocus == 1) { 
-            goalArea.setText(goalArea.getText() + Symbol.FALSITY);
-            goalArea.requestFocus();
+            goalArea.insertText(goalArea.getCaretPosition(), Symbol.FALSITY.toString());
         } else { 
-            startArea.setText(startArea.getText() + Symbol.FALSITY);
-            startArea.requestFocus();
+            startArea.insertText(startArea.getCaretPosition(), Symbol.FALSITY.toString());
         }
     }
     
     @FXML
     public void forallButtonAction(ActionEvent event) {
         if(textFieldFocus == 1) { 
-            goalArea.setText(goalArea.getText() + Symbol.FORALL);
-            goalArea.requestFocus();
+            goalArea.insertText(goalArea.getCaretPosition(), Symbol.FORALL.toString());
         } else { 
-            startArea.setText(startArea.getText() + Symbol.FORALL);
-            startArea.requestFocus();
+            startArea.insertText(startArea.getCaretPosition(), Symbol.FORALL.toString());
         }
     }
     

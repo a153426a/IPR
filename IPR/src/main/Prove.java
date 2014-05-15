@@ -84,7 +84,6 @@ public class Prove {
             scene = new Scene(parent);
         } catch (IOException e) {
         }
-        
     }
     
     @FXML
@@ -169,6 +168,8 @@ public class Prove {
         } else if (result && stringToLS(items.get(items.size()-1).getFml().getText()).equalsTo(goalStatement)) { 
             System.out.println("Congratulations! You have got the solution! ");
         }
+        
+        
     }
     
     private boolean checkProveLine(ProveLine p) throws Exception{ 
@@ -195,6 +196,9 @@ public class Prove {
                 if(p.getArguments()[i]==0) { 
                     System.out.println("The Line number " + p.getNum() + " has not enough arguments. "); 
                     return false; 
+                } else if (p.getArguments()[i]>currentMaxLine) { 
+                    System.out.println("The given lines is invalid to be the arguments for the current line(You can not use these given lines as argument. )");
+                    return false;
                 } else { 
                     argumentLineNumber.add(findLine(p.getArguments()[i]));
                     argumentsStatement[i] = stringToLS(findLineToString(p.getArguments()[i]));
@@ -352,16 +356,15 @@ public class Prove {
                         plpl.addLegalArgs(pl);
                     }
                 }
-                //if onebelow is boxc
+                //if oneupper is boxc
                 if(upper instanceof boxClosingLine && findParentBox(pl).getLineInBox().contains(items.get(pl.getNum()-givenLineNum)) && !items.get(pl.getNum()-givenLineNum).equals(findParentBox(pl).getEndLine())) { 
-                    items.get(pl.getNum()-givenLineNum).removeLegalArgs(items.get(pl.getNum()-givenLineNum-3));
-                    items.get(pl.getNum()-givenLineNum).removeLegalArgs(((boxClosingLine)items.get(pl.getNum()-givenLineNum-3)).getStartLine());
+                    items.get(pl.getNum()-givenLineNum).removeLegalArgs(upper);
+                    items.get(pl.getNum()-givenLineNum).removeLegalArgs(((boxClosingLine)upper).getStartLine());
                 }
                 
             }  
             //if its a normal line
             else { 
-                
                 //if upper is boxc
                 if(upper instanceof boxClosingLine) { 
                     for(VBox v:((boxClosingLine)upper).getStartLine().getLegalArgs()) { 
@@ -392,16 +395,15 @@ public class Prove {
                             plpl.addLegalArgs(pl);
                         }
                     }
-                    //if onebelow is boxc
-                    if(upper instanceof boxClosingLine && findParentBox(pl).getLineInBox().contains(items.get(pl.getNum()-givenLineNum)) && !items.get(pl.getNum()-givenLineNum).equals(findParentBox(pl).getEndLine())) { 
-                        items.get(pl.getNum()-givenLineNum).removeLegalArgs(items.get(pl.getNum()-givenLineNum-3));
-                        items.get(pl.getNum()-givenLineNum).removeLegalArgs(((boxClosingLine)items.get(pl.getNum()-givenLineNum-3)).getStartLine());
+                    //if oneupper is boxc
+                    if(upper instanceof boxClosingLine) { 
+                        items.get(pl.getNum()-givenLineNum).removeLegalArgs(upper);
+                        items.get(pl.getNum()-givenLineNum).removeLegalArgs(((boxClosingLine)upper).getStartLine());
                     }
                 }
             }
         }
         
-            
     } 
     
     
@@ -968,10 +970,7 @@ public class Prove {
         List<Integer> test = new ArrayList<Integer>(); 
         if (idx != -1) {
             
-            if(items.get(idx) instanceof boxStartingLine) { 
-                System.out.println("Parent box is " + ((boxStartingLine)items.get(idx)).getParentBox().toString() + ". ");
-                System.out.println("Sub box is " + ((boxStartingLine)items.get(idx)).getSubBoxes().toString() + ". ");
-            }
+            System.out.println(items.get(idx).getLegalArgs());
             
         }
     }
@@ -979,6 +978,73 @@ public class Prove {
     private int getCurrentFocus() { 
         int idx = proveView.getSelectionModel().getSelectedIndex(); 
         return idx;
+    }
+    
+    @FXML 
+    public void deleteButtonAction(ActionEvent event) throws Exception{ 
+        int idx = getCurrentFocus();
+        
+        if (idx != -1) {
+            
+            ProveLine pl = items.get(idx); 
+            List<ProveLine> below = new ArrayList<ProveLine>(); 
+        
+            if(idx != items.size()) {
+                for(int j = idx+1; j<items.size(); j++) { 
+                    below.add(items.get(j));
+                }
+            }
+            if(pl instanceof boxStartingLine) { 
+                //remove the selected pl
+                items.remove(pl);
+                items.remove(((boxStartingLine) pl).getEndLine());
+                //reassign all numbers from the point
+                reAssignAll(idx);
+                //remove legalargs for all the existing pls
+                for(ProveLine plpl:items) { 
+                    plpl.getLegalArgs().removeAll(plpl.getLegalArgs());
+                }
+                //update legalargs for all the existing pls
+                for(ProveLine plpl:items) { 
+                    updateLegalArgs(plpl);
+                }
+            } else if(pl instanceof boxClosingLine) { 
+                //remove the selected pl
+                items.remove(pl);
+                items.remove(((boxClosingLine) pl).getStartLine());
+                //reassign all numbers from the point
+                reAssignAll(idx-1);
+                //remove legalargs for all the existing pls
+                for(ProveLine plpl:items) { 
+                    plpl.getLegalArgs().removeAll(plpl.getLegalArgs());
+                }
+                //update legalargs for all the existing pls
+                for(ProveLine plpl:items) { 
+                    updateLegalArgs(plpl);
+                }
+            } else { 
+                //remove the selected pl
+                items.remove(pl);
+                //reassign all numbers from the point
+                reAssignAll(idx);
+                //remove legalargs for all the existing pls
+                for(ProveLine plpl:items) { 
+                    plpl.getLegalArgs().removeAll(plpl.getLegalArgs());
+                }
+                //update legalargs for all the existing pls
+                for(ProveLine plpl:items) { 
+                    updateLegalArgs(plpl);
+                }
+            }
+            
+        }
+        
+    }
+    
+    private void reAssignAll(int idx) { 
+        for(int i = idx; i < items.size();i++) { 
+            items.get(i).reAssignNum(i+givenLineNum+1);
+        }
     }
     
     @FXML 

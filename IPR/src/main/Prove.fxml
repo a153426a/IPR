@@ -10,7 +10,7 @@
   <children>
     <GridPane layoutX="0.0" layoutY="0.0" prefHeight="720.0" prefWidth="1080.0">
       <children>
-        <GridPane GridPane.columnIndex="0" GridPane.rowIndex="0">
+        <GridPane GridPane.columnIndex="0" GridPane.rowIndex="1">
           <children>
             <Button fx:id="andI" mnemonicParsing="false" onAction="#applyAndI" text="∧I" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
             <Button fx:id="andE" mnemonicParsing="false" onAction="#applyAndE" text="∧E" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
@@ -58,7 +58,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           </rowConstraints>
         </GridPane>
-        <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+        <GridPane GridPane.columnIndex="1" GridPane.rowIndex="2">
           <children>
             <GridPane GridPane.columnIndex="0" GridPane.rowIndex="0">
               <children>
@@ -88,6 +88,7 @@
               <children>
                 <Button fx:id="checkButton" mnemonicParsing="false" onAction="#checkButtonAction" text="Check" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
                 <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#cancelButtonAction" text="Cancel" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
+                <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deleteButtonAction" text="Delete" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
               </children>
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -108,7 +109,7 @@
             <RowConstraints maxHeight="281.0" minHeight="10.0" prefHeight="281.0" vgrow="SOMETIMES" />
           </rowConstraints>
         </GridPane>
-        <GridPane fx:id="provePane" GridPane.columnIndex="0" GridPane.rowIndex="1">
+        <GridPane fx:id="provePane" GridPane.columnIndex="0" GridPane.rowIndex="2">
           <children>
             <Label text="Given: " GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
             <Label text="Prove: " GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
@@ -124,14 +125,34 @@
             <RowConstraints maxHeight="186.0" minHeight="10.0" prefHeight="42.0" vgrow="SOMETIMES" />
           </rowConstraints>
         </GridPane>
+        <MenuBar GridPane.columnIndex="0" GridPane.rowIndex="0">
+          <menus>
+            <Menu mnemonicParsing="false" text="File">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Close" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Edit">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Delete" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+              <items>
+                <MenuItem mnemonicParsing="false" text="About" />
+              </items>
+            </Menu>
+          </menus>
+        </MenuBar>
       </children>
       <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="915.0" minWidth="10.0" prefWidth="915.0" />
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="539.0" minWidth="10.0" prefWidth="165.0" />
       </columnConstraints>
       <rowConstraints>
-        <RowConstraints maxHeight="359.0" minHeight="10.0" prefHeight="99.0" vgrow="SOMETIMES" />
-        <RowConstraints maxHeight="621.0" minHeight="10.0" prefHeight="621.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="359.0" minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="359.0" minHeight="10.0" prefHeight="107.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="621.0" minHeight="10.0" prefHeight="588.0" vgrow="SOMETIMES" />
       </rowConstraints>
     </GridPane>
   </children>

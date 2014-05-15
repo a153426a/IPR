@@ -58,11 +58,11 @@ public class ProveLine extends VBox {
 
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                
                 if(newValue) {
                     focus = 1;
                 } 
-            }
-        
+            } 
         });
         
         fml.addEventFilter(MouseEvent.MOUSE_CLICKED, 
@@ -331,7 +331,9 @@ public class ProveLine extends VBox {
     }
     
     public void removeLegalArgs(VBox i){ 
-        legalArgs.remove(i);
+        if(legalArgs.contains(i)) { 
+            legalArgs.remove(i);
+        }
     }
     
     public void indent() { 
