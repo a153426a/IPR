@@ -10,6 +10,10 @@ package main;
  *
  * @author zl2511
  */
-public class problemShooter {
+public class TwoboxStartingLine extends boxStartingLine {
+
+    public TwoboxStartingLine(int number) {
+        super(number);
+    }
     
 }

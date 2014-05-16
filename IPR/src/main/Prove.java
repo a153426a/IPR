@@ -45,6 +45,7 @@ public class Prove {
     private Parent parent;
     private Scene scene;
     private Stage stage;
+    private Stage problemStage;
     private List<LogicStatement> startStatements; 
     private LogicStatement goalStatement;
     private int givenLineNum = 0; 
@@ -57,6 +58,8 @@ public class Prove {
     
     private List<boxStartingLine> boxes;
     private String[] boxColors;
+    
+    private ObservableList<HBox> problemHBox;
     
     /*
     @FXML
@@ -73,6 +76,10 @@ public class Prove {
     private Button checkButton, cancelButton;
     @FXML
     private Button andButton, IFFButton, orButton, impliesButton, notButton, truthButton, falsityButton, thereexistsButton, forallButton; 
+    @FXML 
+    private ListView<HBox> problemList;
+    
+    
     
     public Prove() throws IOException { 
         
@@ -93,6 +100,8 @@ public class Prove {
         this.goalStatement = gf; 
         proveView = new ListView<ProveLine>();
         items = observableArrayList();
+        problemList = new ListView<HBox>();
+        problemHBox = observableArrayList();
         boxes = new ArrayList<boxStartingLine>();
         boxColors = new String[20];
         boxColors[0] = "-fx-border-color: red";
@@ -115,7 +124,6 @@ public class Prove {
         boxColors[17] = "-fx-border-color: steelblue";
         boxColors[18] = "-fx-border-color: tan";
         boxColors[19] = "-fx-border-color: silver";
-        
         
         
         //StartFomulars.setText(startStatements.toString());
@@ -152,24 +160,52 @@ public class Prove {
         
         boolean result = true; 
         //check args
-        
+        Parent root;
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("problemShooter.fxml"));
+        fxmlLoader.setController(this);
+        try {
+            root = fxmlLoader.load();
+            problemStage = new Stage();
+            problemStage.setTitle("Check");
+            problemStage.setScene(new Scene(root, 384, 512));
+            problemStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        problemList.setItems(problemHBox);
         //check meaning 
         for (ProveLine p:items) { 
-            System.out.println("Checking line number " + p.getNum() + ". ");
+            addToProblemList("Checking line number " + p.getNum() + ". ");
             if (!checkProveLine(p)) { 
                 result = false; 
-                System.out.println("Line number " + p.getNum() + " is wrong. ");
+                addToProblemList("Line number " + p.getNum() + " is wrong. ");
             } else { 
-                System.out.println("Line number " + p.getNum() + " is correct. ");
+                addToProblemList("Line number " + p.getNum() + " is correct. ");
             }
         }
-        if(result && !stringToLS(items.get(items.size()-1).getFml().getText()).equalsTo(goalStatement)) { 
-            System.out.println("You did well, carry on and get the result. ");
-        } else if (result && stringToLS(items.get(items.size()-1).getFml().getText()).equalsTo(goalStatement)) { 
-            System.out.println("Congratulations! You have got the solution! ");
+        if(items.size()>0) { 
+            if(result && !stringToLS(items.get(items.size()-1).getFml().getText()).equalsTo(goalStatement)) { 
+                addToProblemList("You did well, carry on and get the result. ");
+            } else if (result && stringToLS(items.get(items.size()-1).getFml().getText()).equalsTo(goalStatement)) { 
+                addToProblemList("Congratulations! You have got the solution! ");
+            } else { 
+                addToProblemList("Something's gone wrong. Keep calm and carry on! ");
+            }
+        } else { 
+            addToProblemList("Ok. Don't be lazy, Let's get start.");
         }
         
         
+        
+    }
+    
+    private void addToProblemList(String s) { 
+        HBox hb = new HBox(); 
+        Label l = new Label(); 
+        l.setText(s);
+        hb.getChildren().add(l); 
+        problemHBox.add(hb);
     }
     
     private boolean checkProveLine(ProveLine p) throws Exception{ 
@@ -177,11 +213,11 @@ public class Prove {
         //TODO
         String ruleName = p.getRule(); 
         if (p.getFml().getText().equals("")) { 
-            System.out.println("The Line number " + p.getNum()+ " is empty. ");
+            addToProblemList("The Line number " + p.getNum()+ " is empty. ");
             return false; 
         }
         if(!p.getRuled()) { 
-            System.out.println("The Line number " + p.getNum() + " does not have a rule. ");
+            addToProblemList("The Line number " + p.getNum() + " does not have a rule. ");
             return false; 
         }
         //check if correct
@@ -194,10 +230,10 @@ public class Prove {
             List<VBox> argumentLineNumber = new ArrayList<VBox>();
             for(int i = 0; i < p.getArguments().length; i++) { 
                 if(p.getArguments()[i]==0) { 
-                    System.out.println("The Line number " + p.getNum() + " has not enough arguments. "); 
+                    addToProblemList("The Line number " + p.getNum() + " has not enough arguments. "); 
                     return false; 
                 } else if (p.getArguments()[i]>currentMaxLine) { 
-                    System.out.println("The given lines is invalid to be the arguments for the current line(You can not use these given lines as argument. )");
+                    addToProblemList("The given lines is invalid to be the arguments for the current line(You can not use these given lines as argument. )");
                     return false;
                 } else { 
                     argumentLineNumber.add(findLine(p.getArguments()[i]));
@@ -208,7 +244,7 @@ public class Prove {
             
             
             if(!checkLegalArgs(argumentLineNumber, p.getLegalArgs())) { 
-                System.out.println("The given lines is invalid to be the arguments for the current line(You can not use these given lines as argument. )");
+                addToProblemList("The given lines is invalid to be the arguments for the current line(You can not use these given lines as argument. )");
                 return false; 
             }
             
@@ -459,11 +495,11 @@ public class Prove {
             if(((AndStatement)s).equalsTo(a)) { 
                 return true;
             } else { 
-                System.out.println("The provided two lines can not produce this line by AndI. ");
+                addToProblemList("The provided two lines can not produce this line by AndI. ");
                 return false; 
             }
         } else { 
-            System.out.println("AndI can not be applied on a none AndStatemnet. ");
+            addToProblemList("AndI can not be applied on a none AndStatemnet. ");
             return false;
         }
     }
@@ -473,11 +509,11 @@ public class Prove {
             if(((AndStatement) a).nestedStatementLeft.equalsTo(s) || ((AndStatement) a).nestedStatementRight.equalsTo(s)) { 
                 return true;
             } else { 
-                System.out.println("The provided line can not produce this line by AndE. ");
+                addToProblemList("The provided line can not produce this line by AndE. ");
                 return false; 
             }
         } else { 
-            System.out.println("The provided line is not an AndStatement. ");
+            addToProblemList("The provided line is not an AndStatement. ");
             return false;
         }
     }
@@ -485,16 +521,16 @@ public class Prove {
     private boolean checkImpliesE(LogicStatement s, LogicStatement a1, LogicStatement a2) { 
         if(a1 instanceof ImpliesStatement && ((ImpliesStatement) a1).nestedStatementLeft.equalsTo(a2)|| a2 instanceof ImpliesStatement && ((ImpliesStatement) a2).nestedStatementLeft.equalsTo(a1)) { 
             if(a1 instanceof ImpliesStatement && ((ImpliesStatement) a1).nestedStatementLeft.equalsTo(a2) && !((ImpliesStatement) a1).nestedStatementRight.equalsTo(s)) { 
-                System.out.println("This line should be on the right hand side of the first provided line. ");
+                addToProblemList("This line should be on the right hand side of the first provided line. ");
                 return false; 
             } else if (a2 instanceof ImpliesStatement && ((ImpliesStatement) a2).nestedStatementLeft.equalsTo(a1) && !((ImpliesStatement) a2).nestedStatementRight.equalsTo(s)) { 
-                System.out.println("This line should be on the right hand side of the second provided line. ");
+                addToProblemList("This line should be on the right hand side of the second provided line. ");
                 return false; 
             } else { 
                 return true; 
             }
         } else { 
-            System.out.println("One of the provided lines should be an impliesStatement produced by the other. ");
+            addToProblemList("One of the provided lines should be an impliesStatement produced by the other. ");
             return false; 
         }
     }
@@ -504,11 +540,11 @@ public class Prove {
             if(((OrStatement) s).nestedStatementLeft.equalsTo(a) || ((OrStatement) s).nestedStatementRight.equalsTo(a)) { 
                 return true;
             } else { 
-                System.out.println("The given line is not part of this OrStatement. ");
+                addToProblemList("The given line is not part of this OrStatement. ");
                 return false; 
             }
         } else { 
-            System.out.println("The given line is not an OrStatement. ");
+            addToProblemList("The given line is not an OrStatement. ");
             return false;
         }
     }
@@ -517,7 +553,7 @@ public class Prove {
         if (s instanceof Truth) { 
             return true;
         } else { 
-            System.out.println("Truth should be introduced. ");
+            addToProblemList("Truth should be introduced. ");
             return false; 
         }
     }
@@ -528,22 +564,22 @@ public class Prove {
                 if (new NotStatement(a1).equalsTo(((NotStatement) a2))) { 
                     return true;
                 } else { 
-                    System.out.println("The second provided line should be a NotStatement created by first given line. ");
+                    addToProblemList("The second provided line should be a NotStatement created by first given line. ");
                     return false; 
                 }
             } else if (a1 instanceof NotStatement) {
                 if (new NotStatement(a2).equalsTo(((NotStatement) a1))) { 
                     return true;
                 } else { 
-                    System.out.println("The first provided line should be a NotStatement created by second given line. ");
+                    addToProblemList("The first provided line should be a NotStatement created by second given line. ");
                     return false; 
                 }
             } else { 
-                System.out.println("One of the provided line should be a NotStatement. ");
+                addToProblemList("One of the provided line should be a NotStatement. ");
                 return false; 
             }
         } else { 
-            System.out.println("Falsity should be introduced. ");
+            addToProblemList("Falsity should be introduced. ");
             return false; 
         }
     }
@@ -552,7 +588,7 @@ public class Prove {
         if (a instanceof Falsity) { 
             return true;
         } else { 
-            System.out.println("The givne line should be falsity. ");
+            addToProblemList("The givne line should be falsity. ");
             return false; 
         }
     }
@@ -567,23 +603,23 @@ public class Prove {
                             && ((IFFStatement) s).nestedStatementRight.equalsTo(((ImpliesStatement) a1).nestedStatementRight)) { 
                             return true;
                         } else { 
-                            System.out.println("The provided two lines can not produce this formula by IFFI. ");
+                            addToProblemList("The provided two lines can not produce this formula by IFFI. ");
                             return false; 
                         } 
                     } else { 
-                        System.out.println("The left part of the first provided line should be same as the right part of the right part of the second provided line and vise versa. ");
+                        addToProblemList("The left part of the first provided line should be same as the right part of the right part of the second provided line and vise versa. ");
                         return false; 
                     }
                 } else { 
-                    System.out.println("The second provided line should be a ImpliesStatement. ");
+                    addToProblemList("The second provided line should be a ImpliesStatement. ");
                     return false; 
                 }
             } else { 
-                System.out.println("The first provided line should be a ImpliesStatement. ");
+                addToProblemList("The first provided line should be a ImpliesStatement. ");
                 return false; 
             }
         } else { 
-            System.out.println("This line should be a IFFStatement. ");
+            addToProblemList("This line should be a IFFStatement. ");
             return false; 
         }
     }
@@ -596,11 +632,11 @@ public class Prove {
                 } else if(((IFFStatement) a1).nestedStatementLeft.equalsTo(s) && ((IFFStatement) a1).nestedStatementRight.equalsTo(a2)) { 
                     return true; 
                 } else { 
-                    System.out.println("The second given line should not be on the same side with this line");
+                    addToProblemList("The second given line should not be on the same side with this line");
                     return false; 
                 }
             } else { 
-                System.out.println("The second given line should be a part of the first given line. ");
+                addToProblemList("The second given line should be a part of the first given line. ");
                 return false;
             }
         } else if (a2 instanceof IFFStatement) { 
@@ -610,15 +646,15 @@ public class Prove {
                 } else if(((IFFStatement) a2).nestedStatementLeft.equalsTo(s) && ((IFFStatement) a2).nestedStatementRight.equalsTo(a1)) { 
                     return true; 
                 } else { 
-                    System.out.println("The first provided line should not be on the same side with this line");
+                    addToProblemList("The first provided line should not be on the same side with this line");
                     return false; 
                 }
             } else { 
-                System.out.println("The first provided line should be a part of the second provided line. ");
+                addToProblemList("The first provided line should be a part of the second provided line. ");
                 return false;
             }
         } else { 
-            System.out.println("One of the provided line should be a IFFStatement. ");
+            addToProblemList("One of the provided line should be a IFFStatement. ");
             return false;
         }
     }
@@ -631,16 +667,16 @@ public class Prove {
                 } else if(a2 instanceof NotStatement && new NotStatement(a1).equalsTo(a2)) { 
                     return true; 
                 } else { 
-                    System.out.println("One of the provided line should be a NotStatement produced by the other provided line. ");
+                    addToProblemList("One of the provided line should be a NotStatement produced by the other provided line. ");
                     return false; 
                 }
                 
             } else { 
-                System.out.println("One or the provided line should be a notStatement. ");
+                addToProblemList("One or the provided line should be a notStatement. ");
                 return false; 
             }  
         } else { 
-            System.out.println("This line should be falsity. ");
+            addToProblemList("This line should be falsity. ");
             return false; 
         }
     }
@@ -651,15 +687,15 @@ public class Prove {
                 if (((NotStatement) ((NotStatement) a).nestedStatement).nestedStatement.equalsTo(s)) { 
                     return true;
                 } else { 
-                    System.out.println("This line should be a NotNotStatement produced by the first given line. ");
+                    addToProblemList("This line should be a NotNotStatement produced by the first given line. ");
                     return false; 
                 }
             } else { 
-                System.out.println("The given line should be a NotNotStatement. ");
+                addToProblemList("The given line should be a NotNotStatement. ");
                 return false; 
             }
         } else { 
-            System.out.println("The given line should be a NotNotStatement. ");
+            addToProblemList("The given line should be a NotNotStatement. ");
             return false; 
         }
     }
@@ -679,23 +715,23 @@ public class Prove {
                                 if(((ImpliesStatement) pp).nestedStatementLeft.equalsTo(l1) && ((ImpliesStatement) pp).nestedStatementRight.equalsTo(l2)) { 
                                     return true;
                                 } else { 
-                                    System.out.println("This line should be produced by the provided two lines. ");
+                                    addToProblemList("This line should be produced by the provided two lines. ");
                                     return false;
                                 }
                             } else { 
-                                System.out.println("This line should be a impliesStatement. ");
+                                addToProblemList("This line should be a impliesStatement. ");
                                 return false;
                             }
                         } else { 
-                            System.out.println("The given line's rule shoud be assume. ");
+                            addToProblemList("The given line's rule shoud be assume. ");
                             return false;
                         }
                     } else { 
-                        System.out.println("The provided lines should be the boxs and boxc for the same box. ");
+                        addToProblemList("The provided lines should be the boxs and boxc for the same box. ");
                         return false; 
                     }
                 } else { 
-                    System.out.println("The provided line should be boxs. ");
+                    addToProblemList("The provided line should be boxs. ");
                     return false; 
                 }
             } else if(p.getNum()-1 == i1 &&  p1 instanceof boxClosingLine) { 
@@ -709,31 +745,31 @@ public class Prove {
                                 if(((ImpliesStatement) pp).nestedStatementLeft.equalsTo(l1) && ((ImpliesStatement) pp).nestedStatementRight.equalsTo(l2)) { 
                                     return true;
                                 } else { 
-                                    System.out.println("This line should be produced by the provided two lines. ");
+                                    addToProblemList("This line should be produced by the provided two lines. ");
                                     return false;
                                 }
                             } else { 
-                                System.out.println("This line should be a impliesStatement. ");
+                                addToProblemList("This line should be a impliesStatement. ");
                                 return false;
                             }
                         } else { 
-                            System.out.println("The provided line's rule shoud be assume. ");
+                            addToProblemList("The provided line's rule shoud be assume. ");
                             return false;
                         }
                     } else { 
-                        System.out.println("The provided lines should be the boxs and boxc for the same box. ");
+                        addToProblemList("The provided lines should be the boxs and boxc for the same box. ");
                         return false; 
                     }
                 } else { 
-                    System.out.println("The provided line should be boxs. ");
+                    addToProblemList("The provided line should be boxs. ");
                     return false; 
                 }
             } else { 
-                System.out.println("The provided lines should be boxStarting line. ");
+                addToProblemList("The provided lines should be boxStarting line. ");
                 return false;
             }
         } else { 
-            System.out.println("The provided lines should not be givenLine. ");
+            addToProblemList("The provided lines should not be givenLine. ");
             return false;
         }
     }
@@ -754,27 +790,27 @@ public class Prove {
                                     if(pp.equalsTo(new NotStatement(l1))) { 
                                         return true;
                                     } else { 
-                                        System.out.println("This line should be a notStatement produced by the first line. ");
+                                        addToProblemList("This line should be a notStatement produced by the first line. ");
                                         return false;
                                     }
                                 } else { 
-                                    System.out.println("The second line should be falsity. ");
+                                    addToProblemList("The second line should be falsity. ");
                                     return false; 
                                 }
                             } else { 
-                                System.out.println("This line should be a notStatement. ");
+                                addToProblemList("This line should be a notStatement. ");
                                 return false; 
                             }
                         } else { 
-                            System.out.println("The given line's rule shoud be assume. ");
+                            addToProblemList("The given line's rule shoud be assume. ");
                             return false;
                         }
                     } else { 
-                        System.out.println("The provided lines should be the boxs and boxc for the same box. ");
+                        addToProblemList("The provided lines should be the boxs and boxc for the same box. ");
                         return false; 
                     }
                 } else { 
-                    System.out.println("The provided line should be boxs. ");
+                    addToProblemList("The provided line should be boxs. ");
                     return false; 
                 }
             } else if(p.getNum()-1 == i1 &&  p1 instanceof boxClosingLine) { 
@@ -789,35 +825,35 @@ public class Prove {
                                     if(pp.equalsTo(new NotStatement(l1))) { 
                                         return true;
                                     } else { 
-                                        System.out.println("This line should be a notStatement produced by the first line. ");
+                                        addToProblemList("This line should be a notStatement produced by the first line. ");
                                         return false;
                                     }
                                 } else { 
-                                    System.out.println("The second line should be falsity. ");
+                                    addToProblemList("The second line should be falsity. ");
                                     return false; 
                                 }
                             } else { 
-                                System.out.println("This line should be a notStatement. ");
+                                addToProblemList("This line should be a notStatement. ");
                                 return false; 
                             }
                         } else { 
-                            System.out.println("The given line's rule shoud be assume. ");
+                            addToProblemList("The given line's rule shoud be assume. ");
                             return false;
                         }
                     } else { 
-                        System.out.println("The provided lines should be the boxs and boxc for the same box. ");
+                        addToProblemList("The provided lines should be the boxs and boxc for the same box. ");
                         return false; 
                     }
                 } else { 
-                    System.out.println("The provided line should be boxs. ");
+                    addToProblemList("The provided line should be boxs. ");
                     return false; 
                 }
             } else { 
-                System.out.println("The provided lines should be boxStarting line. ");
+                addToProblemList("The provided lines should be boxStarting line. ");
                 return false;
             }
         } else { 
-            System.out.println("The provided lines should not be givenLine. ");
+            addToProblemList("The provided lines should not be givenLine. ");
             return false;
         }
     }
@@ -829,26 +865,26 @@ public class Prove {
                     if(((OrStatement) a1).nestedStatementRight.equalsTo(s)) { 
                         return true;
                     } else { 
-                        System.out.println("This line should be a part of the first line. ");
+                        addToProblemList("This line should be a part of the first line. ");
                         return false;
                     }
                 } else if(((NotStatement) a2).nestedStatement.equalsTo(((OrStatement) a1).nestedStatementRight)) { 
                     if(((OrStatement) a1).nestedStatementRight.equalsTo(s)) { 
                         return true;
                     } else {
-                        System.out.println("This line should be a part of the first line. ");
+                        addToProblemList("This line should be a part of the first line. ");
                         return false;
                     }
                 } else { 
-                    System.out.println("The second line should be a notStatement produced by a part of first line. ");
+                    addToProblemList("The second line should be a notStatement produced by a part of first line. ");
                     return false;
                 }
             } else { 
-                System.out.println("The second line should be notStatement. ");
+                addToProblemList("The second line should be notStatement. ");
                 return false; 
             }
         } else { 
-            System.out.println("The first line should be orStatement. ");
+            addToProblemList("The first line should be orStatement. ");
             return false;
         }
     }
@@ -872,14 +908,14 @@ public class Prove {
                                         if(((NotStatement) l1).nestedStatement.equalsTo(pp)) { 
                                             return true; 
                                         } else {
-                                            System.out.println("This line should be a part from the first line. ");
+                                            addToProblemList("This line should be a part from the first line. ");
                                             return false;
                                         }
                                     } else if(pp instanceof NotStatement) {
                                         if(((NotStatement) pp).nestedStatement.equalsTo(l1)) { 
                                             return true; 
                                         } else {
-                                            System.out.println("the first line should be a part from this line. ");
+                                            addToProblemList("the first line should be a part from this line. ");
                                             return false;
                                         }
                                     } else { 
@@ -887,23 +923,23 @@ public class Prove {
                                     }
                                      
                                 } else { 
-                                    System.out.println("The second line should be falsity. ");
+                                    addToProblemList("The second line should be falsity. ");
                                     return false; 
                                 }
                             } else {
-                                System.out.println("The top provided line or this line should be a notStatment. ");
+                                addToProblemList("The top provided line or this line should be a notStatment. ");
                                 return false; 
                             }
                         } else { 
-                            System.out.println("The given line's rule shoud be assume. ");
+                            addToProblemList("The given line's rule shoud be assume. ");
                             return false;
                         }
                     } else { 
-                        System.out.println("The provided lines should be the boxs and boxc for the same box. ");
+                        addToProblemList("The provided lines should be the boxs and boxc for the same box. ");
                         return false; 
                     }
                 } else { 
-                    System.out.println("The provided line should be boxs. ");
+                    addToProblemList("The provided line should be boxs. ");
                     return false; 
                 }
             } else if(p.getNum()-1 == i1 &&  p1 instanceof boxClosingLine) { 
@@ -919,14 +955,14 @@ public class Prove {
                                         if(((NotStatement) l1).nestedStatement.equalsTo(pp)) { 
                                             return true; 
                                         } else {
-                                            System.out.println("This line should be a part from the first line. ");
+                                            addToProblemList("This line should be a part from the first line. ");
                                             return false;
                                         }
                                     } else if(pp instanceof NotStatement) {
                                         if(((NotStatement) pp).nestedStatement.equalsTo(l1)) { 
                                             return true; 
                                         } else {
-                                            System.out.println("the first line should be a part from this line. ");
+                                            addToProblemList("the first line should be a part from this line. ");
                                             return false;
                                         }
                                     } else { 
@@ -934,31 +970,31 @@ public class Prove {
                                     }
                                      
                                 } else { 
-                                    System.out.println("The second line should be falsity. ");
+                                    addToProblemList("The second line should be falsity. ");
                                     return false; 
                                 }
                             } else {
-                                System.out.println("The top provided line or this line should be a notStatment. ");
+                                addToProblemList("The top provided line or this line should be a notStatment. ");
                                 return false; 
                             }
                         } else { 
-                            System.out.println("The given line's rule shoud be assume. ");
+                            addToProblemList("The given line's rule shoud be assume. ");
                             return false;
                         }
                     } else { 
-                        System.out.println("The provided lines should be the boxs and boxc for the same box. ");
+                        addToProblemList("The provided lines should be the boxs and boxc for the same box. ");
                         return false; 
                     }
                 } else { 
-                    System.out.println("The provided line should be boxs. ");
+                    addToProblemList("The provided line should be boxs. ");
                     return false; 
                 }
             } else { 
-                System.out.println("The provided lines should be boxStarting line. ");
+                addToProblemList("The provided lines should be boxStarting line. ");
                 return false;
             } 
         } else { 
-            System.out.println("The provided lines should not be givenLine. ");
+            addToProblemList("The provided lines should not be givenLine. ");
             return false;
         }
     }
