@@ -257,7 +257,12 @@ public class ProveLine extends VBox {
             if(arguments[i].getText().isEmpty()) { 
                 result[i] = 0;
             } else { 
-                result[i] = Integer.parseInt(arguments[i].getText());
+                try { 
+                    result[i] = Integer.parseInt(arguments[i].getText());
+                } catch (NumberFormatException e) {
+                    result[i] = 0;
+                } 
+                
             }
         }
         return result;
