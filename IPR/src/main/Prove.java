@@ -295,7 +295,6 @@ public class Prove {
     }
     
     private void updateLegalArgs(ProveLine pl) {
-        System.out.println("Updating legal args for line number " + pl.getNum());
         int position = pl.getNum()-givenLineNum-1;
         List<ProveLine> below = new ArrayList<ProveLine>(); 
         
@@ -347,11 +346,9 @@ public class Prove {
                 }
                 //if upper is boxc
                 else if(upper instanceof boxClosingLine) { 
-                    System.out.println("aa");
                     for(VBox v:((boxClosingLine)upper).getStartLine().getLegalArgs()) { 
                         pl.addLegalArgs(v);
                     }
-                    System.out.println(pl.getLegalArgs());
                     pl.addLegalArgs(upper);
                     pl.addLegalArgs(((boxClosingLine)upper).getStartLine());
                 } else { 
@@ -518,7 +515,6 @@ public class Prove {
                 //if oneupper is twoboxc
                 if(upper instanceof TwoBoxClosingLine && findParentBox(pl).getLineInBox().contains(items.get(pl.getNum()-givenLineNum)) && !items.get(pl.getNum()-givenLineNum).equals(findParentBox(pl).getEndLine())) { 
                     if(!((TwoBoxClosingLine) upper).getStartLine().getFirst()) { 
-                        System.out.println("a");
                         items.get(pl.getNum()-givenLineNum).removeLegalArgs(upper);
                         items.get(pl.getNum()-givenLineNum).removeLegalArgs(((boxClosingLine)upper).getStartLine());
                         items.get(pl.getNum()-givenLineNum).removeLegalArgs(((TwoBoxClosingLine) upper).getStartLine().getPair());
@@ -1066,7 +1062,6 @@ public class Prove {
                                 return false; 
                             }
                         } else { 
-                            System.out.println(l1.toString());
                             addToProblemList("The first provided line should be an OrStatement. ");
                             return false; 
                         }
@@ -1233,13 +1228,8 @@ public class Prove {
     @FXML 
     public void cancelButtonAction(ActionEvent event) { 
         
-        int idx = getCurrentFocus();
-        List<Integer> test = new ArrayList<Integer>(); 
-        if (idx != -1) {
-            
-            System.out.println(items.get(idx).getLegalArgs());
-            
-        }
+        items.removeAll(items);
+        
     }
     
     private int getCurrentFocus() { 
@@ -1412,7 +1402,6 @@ public class Prove {
                 updateLegalArgs(pl);
             }
         }
-        System.out.println(currentMaxLine);
     }
     //set in box for this line and update parent boxes' line in box
     private void assignBox(ProveLine pl, ProveLine upper) { 

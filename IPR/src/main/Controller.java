@@ -20,6 +20,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import lexerAndParser.*;
 /**
@@ -69,6 +70,7 @@ public class Controller {
     private Parent parent;
     private Scene scene;
     private Stage stage;
+    private int caretpos;
     
     public Controller() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("start.fxml"));
@@ -79,6 +81,7 @@ public class Controller {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        caretpos = 0;
     }
     
     public void launchController(Stage stage) {
@@ -94,7 +97,7 @@ public class Controller {
     public void andButtonAction(ActionEvent event) {
         
         if(textFieldFocus == 1) { 
-            goalArea.insertText(goalArea.getCaretPosition(), Symbol.AND.toString());
+            goalArea.insertText(caretpos, Symbol.AND.toString());
         } else { 
             //startArea.setText(startArea.getText() + Symbol.AND);
             //startArea.requestFocus();
@@ -107,7 +110,7 @@ public class Controller {
     @FXML
     public void orButtonAction(ActionEvent event) {
         if(textFieldFocus == 1) { 
-            goalArea.insertText(goalArea.getCaretPosition(), Symbol.OR.toString());
+            goalArea.insertText(caretpos, Symbol.OR.toString());
         } else { 
             startArea.insertText(startArea.getCaretPosition(), Symbol.OR.toString());
         }
@@ -116,7 +119,7 @@ public class Controller {
     @FXML
     public void impliesButtonAction(ActionEvent event) {
         if(textFieldFocus == 1) { 
-            goalArea.insertText(goalArea.getCaretPosition(), Symbol.IMPLIES.toString());
+            goalArea.insertText(caretpos, Symbol.IMPLIES.toString());
         } else { 
             startArea.insertText(startArea.getCaretPosition(), Symbol.IMPLIES.toString());
         }
@@ -125,7 +128,7 @@ public class Controller {
     @FXML
     public void notButtonAction(ActionEvent event) {
         if(textFieldFocus == 1) { 
-            goalArea.insertText(goalArea.getCaretPosition(), Symbol.NOT.toString());
+            goalArea.insertText(caretpos, Symbol.NOT.toString());
         } else { 
             startArea.insertText(startArea.getCaretPosition(), Symbol.NOT.toString());
         }
@@ -134,7 +137,7 @@ public class Controller {
     @FXML
     public void truthButtonAction(ActionEvent event) {
         if(textFieldFocus == 1) { 
-            goalArea.insertText(goalArea.getCaretPosition(), Symbol.TRUTH.toString());
+            goalArea.insertText(caretpos, Symbol.TRUTH.toString());
         } else { 
             startArea.insertText(startArea.getCaretPosition(), Symbol.TRUTH.toString());
         }
@@ -143,7 +146,7 @@ public class Controller {
     @FXML
     public void thereesistsButtonAction(ActionEvent event) {
         if(textFieldFocus == 1) { 
-            goalArea.insertText(goalArea.getCaretPosition(), Symbol.THEREEXISTS.toString());
+            goalArea.insertText(caretpos, Symbol.THEREEXISTS.toString());
         } else { 
             startArea.insertText(startArea.getCaretPosition(), Symbol.THEREEXISTS.toString());
         }
@@ -152,7 +155,7 @@ public class Controller {
     @FXML
     public void iffButtonAction(ActionEvent event) {
         if(textFieldFocus == 1) { 
-            goalArea.insertText(goalArea.getCaretPosition(), Symbol.IFF.toString());
+            goalArea.insertText(caretpos, Symbol.IFF.toString());
         } else { 
             startArea.insertText(startArea.getCaretPosition(), Symbol.IFF.toString());
         }
@@ -161,7 +164,7 @@ public class Controller {
     @FXML
     public void equalsButtonAction(ActionEvent event) {
         if(textFieldFocus == 1) { 
-            goalArea.insertText(goalArea.getCaretPosition(), Symbol.EQUALS.toString());
+            goalArea.insertText(caretpos, Symbol.EQUALS.toString());
         } else { 
             startArea.insertText(startArea.getCaretPosition(), Symbol.EQUALS.toString());
         }
@@ -170,7 +173,8 @@ public class Controller {
     @FXML
     public void falsityButtonAction(ActionEvent event) {
         if(textFieldFocus == 1) { 
-            goalArea.insertText(goalArea.getCaretPosition(), Symbol.FALSITY.toString());
+            
+            goalArea.insertText(caretpos, Symbol.FALSITY.toString());
         } else { 
             startArea.insertText(startArea.getCaretPosition(), Symbol.FALSITY.toString());
         }
@@ -179,12 +183,15 @@ public class Controller {
     @FXML
     public void forallButtonAction(ActionEvent event) {
         if(textFieldFocus == 1) { 
-            goalArea.insertText(goalArea.getCaretPosition(), Symbol.FORALL.toString());
+            goalArea.insertText(caretpos, Symbol.FORALL.toString());
         } else { 
             startArea.insertText(startArea.getCaretPosition(), Symbol.FORALL.toString());
         }
     }
-    
+    @FXML 
+    public void goalRelease(KeyEvent event) { 
+        caretpos = goalArea.getCaretPosition();
+    }
     @FXML
     public void checkButtonAction(ActionEvent event) throws Exception {
         InputStream is;
@@ -225,8 +232,6 @@ public class Controller {
                 goalFormula = (LogicStatement) p.parse().value;
                 
                 
-                System.out.println(startFormulas.toString());
-                System.out.println(goalFormula.toString());
                 
                 Node  currentSource = (Node)  event.getSource(); 
                 Stage currentStage = (Stage) currentSource.getScene().getWindow();
@@ -235,6 +240,7 @@ public class Controller {
             } else { 
                 
                 System.out.println("You should input a goal formula");
+                
             }
         } catch (UnsupportedEncodingException e1) {
             e1.printStackTrace();
@@ -273,11 +279,13 @@ public class Controller {
     @FXML
     public void setFocusZero() { 
         textFieldFocus = 0; 
+        caretpos = startArea.getCaretPosition();
     }
     
     @FXML
     public void setFocusOne() { 
         textFieldFocus = 1; 
+        caretpos = goalArea.getCaretPosition();
     }
     
     @FXML //TODO
