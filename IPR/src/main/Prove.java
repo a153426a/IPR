@@ -1261,7 +1261,81 @@ public class Prove {
                     below.add(items.get(j));
                 }
             }
-            if(pl instanceof boxStartingLine) { 
+            if(pl instanceof TwoBoxStartingLine) { 
+                if(((TwoBoxStartingLine) pl).getFirst()) { 
+                    //remove the selected pl
+                    items.remove(pl);
+                    items.remove(((boxStartingLine) pl).getEndLine());
+                    items.remove(((TwoBoxStartingLine) pl).getPair()); 
+                    items.remove(((TwoBoxStartingLine) ((TwoBoxStartingLine) pl).getPair()).getEndLine());
+                    //reassign all numbers from the point
+                    reAssignAll(idx);
+                    //remove legalargs for all the existing pls
+                    for(ProveLine plpl:items) { 
+                        plpl.getLegalArgs().removeAll(plpl.getLegalArgs());
+                    }
+                    //update legalargs for all the existing pls
+                    for(ProveLine plpl:items) { 
+                        updateLegalArgs(plpl);
+                    }
+                    
+                    currentMaxLine-=4;
+                } else { 
+                    //remove the selected pl
+                    items.remove(pl);
+                    items.remove(((boxStartingLine) pl).getEndLine());
+                    items.remove(((TwoBoxStartingLine) pl).getPair()); 
+                    items.remove(((TwoBoxStartingLine) ((TwoBoxStartingLine) pl).getPair()).getEndLine());
+                    //reassign all numbers from the point
+                    reAssignAll(idx-2);
+                    //remove legalargs for all the existing pls
+                    for(ProveLine plpl:items) { 
+                        plpl.getLegalArgs().removeAll(plpl.getLegalArgs());
+                    }
+                    //update legalargs for all the existing pls
+                    for(ProveLine plpl:items) { 
+                        updateLegalArgs(plpl);
+                    }
+                    currentMaxLine-=4;
+                }
+                
+            } else if(pl instanceof TwoBoxClosingLine) {  
+                if(((TwoBoxClosingLine) pl).getStartLine().getFirst()) { 
+                    items.remove(pl); 
+                    items.remove(((TwoBoxClosingLine) pl).getStartLine()); 
+                    items.remove(((TwoBoxClosingLine) pl).getStartLine().getPair()); 
+                    items.remove(((TwoBoxClosingLine) pl).getStartLine().getPair().getEndLine());
+                    
+                    //reassign all numbers from the point
+                    reAssignAll(idx-1);
+                    //remove legalargs for all the existing pls
+                    for(ProveLine plpl:items) { 
+                        plpl.getLegalArgs().removeAll(plpl.getLegalArgs());
+                    }
+                    //update legalargs for all the existing pls
+                    for(ProveLine plpl:items) { 
+                        updateLegalArgs(plpl);
+                    }
+                    currentMaxLine-=4;
+                } else { 
+                    items.remove(pl); 
+                    items.remove(((TwoBoxClosingLine) pl).getStartLine()); 
+                    items.remove(((TwoBoxClosingLine) pl).getStartLine().getPair()); 
+                    items.remove(((TwoBoxClosingLine) pl).getStartLine().getPair().getEndLine());
+                    
+                    //reassign all numbers from the point
+                    reAssignAll(idx-3);
+                    //remove legalargs for all the existing pls
+                    for(ProveLine plpl:items) { 
+                        plpl.getLegalArgs().removeAll(plpl.getLegalArgs());
+                    }
+                    //update legalargs for all the existing pls
+                    for(ProveLine plpl:items) { 
+                        updateLegalArgs(plpl);
+                    }
+                    currentMaxLine-=4;
+                }
+            } else if(pl instanceof boxStartingLine) { 
                 //remove the selected pl
                 items.remove(pl);
                 items.remove(((boxStartingLine) pl).getEndLine());
@@ -1275,6 +1349,7 @@ public class Prove {
                 for(ProveLine plpl:items) { 
                     updateLegalArgs(plpl);
                 }
+                currentMaxLine-=2;
             } else if(pl instanceof boxClosingLine) { 
                 //remove the selected pl
                 items.remove(pl);
@@ -1289,6 +1364,7 @@ public class Prove {
                 for(ProveLine plpl:items) { 
                     updateLegalArgs(plpl);
                 }
+                currentMaxLine-=2;
             } else { 
                 //remove the selected pl
                 items.remove(pl);
@@ -1302,6 +1378,7 @@ public class Prove {
                 for(ProveLine plpl:items) { 
                     updateLegalArgs(plpl);
                 }
+                currentMaxLine-=1;
             }
             
         }
