@@ -41,16 +41,22 @@ public class boxStartingLine extends ProveLine {
         LineInBox.add(pl);
     }
     
-    public void deleteLineInBox(int num) { 
-        
+    public void deleteLineInBox(ProveLine pl) { 
+        if(LineInBox.contains(pl)) { 
+            
+            LineInBox.remove(pl);
+        }
     }
     
     public void addSubBoxes(boxStartingLine b) { 
         subBoxes.add(b);
     } 
     
-    public void deleteSubBoxed(int num) { 
-        
+    public void deleteSubBoxed(boxStartingLine b) { 
+        if(subBoxes.contains(b)) { 
+            
+            subBoxes.remove(b);
+        }
     }
     
     public boxClosingLine getEndLine() { 
