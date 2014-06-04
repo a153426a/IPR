@@ -2,11 +2,20 @@ package main;
 
 import ast.*;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import static javafx.collections.FXCollections.observableArrayList;
@@ -22,15 +31,24 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import lexerAndParser.Lexer;
 import lexerAndParser.parser;
@@ -57,8 +75,9 @@ public class Prove {
     
     private List<boxStartingLine> boxes;
 
-    
     private ObservableList<HBox> problemHBox;
+    
+    private File currentFile;
     
     /*
     @FXML
@@ -77,18 +96,356 @@ public class Prove {
     private Button andButton, IFFButton, orButton, impliesButton, notButton, truthButton, falsityButton, thereexistsButton, forallButton; 
     @FXML 
     private ListView<HBox> problemList;
-    
+    @FXML 
+    private Button deleteButton;
+    @FXML 
+    private GridPane outsidePane;
+    @FXML 
+    private MenuBar menuBar;
+    @FXML 
+    private Menu menuFile, menuView, menuHelp;
+    @FXML 
+    private MenuItem menuItemNew, menuItemOpen, menuItemSave, menuItemSaveAs, menuItemImport, menuItemClose, menuItemClearBracket, menuItemAddBracket, menuItemAbout; 
+    @FXML 
+    private GridPane ruleBar;
+    @FXML 
+    private Button MoveUp, MoveDown;
     
     
     public Prove() throws IOException { 
         
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Prove.fxml"));
         fxmlLoader.setController(this);
-        try {
-            parent = (Parent) fxmlLoader.load();
+            try {
+                parent = (Parent) fxmlLoader.load();
+
+                scene = new Scene(parent);
+            } catch (IOException e) {
+        }
         
-            scene = new Scene(parent);
-        } catch (IOException e) {
+        currentFile = null;
+        menuItemSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN));
+        
+        menuItemNew.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                menuItemNewAction();
+            }
+
+            private void menuItemNewAction() {
+                System.out.println("oh my god");
+            }
+        });  
+        
+        menuItemOpen.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                FileChooser fileChooser = new FileChooser();
+                configureFileChooser(fileChooser);
+                File file = fileChooser.showOpenDialog(stage);
+                if (file != null) {
+                    System.out.println("it should open something. ");
+                }
+            }
+
+            private void configureFileChooser(FileChooser fileChooser) {
+                fileChooser.setTitle("Choose which file to save to ");
+                fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("IPR", "*.ipr")
+                );
+            }
+        });  
+        
+        menuItemSave.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                if(currentFile != null) { 
+                    PrintWriter writer = null;
+                    try {
+                        writer = new PrintWriter(currentFile, "UTF-8");
+                        saveInPrintWriter(writer);
+                    } catch (FileNotFoundException ex) {
+                        Logger.getLogger(Prove.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (UnsupportedEncodingException ex) {
+                        Logger.getLogger(Prove.class.getName()).log(Level.SEVERE, null, ex);
+                    } finally {
+                        writer.close();
+                    }
+                } else { 
+                    FileChooser fileChooser = new FileChooser();
+                    configureFileChooser(fileChooser);
+                    File file = fileChooser.showSaveDialog(stage);
+
+                    if (file != null) {
+                        if(!file.getName().contains(".ipr")) { 
+                            file = new File(file.getAbsolutePath()+".ipr");
+                        }
+                        PrintWriter writer = null;
+                        try {
+                            writer = new PrintWriter(file, "UTF-8");
+                            saveInPrintWriter(writer);
+                        } catch (FileNotFoundException ex) {
+                            Logger.getLogger(Prove.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (UnsupportedEncodingException ex) {
+                            Logger.getLogger(Prove.class.getName()).log(Level.SEVERE, null, ex);
+                        } finally {
+                            currentFile = file;
+                            writer.close();
+                        }
+                    }
+                }
+                
+            }
+            
+            private void configureFileChooser(FileChooser fileChooser) {
+                fileChooser.setTitle("Save file ");
+                fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("IPR", "*.ipr")
+                );
+            }
+
+            private void saveInPrintWriter(PrintWriter writer) {
+                for (LogicStatement l:startStatements) { 
+                    writer.println(l);
+                }
+                writer.println("\n");
+                for (ProveLine p:items) { 
+                    writer.println(p);
+                }
+                writer.println("\n");
+                writer.println(goalStatement);
+            }
+            
+        });  
+        
+        menuItemSaveAs.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                FileChooser fileChooser = new FileChooser();
+                configureFileChooser(fileChooser);
+                File file = fileChooser.showOpenDialog(stage);
+                if (file != null) {
+                    if(!file.getName().contains(".ipr")) { 
+                        file = new File(file.getAbsolutePath()+".ipr");
+                    }
+                    PrintWriter writer = null;
+                    try {
+                        writer = new PrintWriter(file, "UTF-8");
+                        saveInPrintWriter(writer);
+                    } catch (FileNotFoundException ex) {
+                        Logger.getLogger(Prove.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (UnsupportedEncodingException ex) {
+                       Logger.getLogger(Prove.class.getName()).log(Level.SEVERE, null, ex);
+                    } finally {
+                        currentFile = file;
+                        writer.close();
+                    }
+                }
+            }
+
+            private void configureFileChooser(FileChooser fileChooser) {
+                fileChooser.setTitle("Choose which file to save to ");
+                fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("IPR", "*.ipr")
+                );
+            }
+
+            private void saveInPrintWriter(PrintWriter writer) {
+                for (LogicStatement l:startStatements) { 
+                    writer.println(l);
+                }
+                writer.println("0sf");
+                for (ProveLine p:items) { 
+                    if(p instanceof TwoBoxStartingLine) { 
+                        writer.println("0tbs"); 
+                    } else if(p instanceof TwoBoxClosingLine) { 
+                        writer.println("0tbc"); 
+                    } else if(p instanceof boxStartingLine) { 
+                        writer.println("0bs"); 
+                    } else if(p instanceof boxClosingLine) { 
+                        writer.println("0bc"); 
+                    } 
+                    if(p.getFml().getText().equals("")) { 
+                        writer.println("0empty");
+                    } else { 
+                        writer.println(p.getFml().getText());
+                    }
+                }
+                writer.println("0pf");
+                writer.println(goalStatement);
+            }
+
+            
+        });  
+        
+        menuItemImport.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                menuItemNewAction();
+            }
+
+            private void menuItemNewAction() {
+                System.out.println("oh my god");
+            }
+        });  
+        
+        menuItemClose.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                menuItemNewAction();
+            }
+
+            private void menuItemNewAction() {
+                System.out.println("oh my god");
+            }
+        });  
+        
+        menuItemClearBracket.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                menuItemNewAction();
+            }
+
+            private void menuItemNewAction() {
+                System.out.println("oh my god");
+            }
+        });  
+        
+        menuItemAddBracket.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                menuItemNewAction();
+            }
+
+            private void menuItemNewAction() {
+                System.out.println("oh my god");
+            }
+        });  
+        
+        menuItemAbout.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                menuItemNewAction();
+            }
+
+            private void menuItemNewAction() {
+                System.out.println("oh my god");
+            }
+        });  
+        
+        createTooltip();
+        colorRuleBar();
+        
+    }
+    
+    private void createTooltip() { 
+        Tooltip andIT = new Tooltip();
+        Tooltip andET = new Tooltip();
+        Tooltip impliesIT = new Tooltip();
+        Tooltip impliesET = new Tooltip();
+        Tooltip orIT = new Tooltip();
+        Tooltip orET = new Tooltip();
+        Tooltip truthIT = new Tooltip();
+        Tooltip falsityIT = new Tooltip();
+        Tooltip falsityET = new Tooltip();
+        Tooltip IFFIT = new Tooltip();
+        Tooltip IFFET = new Tooltip();
+        Tooltip notIT = new Tooltip();
+        Tooltip notET = new Tooltip();
+        Tooltip notnotT = new Tooltip();
+        Tooltip assT = new Tooltip();
+        Tooltip lemmaT = new Tooltip();
+        Tooltip tickT = new Tooltip();
+        Tooltip createBoxT = new Tooltip();
+        Tooltip createBoxTwoT = new Tooltip();
+        Tooltip createNewLineT = new Tooltip();
+        Tooltip PCT = new Tooltip();
+                
+        andIT.setText("1  A\n2  B\n3  A∧B  ∧I(1,2)");
+        andIT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
+        andI.setTooltip(andIT);
+        
+        andET.setText("1  A∧B\n2  A  ∧E(1)\n3  B  ∧E(1)\n");
+        andET.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
+        andE.setTooltip(andET);
+        
+        impliesIT.setText("1  A\n2  B\n3  A→B  →I(1,2)\nasdf");
+        impliesIT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
+        impliesI.setTooltip(impliesIT);
+        
+        impliesET.setText("Tooltip for Button\nasdfasd");
+        impliesET.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
+        impliesE.setTooltip(impliesET);
+        
+        orIT.setText("Tooltip for Button\nasdfasd");
+        orIT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
+        orI.setTooltip(orIT);
+        
+        orET.setText("Tooltip for Button\nasdfasd");
+        orET.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
+        orE.setTooltip(orET);
+        
+        truthIT.setText("Tooltip for Button\nasdfasd");
+        truthIT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
+        truthI.setTooltip(truthIT);
+        
+        falsityIT.setText("Tooltip for Button\nasdfasd");
+        falsityIT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
+        falsityI.setTooltip(falsityIT);
+        
+        falsityET.setText("Tooltip for Button\nasdfasd");
+        falsityET.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
+        falsityE.setTooltip(falsityET);
+        
+        IFFIT.setText("Tooltip for Button\nasdfasd");
+        IFFIT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
+        IFFI.setTooltip(IFFIT);
+        
+        IFFET.setText("Tooltip for Button\nasdfasd");
+        IFFET.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
+        IFFE.setTooltip(IFFET);
+        
+        notIT.setText("Tooltip for Button\nasdfasd");
+        notIT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
+        notI.setTooltip(notIT);
+        
+        notET.setText("Tooltip for Button\nasdfasd");
+        notET.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
+        notE.setTooltip(notET);
+        
+        notnotT.setText("Tooltip for Button\nasdfasd");
+        notnotT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
+        notnot.setTooltip(notnotT);
+        
+        assT.setText("Tooltip for Button\nasdfasd");
+        assT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
+        ass.setTooltip(assT);
+        
+        lemmaT.setText("Tooltip for Button\nasdfasd");
+        lemmaT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
+        lemma.setTooltip(lemmaT);
+        
+        tickT.setText("Tooltip for Button\nasdfasd");
+        tickT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
+        tick.setTooltip(tickT);
+        
+        createBoxT.setText("Tooltip for Button\nasdfasd");
+        createBoxT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
+        createBox.setTooltip(createBoxT);
+        
+        createBoxTwoT.setText("Tooltip for Button\nasdfasd");
+        createBoxTwoT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
+        createBoxTwo.setTooltip(createBoxTwoT);
+        
+        createNewLineT.setText("Tooltip for Button\nasdfasd");
+        createNewLineT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
+        createNewLine.setTooltip(createNewLineT);
+        
+        PCT.setText("Tooltip for Button\nasdfasd");
+        PCT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
+        PC.setTooltip(PCT);
+        
+    }
+    
+    private void colorRuleBar() { 
+        ObservableList<Node> childrens = ruleBar.getChildren();
+        for(Node node: childrens) { 
+            if(node instanceof Pane) { 
+                if(ruleBar.getColumnIndex(node) % 2 != 0) { 
+                    node.setStyle("-fx-background-color: #dcdcdc;");
+                }
+            }
         }
     }
     
@@ -117,7 +474,7 @@ public class Prove {
             
         }
         
-        goalLine = new GivenLine(0,gf.toString(), "");
+        goalLine = new GivenLine(0, gf.toString(), "");
         
         //currentMaxLine++;
         //items.add(new ProveLine(currentMaxLine));
@@ -127,6 +484,9 @@ public class Prove {
         provePane.add(proveView, 1, 1);
         starBox.setAlignment(Pos.CENTER);
         goalLine.setAlignment(Pos.CENTER);
+        
+        
+        
         stage.setScene(scene);
         stage.hide();
         stage.show();
@@ -248,9 +608,9 @@ public class Prove {
                     //2 args, need a box
                 case "PC": return checkPC(fml, argumentsStatement[0], argumentsStatement[1]); 
                     
-                case "Tick":return checkTick(fml, argumentsStatement[0]);
+                case "✔":return checkTick(fml, argumentsStatement[0]);
                 default: return false;  
-            } 
+            }
         }        else { 
             switch(ruleName) {
                 case "⊤I": return checkTruthI(fml);
@@ -1055,7 +1415,6 @@ public class Prove {
     }
     
     private boolean checkPC(LogicStatement pp, LogicStatement p1, LogicStatement p2) { 
-        System.out.println(p2);
         if(p2 instanceof Falsity) { 
             if(pp.equalsTo(new NotStatement(p1)) || p1.equalsTo(new NotStatement(pp))) { 
                 return true;
@@ -1435,7 +1794,7 @@ public class Prove {
     
     @FXML 
     public void applyTick(ActionEvent event) {
-        applyRule("Tick",1);
+        applyRule("✔",1);
     }
     
     @FXML 
@@ -1627,7 +1986,6 @@ public class Prove {
             
             
         }
-            System.out.println(currentMaxLine);
     }
     
     
@@ -1721,6 +2079,62 @@ public class Prove {
         } else { 
             items.get(i).getCurrentTextField().insertText(items.get(i).getCaretIndex(), Symbol.FORALL.toString());
         }
+    }
+    
+    @FXML 
+    public void moveUpButton(ActionEvent event) { 
+        int i = getCurrentFocus();
+        if(i==-1) { 
+            
+        } else { 
+            ProveLine pl = items.get(i);
+            if(!checkIfFirstLine(pl)) { 
+                ProveLine upper = items.get(pl.getNum()-givenLineNum-2);
+                putTo(pl, upper);
+            } 
+        }
+    }
+    
+    @FXML 
+    public void moveDownButton(ActionEvent event) { 
+        int i = getCurrentFocus();
+        if(i==-1) { 
+            
+        } else { 
+            ProveLine pl = items.get(i);
+            if(!items.get(items.size()-1).equals(pl)) { 
+                ProveLine down = items.get(pl.getNum()-givenLineNum);
+                putTo(down, pl);
+            } 
+        }
+    }
+    
+    private void putTo(ProveLine pl, ProveLine plpl) { 
+                String tmpS = plpl.getFml().getText();
+                plpl.getFml().setText(pl.getFml().getText());
+                pl.getFml().setText(tmpS);
+                
+                if(pl.getRuled() && plpl.getRuled()) { 
+                    HBox plhb = new HBox();
+                    plhb = plpl.setRulhb(pl.getRulhb()); 
+                    pl.setRulhb(plhb); 
+                } else if(!pl.getRuled() && plpl.getRuled()) { 
+                    HBox plhb = new HBox();
+                    plhb.getChildren().addAll(plpl.getRulhb().getChildren());
+                    plpl.resetRulhb(); 
+                    pl.setRulhb(plhb); 
+                    pl.setRuled(); 
+                    plpl.setNotRuled();
+                } else if(pl.getRuled() && !plpl.getRuled()) { 
+                    HBox plhb = new HBox();
+                    plhb.getChildren().addAll(pl.getRulhb().getChildren());
+                    pl.resetRulhb(); 
+                    plpl.setRulhb(plhb); 
+                    plpl.setRuled();
+                    pl.setNotRuled();
+                } else { 
+                    
+                }
     }
     
 }

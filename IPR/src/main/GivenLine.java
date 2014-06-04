@@ -6,6 +6,7 @@
 
 package main;
 
+import java.io.Serializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -15,7 +16,7 @@ import javafx.scene.layout.VBox;
  *
  * @author zl2511
  */
-public class GivenLine extends VBox { 
+public class GivenLine extends VBox implements Serializable { 
     
     private int number; 
     private String formula; 

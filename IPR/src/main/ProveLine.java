@@ -6,6 +6,7 @@
 package main;
 
 import java.awt.event.MouseAdapter;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.value.ChangeListener;
@@ -27,7 +28,7 @@ import javax.swing.event.CaretListener;
  *
  * @author zl2511
  */
-public class ProveLine extends VBox {
+public class ProveLine extends VBox implements Serializable {
     
     private HBox hb; 
     private Label num; 
@@ -247,6 +248,18 @@ public class ProveLine extends VBox {
         
     }
     
+    public HBox setRulhb(HBox hb) { 
+        HBox result = new HBox();
+        result.getChildren().addAll(rulhb.getChildren());
+        rulhb.getChildren().removeAll(rulhb.getChildren());
+        rulhb.getChildren().addAll(hb.getChildren());
+        return result; 
+    }
+    
+    public void resetRulhb() { 
+        rulhb.getChildren().removeAll(rulhb.getChildren());
+    }
+    
     public boolean haveArguments() { 
         return haveArgu;
     }
@@ -286,6 +299,10 @@ public class ProveLine extends VBox {
         
         ruled = true;
         
+    }
+    
+    public void setNotRuled() { 
+        ruled = false; 
     }
     
     public boolean getRuled() { 
