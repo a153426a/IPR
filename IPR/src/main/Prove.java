@@ -122,7 +122,6 @@ public class Prove {
                 scene = new Scene(parent);
             } catch (IOException e) {
         }
-        
         currentFile = null;
         menuItemSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN));
         
@@ -1678,6 +1677,7 @@ public class Prove {
             for(int i = 0; i < findParentBox(pl).getIndent(); i++) { 
                 pl.indent();
             }
+            pl.getRulhb().setStyle("-fx-border-color:white black white white;");
         }
     }
     //find this one's parentBox
@@ -1845,8 +1845,8 @@ public class Prove {
             
             bs.indent();
             bc.indent();
-            ((HBox) bs.getChildren().get(bs.getIndent())).setStyle("-fx-border-color:black white white white;");
-            ((HBox) bc.getChildren().get(bs.getIndent())).setStyle("-fx-border-color:white white black white;");
+            ((HBox) bs.getChildren().get(bs.getIndent())).setStyle("-fx-border-color:black black white white;");
+            ((HBox) bc.getChildren().get(bs.getIndent())).setStyle("-fx-border-color:white black black white;");
             updateLegalArgs(bs);
             updateLegalArgs(bc);
             
@@ -1873,8 +1873,8 @@ public class Prove {
                     items.get(selectedLine+3).addLegalArgs(bs);
                     items.get(selectedLine+3).addLegalArgs(bc);
                 }
-                ((HBox) bs.getChildren().get(bs.getIndent())).setStyle("-fx-border-color:black white white white;");
-                ((HBox) bc.getChildren().get(bs.getIndent())).setStyle("-fx-border-color:white white black white;");
+                ((HBox) bs.getChildren().get(bs.getIndent())).setStyle("-fx-border-color:black black white white;");
+                ((HBox) bc.getChildren().get(bs.getIndent())).setStyle("-fx-border-color:white black black white;");
                 updateLegalArgs(bs);
                 updateLegalArgs(bc);
             }
@@ -1906,6 +1906,45 @@ public class Prove {
                 bs.indent();
                 bc.indent();
             }
+            
+            if(findParentBox(bs).getParentBox().size()!=0) { 
+                for(boxStartingLine bsl:findParentBox(bs).getParentBox()) { 
+                    if(bsl.equals(findParentBox(bs).getParentBox().get(findParentBox(bs).getParentBox().size()-1))) { 
+                        int maxIntent = 0;
+                        for(ProveLine p:bsl.getLineInBox()) { 
+                            if(!p.equals(bs) && !p.equals(bc)) { 
+                                if(p.getIndent() > maxIntent) { 
+                                    maxIntent = p.getIndent();
+                                }
+                            }
+                        }
+                        if(maxIntent < bs.getIndent()) { 
+                            for(ProveLine p:bsl.getLineInBox()) { 
+                                if(!p.equals(bs) && !p.equals(bc)) { 
+                                    p.getRulhb().setPrefWidth(p.getRulhb().getPrefWidth()+50);
+                                }
+                            }
+                        }
+                    }
+                }
+            } else { 
+                int maxIntent = 0; 
+                for(ProveLine p:findParentBox(bs).getLineInBox()) { 
+                    if(!p.equals(bs) && !p.equals(bc)) { 
+                        if(p.getIndent() > maxIntent) { 
+                            maxIntent = p.getIndent();
+                        }
+                    }
+                }
+                if(maxIntent < bs.getIndent()) { 
+                    for(ProveLine p:findParentBox(bs).getLineInBox()) { 
+                        if(!p.equals(bs) && !p.equals(bc)) { 
+                            p.getRulhb().setPrefWidth(p.getRulhb().getPrefWidth()+50);
+                        }
+                    }
+                }
+            }
+            
         } 
     }
     
@@ -1955,10 +1994,10 @@ public class Prove {
             bco.indent();
             bst.indent();
             bct.indent();
-            ((HBox) bso.getChildren().get(bso.getIndent())).setStyle("-fx-border-color:black white white white;");
-            ((HBox) bco.getChildren().get(bco.getIndent())).setStyle("-fx-border-color:white white black white;");
-            ((HBox) bst.getChildren().get(bst.getIndent())).setStyle("-fx-border-color:black white white white;");
-            ((HBox) bct.getChildren().get(bct.getIndent())).setStyle("-fx-border-color:white white black white;");
+            ((HBox) bso.getChildren().get(bso.getIndent())).setStyle("-fx-border-color:black black white white;");
+            ((HBox) bco.getChildren().get(bco.getIndent())).setStyle("-fx-border-color:white black black white;");
+            ((HBox) bst.getChildren().get(bst.getIndent())).setStyle("-fx-border-color:black black white white;");
+            ((HBox) bct.getChildren().get(bct.getIndent())).setStyle("-fx-border-color:white black black white;");
             updateLegalArgs(bso);
             updateLegalArgs(bco);
             updateLegalArgs(bst);
@@ -1999,10 +2038,10 @@ public class Prove {
                 bco.indent();
                 bst.indent();
                 bct.indent();
-                ((HBox) bso.getChildren().get(bso.getIndent())).setStyle("-fx-border-color:black white white white;");
-                ((HBox) bco.getChildren().get(bco.getIndent())).setStyle("-fx-border-color:white white black white;");
-                ((HBox) bst.getChildren().get(bst.getIndent())).setStyle("-fx-border-color:black white white white;");
-                ((HBox) bct.getChildren().get(bct.getIndent())).setStyle("-fx-border-color:white white black white;");
+                ((HBox) bso.getChildren().get(bso.getIndent())).setStyle("-fx-border-color:black black white white;");
+                ((HBox) bco.getChildren().get(bco.getIndent())).setStyle("-fx-border-color:white black black white;");
+                ((HBox) bst.getChildren().get(bst.getIndent())).setStyle("-fx-border-color:black black white white;");
+                ((HBox) bct.getChildren().get(bct.getIndent())).setStyle("-fx-border-color:white black black white;");
                 assignBoxToBox(bso, bco, items.get(selectedLine)); 
                 assignBoxToBox(bst, bct, items.get(selectedLine)); 
                 if(!items.get(items.size()-1).equals(bct)) { 

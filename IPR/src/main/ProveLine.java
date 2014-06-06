@@ -93,7 +93,7 @@ public class ProveLine extends HBox implements Serializable {
         
         hb.setAlignment(Pos.CENTER_LEFT);
         rulhb.setAlignment(Pos.CENTER_LEFT);
-        
+        rulhb.setPrefWidth(400);
         this.getChildren().add(hb);
         this.setAlignment(Pos.CENTER_LEFT);
         

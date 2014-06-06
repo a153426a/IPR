@@ -8,7 +8,7 @@
 
 <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
   <children>
-    <GridPane layoutX="0.0" layoutY="0.0" prefHeight="720.0" prefWidth="1080.0">
+    <GridPane layoutX="0.0" layoutY="0.0" prefHeight="720.0" prefWidth="1080.0" >
       <children>
         <GridPane prefHeight="620.0" prefWidth="1080.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
           <children>

@@ -237,6 +237,8 @@ public class Controller {
                 Stage currentStage = (Stage) currentSource.getScene().getWindow();
                 Prove prove = new Prove(); 
                 prove.redirectprove(currentStage, startFormulas, goalFormula);
+                //change when need resize
+                currentStage.setResizable(false);
             } else { 
                 
                 System.out.println("You should input a goal formula");
