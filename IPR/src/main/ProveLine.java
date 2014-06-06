@@ -361,6 +361,7 @@ public class ProveLine extends VBox implements Serializable {
     public void indent() { 
         Label l = new Label(); 
         l.setPrefWidth(50); 
+        l.setStyle("-fx-border-color:white black white white;");
         hb.getChildren().add(0, l);
         indentTime++;
     }

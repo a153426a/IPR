@@ -1826,9 +1826,13 @@ public class Prove {
             
             bs.indent();
             bc.indent();
+            bs.setStyle("-fx-border-color:black black white white;");
+            bc.setStyle("-fx-border-color:white black black white;");
             updateLegalArgs(bs);
             updateLegalArgs(bc);
+            
         } else { 
+            
             if(!(items.get(selectedLine) instanceof TwoBoxClosingLine && ((TwoBoxClosingLine) items.get(selectedLine)).getStartLine().getFirst())) { 
                 currentMaxLine++;
                 boxStartingLine bs = new boxStartingLine(selectedLine+1+givenLineNum+1); 
@@ -1850,6 +1854,8 @@ public class Prove {
                     items.get(selectedLine+3).addLegalArgs(bs);
                     items.get(selectedLine+3).addLegalArgs(bc);
                 }
+                bs.setStyle("-fx-border-color:black black white black;");
+                bc.setStyle("-fx-border-color:white black black black;");
                 updateLegalArgs(bs);
                 updateLegalArgs(bc);
             }
@@ -1930,6 +1936,10 @@ public class Prove {
             bco.indent();
             bst.indent();
             bct.indent();
+            bso.setStyle("-fx-border-color:black black white black;");
+            bco.setStyle("-fx-border-color:white black black black;");
+            bst.setStyle("-fx-border-color:black black white black;");
+            bct.setStyle("-fx-border-color:white black black black;");
             updateLegalArgs(bso);
             updateLegalArgs(bco);
             updateLegalArgs(bst);
@@ -1970,6 +1980,10 @@ public class Prove {
                 bco.indent();
                 bst.indent();
                 bct.indent();
+                bso.setStyle("-fx-border-color:black black white black;");
+                bco.setStyle("-fx-border-color:white black black black;");
+                bst.setStyle("-fx-border-color:black black white black;");
+                bct.setStyle("-fx-border-color:white black black black;");
                 assignBoxToBox(bso, bco, items.get(selectedLine)); 
                 assignBoxToBox(bst, bct, items.get(selectedLine)); 
                 if(!items.get(items.size()-1).equals(bct)) { 
