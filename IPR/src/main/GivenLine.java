@@ -16,7 +16,7 @@ import javafx.scene.layout.VBox;
  *
  * @author zl2511
  */
-public class GivenLine extends VBox implements Serializable { 
+public class GivenLine extends HBox implements Serializable { 
     
     private int number; 
     private String formula; 

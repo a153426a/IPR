@@ -28,7 +28,7 @@ import javax.swing.event.CaretListener;
  *
  * @author zl2511
  */
-public class ProveLine extends VBox implements Serializable {
+public class ProveLine extends HBox implements Serializable {
     
     private HBox hb; 
     private Label num; 
@@ -40,7 +40,7 @@ public class ProveLine extends VBox implements Serializable {
     private boolean ruled; 
     private int focus; 
     private int caretIndex; 
-    private List<VBox> legalArgs; 
+    private List<HBox> legalArgs; 
     private boolean inBox;
     private int indentTime;
     
@@ -52,9 +52,8 @@ public class ProveLine extends VBox implements Serializable {
         caretIndex = 0; 
         rulhb = new HBox();
         inBox = false; 
-        legalArgs = new ArrayList<VBox>();
+        legalArgs = new ArrayList<HBox>();
         indentTime = 0; 
-        
         fml.focusedProperty().addListener(new ChangeListener<Boolean>() {
 
             @Override
@@ -96,11 +95,10 @@ public class ProveLine extends VBox implements Serializable {
         rulhb.setAlignment(Pos.CENTER_LEFT);
         
         this.getChildren().add(hb);
-        this.setAlignment(Pos.CENTER);
+        this.setAlignment(Pos.CENTER_LEFT);
         
         haveArgu = false;
         ruled = false; 
-        
     }
     
     public int getNum() { 
@@ -336,13 +334,13 @@ public class ProveLine extends VBox implements Serializable {
         inBox = true;
     }
     
-    public List<VBox> getLegalArgs() { 
+    public List<HBox> getLegalArgs() { 
         return legalArgs; 
     }
     
-    public void addLegalArgs(VBox i) { 
+    public void addLegalArgs(HBox i) { 
         boolean alreadyHas = false; 
-        for(VBox j:legalArgs) { 
+        for(HBox j:legalArgs) { 
             if(j.equals(i)){
                 alreadyHas = true;
             }
@@ -352,7 +350,7 @@ public class ProveLine extends VBox implements Serializable {
         }
     }
     
-    public void removeLegalArgs(VBox i){ 
+    public void removeLegalArgs(HBox i){ 
         if(legalArgs.contains(i)) { 
             legalArgs.remove(i);
         }
@@ -361,8 +359,8 @@ public class ProveLine extends VBox implements Serializable {
     public void indent() { 
         Label l = new Label(); 
         l.setPrefWidth(50); 
+        this.getChildren().add(0, l);
         l.setStyle("-fx-border-color:white black white white;");
-        hb.getChildren().add(0, l);
         indentTime++;
     }
     

@@ -514,36 +514,29 @@ public class Prove {
         problemHBox.removeAll(problemHBox);
         //check meaning 
         for (ProveLine p:items) { 
-            addToProblemList("Checking line number " + p.getNum() + ". ");
             if (!checkProveLine(p)) { 
                 result = false; 
-                addToProblemList("Line number " + p.getNum() + " is wrong. ");
             } else { 
-                addToProblemList("Line number " + p.getNum() + " is correct. ");
             }
         }
         if(items.size()>0) { 
             if(result && !stringToLS(items.get(items.size()-1).getFml().getText()).equalsTo(goalStatement)) { 
-                addToProblemList("You did well, carry on and get the result. ");
+                addToProblemList("Result:", "You did well, carry on and get the result. ");
             } else if (result && stringToLS(items.get(items.size()-1).getFml().getText()).equalsTo(goalStatement)) { 
-                addToProblemList("Congratulations! You have got the solution! ");
+                addToProblemList("Result:", "Congratulations! You have got the solution! ");
             } else { 
-                addToProblemList("Something's gone wrong. Keep calm and carry on! ");
+                addToProblemList("Result:", "Something's gone wrong. Keep calm and carry on! ");
             }
         } else { 
-            addToProblemList("Ok. Don't be lazy, Let's get start.");
+            addToProblemList("Result:", "Ok. Don't be lazy, Let's get start.");
         }
         
         
         
     }
-    
-    private void addToProblemList(String s) { 
-        HBox hb = new HBox(); 
-        Label l = new Label(); 
-        l.setText(s);
-        hb.getChildren().add(l); 
-        problemHBox.add(hb);
+    private void addToProblemList(String i, String s) { 
+        ProblemAndErrors p = new ProblemAndErrors(i, s);
+        problemHBox.add(p);
     }
     
     private boolean checkProveLine(ProveLine p) throws Exception{ 
@@ -551,11 +544,11 @@ public class Prove {
         //TODO
         String ruleName = p.getRule(); 
         if (p.getFml().getText().equals("")) { 
-            addToProblemList("The Line number " + p.getNum()+ " is empty. ");
+            addToProblemList(new Integer(p.getNum()).toString(), "This line is empty. ");
             return false; 
         }
         if(!p.getRuled()) { 
-            addToProblemList("The Line number " + p.getNum() + " does not have a rule. ");
+            addToProblemList(new Integer(p.getNum()).toString(), "This line does not have a rule. ");
             return false; 
         }
         //check if correct
@@ -565,13 +558,13 @@ public class Prove {
             //check if the given aruments is valid
             //get array of arguments
             LogicStatement[] argumentsStatement = new LogicStatement[p.getArguments().length];
-            List<VBox> argumentLineNumber = new ArrayList<VBox>();
+            List<HBox> argumentLineNumber = new ArrayList<HBox>();
             for(int i = 0; i < p.getArguments().length; i++) { 
                 if(p.getArguments()[i]==0) { 
-                    addToProblemList("The Line number " + p.getNum() + " has not enough arguments or the input arguments are not number. "); 
+                    addToProblemList(new Integer(p.getNum()).toString(), "This line has not enough arguments or the input arguments are not number. "); 
                     return false; 
                 } else if (p.getArguments()[i]>currentMaxLine) { 
-                    addToProblemList("The given lines is invalid to be the arguments for the current line(You can not use these given lines as argument. )");
+                    addToProblemList(new Integer(p.getNum()).toString(), "The given lines is invalid to be the arguments for the current line(You can not use these given lines as argument. )");
                     return false;
                 } else { 
                     argumentLineNumber.add(findLine(p.getArguments()[i]));
@@ -582,46 +575,46 @@ public class Prove {
             
             
             if(!checkLegalArgs(argumentLineNumber, p.getLegalArgs())) { 
-                addToProblemList("The given lines is invalid to be the arguments for the current line(You can not use these given lines as argument. )");
+                addToProblemList(new Integer(p.getNum()).toString(), "The given lines is invalid to be the arguments for the current line(You can not use these given lines as argument. )");
                 return false; 
             }
             
             
             //check if the rules is applied correctly
             switch(ruleName) {
-                case "∧I": return checkAndI(fml, new AndStatement(argumentsStatement[0], argumentsStatement[1])); 
-                case "∧E": return checkAndE(fml, argumentsStatement[0]);
-                case "→E": return checkImpliesE(fml, argumentsStatement[0], argumentsStatement[1]);
-                case "∨I": return checkOrI(fml,argumentsStatement[0]); 
-                case "⊥I": return checkFalsityI(fml, argumentsStatement[0], argumentsStatement[1]);
-                case "⊥E": return checkFalsityE(fml, argumentsStatement[0]);
-                case "↔I": return checkIFFI(fml, argumentsStatement[0], argumentsStatement[1]);
-                case "↔E": return checkIFFE(fml, argumentsStatement[0], argumentsStatement[1]); 
-                case "¬E": return checkNotE(fml, argumentsStatement[0], argumentsStatement[1]);
-                case "¬¬": return checkNotNot(fml, argumentsStatement[0]);
+                case "∧I": return checkAndI(p.getNum(), fml, new AndStatement(argumentsStatement[0], argumentsStatement[1])); 
+                case "∧E": return checkAndE(p.getNum(), fml, argumentsStatement[0]);
+                case "→E": return checkImpliesE(p.getNum(), fml, argumentsStatement[0], argumentsStatement[1]);
+                case "∨I": return checkOrI(p.getNum(), fml,argumentsStatement[0]); 
+                case "⊥I": return checkFalsityI(p.getNum(), fml, argumentsStatement[0], argumentsStatement[1]);
+                case "⊥E": return checkFalsityE(p.getNum(), fml, argumentsStatement[0]);
+                case "↔I": return checkIFFI(p.getNum(), fml, argumentsStatement[0], argumentsStatement[1]);
+                case "↔E": return checkIFFE(p.getNum(), fml, argumentsStatement[0], argumentsStatement[1]); 
+                case "¬E": return checkNotE(p.getNum(), fml, argumentsStatement[0], argumentsStatement[1]);
+                case "¬¬": return checkNotNot(p.getNum(), fml, argumentsStatement[0]);
                     //2 args, need a box
-                case "→I": return checkImpliesI(p, p.getArguments()[0], p.getArguments()[1]);
+                case "→I": return checkImpliesI(p.getNum(), p, p.getArguments()[0], p.getArguments()[1]);
                     //2 args, need a box
-                case "¬I": return checkNotI(p, p.getArguments()[0], p.getArguments()[1]);
+                case "¬I": return checkNotI(p.getNum(), p, p.getArguments()[0], p.getArguments()[1]);
                     //5 args, need two boxes 
-                case "∨E": return checkOrE(p, p.getArguments()[0], p.getArguments()[1], p.getArguments()[2], p.getArguments()[3], p.getArguments()[4]);
+                case "∨E": return checkOrE(p.getNum(), p, p.getArguments()[0], p.getArguments()[1], p.getArguments()[2], p.getArguments()[3], p.getArguments()[4]);
                     //2 args, need a box
-                case "PC": return checkPC(fml, argumentsStatement[0], argumentsStatement[1]); 
+                case "PC": return checkPC(p.getNum(), fml, argumentsStatement[0], argumentsStatement[1]); 
                     
-                case "✔":return checkTick(fml, argumentsStatement[0]);
+                case "✔":return checkTick(p.getNum(), fml, argumentsStatement[0]);
                 default: return false;  
             }
         }        else { 
             switch(ruleName) {
-                case "⊤I": return checkTruthI(fml);
-                case "ass": return checkAss(p);
-                case "lemma": return checkLemma(fml);
+                case "⊤I": return checkTruthI(p.getNum(), fml);
+                case "ass": return checkAss(p.getNum(), p);
+                case "lemma": return checkLemma(p.getNum(), fml);
             }
         }
         return false;
     }
     
-    private boolean checkLegalArgs(List<VBox> l1, List<VBox> l2) { 
+    private boolean checkLegalArgs(List<HBox> l1, List<HBox> l2) { 
         if(l2.containsAll(l1)) { 
             return true;
         } else { 
@@ -641,7 +634,7 @@ public class Prove {
         //if its first line and not a boxstarting line
         if(checkIfFirstLine(pl) && !(pl instanceof boxStartingLine)) { 
             for(int i = 0; i < givenLineNum; i++) { 
-                pl.addLegalArgs((VBox) starBox.getChildren().get(i));
+                pl.addLegalArgs((HBox) starBox.getChildren().get(i));
             }
             for(ProveLine plpl: below) { 
                 plpl.addLegalArgs(pl);
@@ -650,7 +643,7 @@ public class Prove {
         //if its first line and a boxstarting line
         else if(checkIfFirstLine(pl) && pl instanceof boxStartingLine) { 
             for(int i = 0; i < givenLineNum; i++) { 
-                pl.addLegalArgs((VBox) starBox.getChildren().get(i));
+                pl.addLegalArgs((HBox) starBox.getChildren().get(i));
             }
         } 
         //if its not a first line 
@@ -662,7 +655,7 @@ public class Prove {
                 //if upper is twoboxc 
                 if(upper instanceof TwoBoxClosingLine) { 
                     if(!((TwoBoxClosingLine) upper).getStartLine().getFirst()) { 
-                        for(VBox v:((boxClosingLine)upper).getStartLine().getLegalArgs()) { 
+                        for(HBox v:((boxClosingLine)upper).getStartLine().getLegalArgs()) { 
                             pl.addLegalArgs(v);
                         }
 
@@ -671,7 +664,7 @@ public class Prove {
                         pl.addLegalArgs(((TwoBoxClosingLine) upper).getStartLine().getPair());
                         pl.addLegalArgs(((TwoBoxClosingLine) upper).getStartLine().getPair().getEndLine());
                     } else { 
-                        for(VBox v:((boxClosingLine)upper).getStartLine().getLegalArgs()) { 
+                        for(HBox v:((boxClosingLine)upper).getStartLine().getLegalArgs()) { 
                             pl.addLegalArgs(v);
                         }
 
@@ -681,14 +674,14 @@ public class Prove {
                 }
                 //if upper is boxc
                 else if(upper instanceof boxClosingLine) { 
-                    for(VBox v:((boxClosingLine)upper).getStartLine().getLegalArgs()) { 
+                    for(HBox v:((boxClosingLine)upper).getStartLine().getLegalArgs()) { 
                         pl.addLegalArgs(v);
                     }
                     pl.addLegalArgs(upper);
                     pl.addLegalArgs(((boxClosingLine)upper).getStartLine());
                 } else { 
                     //add everything from upper
-                    for(VBox k:upper.getLegalArgs()) { 
+                    for(HBox k:upper.getLegalArgs()) { 
                         pl.addLegalArgs(k);
                     }
                     //if upper is immediateafter of two, need to take four off 
@@ -787,7 +780,7 @@ public class Prove {
             else if(pl.isInBox()) { 
                  if(upper instanceof TwoBoxClosingLine) { 
                     if(!((TwoBoxClosingLine) upper).getStartLine().getFirst()) { 
-                        for(VBox v:((boxClosingLine)upper).getStartLine().getLegalArgs()) { 
+                        for(HBox v:((boxClosingLine)upper).getStartLine().getLegalArgs()) { 
                             pl.addLegalArgs(v);
                         }
 
@@ -796,7 +789,7 @@ public class Prove {
                         pl.addLegalArgs(((TwoBoxClosingLine) upper).getStartLine().getPair());
                         pl.addLegalArgs(((TwoBoxClosingLine) upper).getStartLine().getPair().getEndLine());
                     } else { 
-                        for(VBox v:((boxClosingLine)upper).getStartLine().getLegalArgs()) { 
+                        for(HBox v:((boxClosingLine)upper).getStartLine().getLegalArgs()) { 
                             pl.addLegalArgs(v);
                         }
 
@@ -807,7 +800,7 @@ public class Prove {
                 //if upper is boxc
                 else if(upper instanceof boxClosingLine) { 
                     
-                    for(VBox v:((boxClosingLine)upper).getStartLine().getLegalArgs()) { 
+                    for(HBox v:((boxClosingLine)upper).getStartLine().getLegalArgs()) { 
                         pl.addLegalArgs(v);
                     }
                     
@@ -816,7 +809,7 @@ public class Prove {
                     
                 } else { 
                     //add everything from upper
-                    for(VBox k:upper.getLegalArgs()) { 
+                    for(HBox k:upper.getLegalArgs()) { 
                         pl.addLegalArgs(k);
                     }
                     //if upper is immediateafter of two, need to take four off 
@@ -867,7 +860,7 @@ public class Prove {
             else { 
                  if(upper instanceof TwoBoxClosingLine) { 
                     if(!((TwoBoxClosingLine) upper).getStartLine().getFirst()) { 
-                        for(VBox v:((boxClosingLine)upper).getStartLine().getLegalArgs()) { 
+                        for(HBox v:((boxClosingLine)upper).getStartLine().getLegalArgs()) { 
                             pl.addLegalArgs(v);
                         }
 
@@ -876,7 +869,7 @@ public class Prove {
                         pl.addLegalArgs(((TwoBoxClosingLine) upper).getStartLine().getPair());
                         pl.addLegalArgs(((TwoBoxClosingLine) upper).getStartLine().getPair().getEndLine());
                     } else { 
-                        for(VBox v:((boxClosingLine)upper).getStartLine().getLegalArgs()) { 
+                        for(HBox v:((boxClosingLine)upper).getStartLine().getLegalArgs()) { 
                             pl.addLegalArgs(v);
                         }
 
@@ -886,7 +879,7 @@ public class Prove {
                 }
                 //if upper is boxc
                 else if(upper instanceof boxClosingLine) { 
-                    for(VBox v:((boxClosingLine)upper).getStartLine().getLegalArgs()) { 
+                    for(HBox v:((boxClosingLine)upper).getStartLine().getLegalArgs()) { 
                         pl.addLegalArgs(v);
                     }
                     pl.addLegalArgs(upper);
@@ -894,7 +887,7 @@ public class Prove {
                     
                 } else { 
                     //add everything from upper
-                    for(VBox k:upper.getLegalArgs()) { 
+                    for(HBox k:upper.getLegalArgs()) { 
                         pl.addLegalArgs(k);
                     }
                     //if upper is immediateafter of two, need to take four off 
@@ -966,7 +959,7 @@ public class Prove {
     }
     
     //input Line number, return the given/prove line.toString() with that line number 
-    private VBox findLine(int i) { 
+    private HBox findLine(int i) { 
         if(i<=givenLineNum) { 
             return ((GivenLine)starBox.getChildren().get(i-1));
         } else { 
@@ -993,111 +986,119 @@ public class Prove {
     }
     
     
-    private boolean checkAndI(LogicStatement s, AndStatement a) { 
+    private boolean checkAndI(int ipp, LogicStatement s, AndStatement a) { 
         if(s instanceof AndStatement) { 
             
             if(((AndStatement)s).equalsTo(a)) { 
+                addToProblemList(new Integer(ipp).toString(), "✔");
                 return true;
             } else { 
-                addToProblemList("The provided two lines can not produce this line by AndI. ");
+                addToProblemList(new Integer(ipp).toString(), "The provided two lines can not produce this line by AndI. ");
                 return false; 
             }
         } else { 
-            addToProblemList("AndI can not be applied on a none AndStatemnet. ");
+            addToProblemList(new Integer(ipp).toString(), "AndI can not be applied on a none AndStatemnet. ");
             return false;
         }
     }
     
-    private boolean checkAndE(LogicStatement s, LogicStatement a){ 
+    private boolean checkAndE(int ipp, LogicStatement s, LogicStatement a){ 
         if(a instanceof AndStatement) { 
             if(((AndStatement) a).nestedStatementLeft.equalsTo(s) || ((AndStatement) a).nestedStatementRight.equalsTo(s)) { 
+                addToProblemList(new Integer(ipp).toString(), "✔");
                 return true;
             } else { 
-                addToProblemList("The provided line can not produce this line by AndE. ");
+                addToProblemList(new Integer(ipp).toString(), "The provided line can not produce this line by AndE. ");
                 return false; 
             }
         } else { 
-            addToProblemList("The provided line is not an AndStatement. ");
+            addToProblemList(new Integer(ipp).toString(), "The provided line is not an AndStatement. ");
             return false;
         }
     }
     
-    private boolean checkImpliesE(LogicStatement s, LogicStatement a1, LogicStatement a2) { 
+    private boolean checkImpliesE(int ipp, LogicStatement s, LogicStatement a1, LogicStatement a2) { 
         if(a1 instanceof ImpliesStatement && ((ImpliesStatement) a1).nestedStatementLeft.equalsTo(a2)|| a2 instanceof ImpliesStatement && ((ImpliesStatement) a2).nestedStatementLeft.equalsTo(a1)) { 
             if(a1 instanceof ImpliesStatement && ((ImpliesStatement) a1).nestedStatementLeft.equalsTo(a2) && !((ImpliesStatement) a1).nestedStatementRight.equalsTo(s)) { 
-                addToProblemList("This line should be on the right hand side of the first provided line. ");
+                addToProblemList(new Integer(ipp).toString(), "This line should be on the right hand side of the first provided line. ");
                 return false; 
             } else if (a2 instanceof ImpliesStatement && ((ImpliesStatement) a2).nestedStatementLeft.equalsTo(a1) && !((ImpliesStatement) a2).nestedStatementRight.equalsTo(s)) { 
-                addToProblemList("This line should be on the right hand side of the second provided line. ");
+                addToProblemList(new Integer(ipp).toString(), "This line should be on the right hand side of the second provided line. ");
                 return false; 
             } else { 
+                addToProblemList(new Integer(ipp).toString(), "✔");
                 return true; 
             }
         } else { 
-            addToProblemList("One of the provided lines should be an impliesStatement produced by the other. ");
+            addToProblemList(new Integer(ipp).toString(), "One of the provided lines should be an impliesStatement produced by the other. ");
             return false; 
         }
     }
     
-    private boolean checkOrI(LogicStatement s, LogicStatement a) { 
+    private boolean checkOrI(int ipp, LogicStatement s, LogicStatement a) { 
         if(s instanceof OrStatement) { 
             if(((OrStatement) s).nestedStatementLeft.equalsTo(a) || ((OrStatement) s).nestedStatementRight.equalsTo(a)) { 
+                addToProblemList(new Integer(ipp).toString(), "✔");
                 return true;
             } else { 
-                addToProblemList("The given line is not part of this OrStatement. ");
+                addToProblemList(new Integer(ipp).toString(), "The given line is not part of this OrStatement. ");
                 return false; 
             }
         } else { 
-            addToProblemList("The given line is not an OrStatement. ");
+            addToProblemList(new Integer(ipp).toString(), "The given line is not an OrStatement. ");
             return false;
         }
     }
     
-    private boolean checkTruthI(LogicStatement s) { 
+    private boolean checkTruthI(int ipp, LogicStatement s) { 
         if (s instanceof Truth) { 
+            addToProblemList(new Integer(ipp).toString(), "✔");
             return true;
         } else { 
-            addToProblemList("Truth should be introduced. ");
+            addToProblemList(new Integer(ipp).toString(), "Truth should be introduced. ");
             return false; 
         }
     }
     
-    private boolean checkFalsityI(LogicStatement s, LogicStatement a1, LogicStatement a2) { 
+    private boolean checkFalsityI(int ipp, LogicStatement s, LogicStatement a1, LogicStatement a2) { 
         if (s instanceof Falsity) {
             if (a2 instanceof NotStatement) {
                 if (new NotStatement(a1).equalsTo(((NotStatement) a2))) { 
+                    addToProblemList(new Integer(ipp).toString(), "✔");
                     return true;
                 } else { 
-                    addToProblemList("The second provided line should be a NotStatement created by first given line. ");
+                    addToProblemList(new Integer(ipp).toString(), "The second provided line should be a NotStatement created by first given line. ");
                     return false; 
                 }
             } else if (a1 instanceof NotStatement) {
                 if (new NotStatement(a2).equalsTo(((NotStatement) a1))) { 
+                    addToProblemList(new Integer(ipp).toString(), "✔");
                     return true;
                 } else { 
-                    addToProblemList("The first provided line should be a NotStatement created by second given line. ");
+                    addToProblemList(new Integer(ipp).toString(), "The first provided line should be a NotStatement created by second given line. ");
                     return false; 
                 }
             } else { 
-                addToProblemList("One of the provided line should be a NotStatement. ");
+                addToProblemList(new Integer(ipp).toString(), "One of the provided line should be a NotStatement. ");
                 return false; 
             }
         } else { 
-            addToProblemList("Falsity should be introduced. ");
+            addToProblemList(new Integer(ipp).toString(), "Falsity should be introduced. ");
             return false; 
         }
     }
     
-    private boolean checkFalsityE(LogicStatement s, LogicStatement a) { 
+    private boolean checkFalsityE(int ipp, LogicStatement s, LogicStatement a) { 
         if (a instanceof Falsity) { 
+            addToProblemList(new Integer(ipp).toString(), "✔");
             return true;
         } else { 
-            addToProblemList("The givne line should be falsity. ");
+            addToProblemList(new Integer(ipp).toString(), "The givne line should be falsity. ");
             return false; 
         }
     }
     
-    private boolean checkIFFI(LogicStatement s, LogicStatement a1, LogicStatement a2) { 
+    private boolean checkIFFI(int ipp, LogicStatement s, LogicStatement a1, LogicStatement a2) { 
         if(s instanceof IFFStatement) { 
             if(a1 instanceof ImpliesStatement) {
                 if(a2 instanceof ImpliesStatement) { 
@@ -1105,106 +1106,114 @@ public class Prove {
                         &&((ImpliesStatement) a1).nestedStatementRight.equalsTo(((ImpliesStatement) a2).nestedStatementLeft)) { 
                         if(((IFFStatement) s).nestedStatementLeft.equalsTo(((ImpliesStatement) a1).nestedStatementLeft) 
                             && ((IFFStatement) s).nestedStatementRight.equalsTo(((ImpliesStatement) a1).nestedStatementRight)) { 
+                            addToProblemList(new Integer(ipp).toString(), "✔");
                             return true;
                         } else { 
-                            addToProblemList("The provided two lines can not produce this formula by IFFI. ");
+                            addToProblemList(new Integer(ipp).toString(), "The provided two lines can not produce this formula by IFFI. ");
                             return false; 
                         } 
                     } else { 
-                        addToProblemList("The left part of the first provided line should be same as the right part of the right part of the second provided line and vise versa. ");
+                        addToProblemList(new Integer(ipp).toString(), "The left part of the first provided line should be same as the right part of the right part of the second provided line and vise versa. ");
                         return false; 
                     }
                 } else { 
-                    addToProblemList("The second provided line should be a ImpliesStatement. ");
+                    addToProblemList(new Integer(ipp).toString(), "The second provided line should be a ImpliesStatement. ");
                     return false; 
                 }
             } else { 
-                addToProblemList("The first provided line should be a ImpliesStatement. ");
+                addToProblemList(new Integer(ipp).toString(), "The first provided line should be a ImpliesStatement. ");
                 return false; 
             }
         } else { 
-            addToProblemList("This line should be a IFFStatement. ");
+            addToProblemList(new Integer(ipp).toString(), "This line should be a IFFStatement. ");
             return false; 
         }
     }
     
-    private boolean checkIFFE(LogicStatement s, LogicStatement a1, LogicStatement a2) { 
+    private boolean checkIFFE(int ipp, LogicStatement s, LogicStatement a1, LogicStatement a2) { 
         if (a1 instanceof IFFStatement) { 
             if (((IFFStatement) a1).nestedStatementLeft.equalsTo(a2) || ((IFFStatement) a1).nestedStatementRight.equalsTo(a2)) { 
                 if(((IFFStatement) a1).nestedStatementLeft.equalsTo(a2) && ((IFFStatement) a1).nestedStatementRight.equalsTo(s)) { 
+                    addToProblemList(new Integer(ipp).toString(), "✔");
                     return true;
                 } else if(((IFFStatement) a1).nestedStatementLeft.equalsTo(s) && ((IFFStatement) a1).nestedStatementRight.equalsTo(a2)) { 
+                    addToProblemList(new Integer(ipp).toString(), "✔");
                     return true; 
                 } else { 
-                    addToProblemList("The second given line should not be on the same side with this line");
+                    addToProblemList(new Integer(ipp).toString(), "The second given line should not be on the same side with this line");
                     return false; 
                 }
             } else { 
-                addToProblemList("The second given line should be a part of the first given line. ");
+                addToProblemList(new Integer(ipp).toString(), "The second given line should be a part of the first given line. ");
                 return false;
             }
         } else if (a2 instanceof IFFStatement) { 
             if (((IFFStatement) a2).nestedStatementLeft.equalsTo(a1) || ((IFFStatement) a2).nestedStatementRight.equalsTo(a1)) { 
                 if(((IFFStatement) a2).nestedStatementLeft.equalsTo(a1) && ((IFFStatement) a2).nestedStatementRight.equalsTo(s)) { 
+                    addToProblemList(new Integer(ipp).toString(), "✔");
                     return true;
                 } else if(((IFFStatement) a2).nestedStatementLeft.equalsTo(s) && ((IFFStatement) a2).nestedStatementRight.equalsTo(a1)) { 
+                    addToProblemList(new Integer(ipp).toString(), "✔");
                     return true; 
                 } else { 
-                    addToProblemList("The first provided line should not be on the same side with this line");
+                    addToProblemList(new Integer(ipp).toString(), "The first provided line should not be on the same side with this line");
                     return false; 
                 }
             } else { 
-                addToProblemList("The first provided line should be a part of the second provided line. ");
+                addToProblemList(new Integer(ipp).toString(), "The first provided line should be a part of the second provided line. ");
                 return false;
             }
         } else { 
-            addToProblemList("One of the provided line should be a IFFStatement. ");
+            addToProblemList(new Integer(ipp).toString(), "One of the provided line should be a IFFStatement. ");
             return false;
         }
     }
     
-    private boolean checkNotE(LogicStatement s, LogicStatement a1, LogicStatement a2) { 
+    private boolean checkNotE(int ipp, LogicStatement s, LogicStatement a1, LogicStatement a2) { 
         if (s instanceof Falsity) { 
             if(a1 instanceof NotStatement || a2 instanceof NotStatement) { 
                 if(a1 instanceof NotStatement && new NotStatement(a2).equalsTo(a1)) { 
+                    addToProblemList(new Integer(ipp).toString(), "✔");
                     return true;
                 } else if(a2 instanceof NotStatement && new NotStatement(a1).equalsTo(a2)) { 
+                    addToProblemList(new Integer(ipp).toString(), "✔");
                     return true; 
                 } else { 
-                    addToProblemList("One of the provided line should be a NotStatement produced by the other provided line. ");
+                    addToProblemList(new Integer(ipp).toString(), "One of the provided line should be a NotStatement produced by the other provided line. ");
                     return false; 
                 }
                 
             } else { 
-                addToProblemList("One or the provided line should be a notStatement. ");
+                addToProblemList(new Integer(ipp).toString(), "One or the provided line should be a notStatement. ");
                 return false; 
             }  
         } else { 
-            addToProblemList("This line should be falsity. ");
+            addToProblemList(new Integer(ipp).toString(), "This line should be falsity. ");
             return false; 
         }
     }
     
-    private boolean checkNotNot(LogicStatement s, LogicStatement a) { 
+    private boolean checkNotNot(int ipp, LogicStatement s, LogicStatement a) { 
         if (a instanceof NotStatement) { 
             if (((NotStatement) a).nestedStatement instanceof NotStatement) { 
                 if (((NotStatement) ((NotStatement) a).nestedStatement).nestedStatement.equalsTo(s)) { 
+                    addToProblemList(new Integer(ipp).toString(), "✔");
                     return true;
                 } else { 
-                    addToProblemList("This line should be a NotNotStatement produced by the first given line. ");
+                    addToProblemList(new Integer(ipp).toString(), "This line should be a NotNotStatement produced by the first given line. ");
                     return false; 
                 }
             } else { 
-                addToProblemList("The given line should be a NotNotStatement. ");
+                addToProblemList(new Integer(ipp).toString(), "The given line should be a NotNotStatement. ");
                 return false; 
             }
         } else { 
-            addToProblemList("The given line should be a NotNotStatement. ");
+            addToProblemList(new Integer(ipp).toString(), "The given line should be a NotNotStatement. ");
             return false; 
         }
     }
     
-    private boolean checkImpliesI(ProveLine p, int i1, int i2) throws Exception { 
+    private boolean checkImpliesI(int ipp, ProveLine p, int i1, int i2) throws Exception { 
         if(i1 > givenLineNum && i2 >givenLineNum) { 
             ProveLine p1 = items.get(i1-givenLineNum-1); 
             ProveLine p2 = items.get(i2-givenLineNum-1);
@@ -1217,25 +1226,26 @@ public class Prove {
                             LogicStatement pp = stringToLS(p.getFml().getText());
                             if(pp instanceof ImpliesStatement) { 
                                 if(((ImpliesStatement) pp).nestedStatementLeft.equalsTo(l1) && ((ImpliesStatement) pp).nestedStatementRight.equalsTo(l2)) { 
+                                    addToProblemList(new Integer(ipp).toString(), "✔");
                                     return true;
                                 } else { 
-                                    addToProblemList("This line should be produced by the provided two lines. ");
+                                    addToProblemList(new Integer(ipp).toString(), "This line should be produced by the provided two lines. ");
                                     return false;
                                 }
                             } else { 
-                                addToProblemList("This line should be a impliesStatement. ");
+                                addToProblemList(new Integer(ipp).toString(), "This line should be a impliesStatement. ");
                                 return false;
                             }
                         } else { 
-                            addToProblemList("The given line's rule shoud be assume. ");
+                            addToProblemList(new Integer(ipp).toString(), "The given line's rule shoud be assume. ");
                             return false;
                         }
                     } else { 
-                        addToProblemList("The provided lines should be the boxs and boxc for the same box. ");
+                        addToProblemList(new Integer(ipp).toString(), "The provided lines should be the boxs and boxc for the same box. ");
                         return false; 
                     }
                 } else { 
-                    addToProblemList("The provided line should be boxs. ");
+                    addToProblemList(new Integer(ipp).toString(), "The provided line should be boxs. ");
                     return false; 
                 }
             } else if(p.getNum()-1 == i1 &&  p1 instanceof boxClosingLine) { 
@@ -1247,38 +1257,39 @@ public class Prove {
                             LogicStatement pp = stringToLS(p.getFml().getText());
                             if(pp instanceof ImpliesStatement) { 
                                 if(((ImpliesStatement) pp).nestedStatementLeft.equalsTo(l1) && ((ImpliesStatement) pp).nestedStatementRight.equalsTo(l2)) { 
+                                    addToProblemList(new Integer(ipp).toString(), "✔");
                                     return true;
                                 } else { 
-                                    addToProblemList("This line should be produced by the provided two lines. ");
+                                    addToProblemList(new Integer(ipp).toString(), "This line should be produced by the provided two lines. ");
                                     return false;
                                 }
                             } else { 
-                                addToProblemList("This line should be a impliesStatement. ");
+                                addToProblemList(new Integer(ipp).toString(), "This line should be a impliesStatement. ");
                                 return false;
                             }
                         } else { 
-                            addToProblemList("The provided line's rule shoud be assume. ");
+                            addToProblemList(new Integer(ipp).toString(), "The provided line's rule shoud be assume. ");
                             return false;
                         }
                     } else { 
-                        addToProblemList("The provided lines should be the boxs and boxc for the same box. ");
+                        addToProblemList(new Integer(ipp).toString(), "The provided lines should be the boxs and boxc for the same box. ");
                         return false; 
                     }
                 } else { 
-                    addToProblemList("The provided line should be boxs. ");
+                    addToProblemList(new Integer(ipp).toString(), "The provided line should be boxs. ");
                     return false; 
                 }
             } else { 
-                addToProblemList("The provided lines should be boxStarting line. ");
+                addToProblemList(new Integer(ipp).toString(), "The provided lines should be boxStarting line. ");
                 return false;
             }
         } else { 
-            addToProblemList("The provided lines should not be givenLine. ");
+            addToProblemList(new Integer(ipp).toString(), "The provided lines should not be givenLine. ");
             return false;
         }
     }
     
-    private boolean checkNotI(ProveLine p, int i1, int i2) throws Exception { 
+    private boolean checkNotI(int ipp, ProveLine p, int i1, int i2) throws Exception { 
         if(i1 > givenLineNum && i2 >givenLineNum) { 
             ProveLine p1 = items.get(i1-givenLineNum-1); 
             ProveLine p2 = items.get(i2-givenLineNum-1);
@@ -1292,29 +1303,30 @@ public class Prove {
                             if(pp instanceof NotStatement) { 
                                 if(l2 instanceof Falsity) { 
                                     if(pp.equalsTo(new NotStatement(l1))) { 
+                                        addToProblemList(new Integer(ipp).toString(), "✔");
                                         return true;
                                     } else { 
-                                        addToProblemList("This line should be a notStatement produced by the first line. ");
+                                        addToProblemList(new Integer(ipp).toString(), "This line should be a notStatement produced by the first line. ");
                                         return false;
                                     }
                                 } else { 
-                                    addToProblemList("The second line should be falsity. ");
+                                    addToProblemList(new Integer(ipp).toString(), "The second line should be falsity. ");
                                     return false; 
                                 }
                             } else { 
-                                addToProblemList("This line should be a notStatement. ");
+                                addToProblemList(new Integer(ipp).toString(), "This line should be a notStatement. ");
                                 return false; 
                             }
                         } else { 
-                            addToProblemList("The given line's rule shoud be assume. ");
+                            addToProblemList(new Integer(ipp).toString(), "The given line's rule shoud be assume. ");
                             return false;
                         }
                     } else { 
-                        addToProblemList("The provided lines should be the boxs and boxc for the same box. ");
+                        addToProblemList(new Integer(ipp).toString(), "The provided lines should be the boxs and boxc for the same box. ");
                         return false; 
                     }
                 } else { 
-                    addToProblemList("The provided line should be boxs. ");
+                    addToProblemList(new Integer(ipp).toString(), "The provided line should be boxs. ");
                     return false; 
                 }
             } else if(p.getNum()-1 == i1 &&  p1 instanceof boxClosingLine) { 
@@ -1327,43 +1339,44 @@ public class Prove {
                             if(pp instanceof NotStatement) { 
                                 if(l2 instanceof Falsity) { 
                                     if(pp.equalsTo(new NotStatement(l1))) { 
+                                        addToProblemList(new Integer(ipp).toString(), "✔");
                                         return true;
                                     } else { 
-                                        addToProblemList("This line should be a notStatement produced by the first line. ");
+                                        addToProblemList(new Integer(ipp).toString(), "This line should be a notStatement produced by the first line. ");
                                         return false;
                                     }
                                 } else { 
-                                    addToProblemList("The second line should be falsity. ");
+                                    addToProblemList(new Integer(ipp).toString(), "The second line should be falsity. ");
                                     return false; 
                                 }
                             } else { 
-                                addToProblemList("This line should be a notStatement. ");
+                                addToProblemList(new Integer(ipp).toString(), "This line should be a notStatement. ");
                                 return false; 
                             }
                         } else { 
-                            addToProblemList("The given line's rule shoud be assume. ");
+                            addToProblemList(new Integer(ipp).toString(), "The given line's rule shoud be assume. ");
                             return false;
                         }
                     } else { 
-                        addToProblemList("The provided lines should be the boxs and boxc for the same box. ");
+                        addToProblemList(new Integer(ipp).toString(), "The provided lines should be the boxs and boxc for the same box. ");
                         return false; 
                     }
                 } else { 
-                    addToProblemList("The provided line should be boxs. ");
+                    addToProblemList(new Integer(ipp).toString(), "The provided line should be boxs. ");
                     return false; 
                 }
             } else { 
-                addToProblemList("The provided lines should be boxStarting line. ");
+                addToProblemList(new Integer(ipp).toString(), "The provided lines should be boxStarting line. ");
                 return false;
             }
         } else { 
-            addToProblemList("The provided lines should not be givenLine. ");
+            addToProblemList(new Integer(ipp).toString(), "The provided lines should not be givenLine. ");
             return false;
         }
     }
     
-    private boolean checkOrE(ProveLine pl, int i1, int i2, int i3, int i4, int i5) throws Exception { 
-        addToProblemList("Please put this rule in the way that taught in the notes, otherwise it will report error. "); 
+    private boolean checkOrE(int ipp, ProveLine pl, int i1, int i2, int i3, int i4, int i5) throws Exception { 
+        addToProblemList(new Integer(ipp).toString(), "Please put this rule in the way that taught in the notes, otherwise it will report error. "); 
         if(i2 > givenLineNum && i3 >givenLineNum &&i4 > givenLineNum && i5 >givenLineNum) { 
             
             ProveLine p2 = items.get(i2-givenLineNum-1);
@@ -1383,87 +1396,93 @@ public class Prove {
                             if(p2.getRule()=="ass" && p4.getRule()=="ass") { 
                                 if(((OrStatement) l1).nestedStatementLeft.equalsTo(l2) && ((OrStatement) l1).nestedStatementRight.equalsTo(l4) || ((OrStatement) pp).nestedStatementRight.equalsTo(l2) && ((OrStatement) pp).nestedStatementLeft.equalsTo(l4)) { 
                                     if(l3.equalsTo(l5) && l5.equalsTo(pp)) { 
+                                        addToProblemList(new Integer(ipp).toString(), "✔");
                                         return true;
                                     } else { 
-                                        addToProblemList("The third and fifth provided lines should be same as this line. ");
+                                        addToProblemList(new Integer(ipp).toString(), "The third and fifth provided lines should be same as this line. ");
                                         return false; 
                                     }
                                 } else { 
-                                    addToProblemList("The second and fourth provided lines should be able to produce the first provided line. ");
+                                    addToProblemList(new Integer(ipp).toString(), "The second and fourth provided lines should be able to produce the first provided line. ");
                                     return false; 
                                 }
                             } else { 
-                                addToProblemList("The second provided line and the fourth provided line's rule should be assume. ");
+                                addToProblemList(new Integer(ipp).toString(), "The second provided line and the fourth provided line's rule should be assume. ");
                                 return false; 
                             }
                         } else { 
-                            addToProblemList("The first provided line should be an OrStatement. ");
+                            addToProblemList(new Integer(ipp).toString(), "The first provided line should be an OrStatement. ");
                             return false; 
                         }
                 } else { 
-                    addToProblemList("The 2nd and 3rd provided lines should be in the first part of twobox and vice versa. ");
+                    addToProblemList(new Integer(ipp).toString(), "The 2nd and 3rd provided lines should be in the first part of twobox and vice versa. ");
                     return false; 
                 }
             } else { 
-                addToProblemList("The provided lines shoud be the starting and closing lines in a twobox. ");
+                addToProblemList(new Integer(ipp).toString(), "The provided lines shoud be the starting and closing lines in a twobox. ");
                 return false;
             }
         } else { 
-            addToProblemList("The provided lines should not be givenLine. ");
+            addToProblemList(new Integer(ipp).toString(), "The provided lines should not be givenLine. ");
             return false;
         }
     }
     
-    private boolean checkPC(LogicStatement pp, LogicStatement p1, LogicStatement p2) { 
+    private boolean checkPC(int ipp, LogicStatement pp, LogicStatement p1, LogicStatement p2) { 
         if(p2 instanceof Falsity) { 
             if(pp.equalsTo(new NotStatement(p1)) || p1.equalsTo(new NotStatement(pp))) { 
+                addToProblemList(new Integer(ipp).toString(), "✔");
                 return true;
             } else { 
-                addToProblemList("This line should be contract to one of the provided line. ");
+                addToProblemList(new Integer(ipp).toString(), "This line should be contract to one of the provided line. ");
                 return false;
             }
         } else if (p1 instanceof Falsity) { 
             if(pp.equalsTo(new NotStatement(p2)) || p2.equalsTo(new NotStatement(pp))) { 
+                addToProblemList(new Integer(ipp).toString(), "✔");
                 return true;
             } else { 
-                addToProblemList("This line should be contract to one of the provided line. ");
+                addToProblemList(new Integer(ipp).toString(), "This line should be contract to one of the provided line. ");
                 return false;
             }
         } else { 
-            addToProblemList("One of the provided lines should be falsity. ");
+            addToProblemList(new Integer(ipp).toString(), "One of the provided lines should be falsity. ");
             return false; 
         } 
         
     }
     
-    private boolean checkAss(ProveLine pl) { 
+    private boolean checkAss(int ipp, ProveLine pl) { 
         if(pl instanceof boxStartingLine) { 
+            addToProblemList(new Integer(ipp).toString(), "✔");
             return true; 
         } else { 
-            addToProblemList("This line should should be a boxStartingLine. "); 
+            addToProblemList(new Integer(ipp).toString(), "This line should should be a boxStartingLine. "); 
             return false; 
         }
     }
     
-    private boolean checkTick(LogicStatement ls, LogicStatement a) { 
+    private boolean checkTick(int ipp, LogicStatement ls, LogicStatement a) { 
         if(ls.equalsTo(a)) { 
+            addToProblemList(new Integer(ipp).toString(), "✔");
             return true; 
         } else {  
-            addToProblemList("This line should be same as the provided line. "); 
+            addToProblemList(new Integer(ipp).toString(), "This line should be same as the provided line. "); 
             return false; 
         }
     }
     
-    private boolean checkLemma(LogicStatement ls) { 
+    private boolean checkLemma(int ipp, LogicStatement ls) { 
         if(ls instanceof OrStatement) { 
             if(((OrStatement) ls).nestedStatementLeft.equalsTo(new NotStatement(((OrStatement) ls).nestedStatementRight)) || ((OrStatement) ls).nestedStatementRight.equalsTo(new NotStatement(((OrStatement) ls).nestedStatementLeft))) { 
+                addToProblemList(new Integer(ipp).toString(), "✔");
                 return true; 
             } else { 
-                addToProblemList("The left part should be the oppsited of the right part or vise versa. ");
+                addToProblemList(new Integer(ipp).toString(), "The left part should be the oppsited of the right part or vise versa. ");
                 return false; 
             } 
         } else { 
-            addToProblemList("This line should be an Orstatement. "); 
+            addToProblemList(new Integer(ipp).toString(), "This line should be an Orstatement. "); 
             return false; 
         }
     }
@@ -1826,8 +1845,8 @@ public class Prove {
             
             bs.indent();
             bc.indent();
-            bs.setStyle("-fx-border-color:black black white white;");
-            bc.setStyle("-fx-border-color:white black black white;");
+            ((HBox) bs.getChildren().get(bs.getIndent())).setStyle("-fx-border-color:black white white white;");
+            ((HBox) bc.getChildren().get(bs.getIndent())).setStyle("-fx-border-color:white white black white;");
             updateLegalArgs(bs);
             updateLegalArgs(bc);
             
@@ -1854,8 +1873,8 @@ public class Prove {
                     items.get(selectedLine+3).addLegalArgs(bs);
                     items.get(selectedLine+3).addLegalArgs(bc);
                 }
-                bs.setStyle("-fx-border-color:black black white black;");
-                bc.setStyle("-fx-border-color:white black black black;");
+                ((HBox) bs.getChildren().get(bs.getIndent())).setStyle("-fx-border-color:black white white white;");
+                ((HBox) bc.getChildren().get(bs.getIndent())).setStyle("-fx-border-color:white white black white;");
                 updateLegalArgs(bs);
                 updateLegalArgs(bc);
             }
@@ -1936,10 +1955,10 @@ public class Prove {
             bco.indent();
             bst.indent();
             bct.indent();
-            bso.setStyle("-fx-border-color:black black white black;");
-            bco.setStyle("-fx-border-color:white black black black;");
-            bst.setStyle("-fx-border-color:black black white black;");
-            bct.setStyle("-fx-border-color:white black black black;");
+            ((HBox) bso.getChildren().get(bso.getIndent())).setStyle("-fx-border-color:black white white white;");
+            ((HBox) bco.getChildren().get(bco.getIndent())).setStyle("-fx-border-color:white white black white;");
+            ((HBox) bst.getChildren().get(bst.getIndent())).setStyle("-fx-border-color:black white white white;");
+            ((HBox) bct.getChildren().get(bct.getIndent())).setStyle("-fx-border-color:white white black white;");
             updateLegalArgs(bso);
             updateLegalArgs(bco);
             updateLegalArgs(bst);
@@ -1980,10 +1999,10 @@ public class Prove {
                 bco.indent();
                 bst.indent();
                 bct.indent();
-                bso.setStyle("-fx-border-color:black black white black;");
-                bco.setStyle("-fx-border-color:white black black black;");
-                bst.setStyle("-fx-border-color:black black white black;");
-                bct.setStyle("-fx-border-color:white black black black;");
+                ((HBox) bso.getChildren().get(bso.getIndent())).setStyle("-fx-border-color:black white white white;");
+                ((HBox) bco.getChildren().get(bco.getIndent())).setStyle("-fx-border-color:white white black white;");
+                ((HBox) bst.getChildren().get(bst.getIndent())).setStyle("-fx-border-color:black white white white;");
+                ((HBox) bct.getChildren().get(bct.getIndent())).setStyle("-fx-border-color:white white black white;");
                 assignBoxToBox(bso, bco, items.get(selectedLine)); 
                 assignBoxToBox(bst, bct, items.get(selectedLine)); 
                 if(!items.get(items.size()-1).equals(bct)) { 
