@@ -8,7 +8,7 @@
 
 <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
   <children>
-    <GridPane layoutX="0.0" layoutY="0.0" prefHeight="720.0" prefWidth="1080.0" >
+    <GridPane layoutX="0.0" layoutY="0.0" prefHeight="720.0" prefWidth="1080.0">
       <children>
         <GridPane prefHeight="620.0" prefWidth="1080.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
           <children>
@@ -86,7 +86,7 @@
                 </Pane>
                 <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="7" GridPane.rowIndex="1">
                   <children>
-                    <Button fx:id="tick" layoutX="19.0" layoutY="9.0" mnemonicParsing="false" onAction="#applyTick" text="✓" />
+                    <Button fx:id="tick" layoutX="24.0" layoutY="9.0" mnemonicParsing="false" onAction="#applyTick" text="✓" />
                   </children>
                 </Pane>
                 <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="8" GridPane.rowIndex="0">
@@ -101,12 +101,12 @@
                 </Pane>
                 <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="9" GridPane.rowIndex="0">
                   <children>
-                    <Button id="create" fx:id="createNewLine" layoutX="17.0" layoutY="14.0" mnemonicParsing="false" onAction="#createNewLineButton" text="New" />
+                    <Button id="create" fx:id="createNewLine" layoutX="15.0" layoutY="14.0" mnemonicParsing="false" onAction="#createNewLineButton" text="New" />
                   </children>
                 </Pane>
                 <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="9" GridPane.rowIndex="1">
                   <children>
-                    <Button fx:id="ass" layoutX="20.0" layoutY="4.0" mnemonicParsing="false" onAction="#applyAss" text="ass" />
+                    <Button fx:id="ass" layoutX="18.0" layoutY="11.0" mnemonicParsing="false" onAction="#applyAss" text="ass" />
                   </children>
                 </Pane>
                 <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="10" GridPane.rowIndex="1" />

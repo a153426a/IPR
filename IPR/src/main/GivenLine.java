@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package main;
 
 import java.io.Serializable;
@@ -16,20 +15,20 @@ import javafx.scene.layout.VBox;
  *
  * @author zl2511
  */
-public class GivenLine extends HBox implements Serializable { 
-    
-    private int number; 
-    private String formula; 
-    private String rule; 
+public class GivenLine extends HBox implements Serializable {
+
+    private int number;
+    private String formula;
+    private String rule;
     private Label num;
     private Label rul;
     private Label fml;
-    
-    public GivenLine(int number, String formula, String rule) { 
+
+    public GivenLine(int number, String formula, String rule) {
         HBox hb = new HBox();
-        this.number = number; 
-        this.formula = formula; 
-        this.rule = rule; 
+        this.number = number;
+        this.formula = formula;
+        this.rule = rule;
         num = new Label(new Integer(number).toString());
         //Label num = new Label(new Integer(number).toString());
         fml = new Label(formula);
@@ -40,40 +39,40 @@ public class GivenLine extends HBox implements Serializable {
         hb.getChildren().add(num);
         hb.getChildren().add(fml);
         hb.getChildren().add(rul);
-        
+
         hb.setAlignment(Pos.CENTER_LEFT);
         this.getChildren().add(hb);
-        
+
     }
-    
-    public int getNum() { 
-        
+
+    public int getNum() {
+
         return number;
-        
+
     }
-    
+
     public String getfml() {
-        
+
         return formula;
-        
+
     }
-    
+
     public String getrule() {
-        
-        return rule; 
-        
+
+        return rule;
+
     }
-    
+
     public void setNum(int i) {
-        
+
         num.setText(new Integer(i).toString());
-        
+
     }
-    
-    public void setRule(String s) { 
-        
+
+    public void setRule(String s) {
+
         rul.setText(s);
-        
+
     }
-    
+
 }

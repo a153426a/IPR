@@ -1,9 +1,8 @@
-/*
+ /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package main;
 
 import ast.*;
@@ -13,6 +12,8 @@ import java.util.*;
 import javafx.application.Platform;
 import javafx.event.*;
 import javafx.fxml.*;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -21,21 +22,27 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.VBoxBuilder;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lexerAndParser.*;
+
 /**
  *
  * @author zl2511
  */
 public class Controller {
-    
+
     @FXML
-    private String[] initStartFormulas; 
+    private String[] initStartFormulas;
 
     private List<LogicStatement> startFormulas = new ArrayList();
-    
-    private LogicStatement goalFormula; 
-    
+
+    private LogicStatement goalFormula;
+
     private int textFieldFocus = 0;
 
     @FXML
@@ -66,12 +73,12 @@ public class Controller {
     private TextArea startArea;
     @FXML
     private TextField goalArea;
-    
+
     private Parent parent;
     private Scene scene;
     private Stage stage;
     private int caretpos;
-    
+
     public Controller() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("start.fxml"));
         fxmlLoader.setController(this);
@@ -83,129 +90,131 @@ public class Controller {
         }
         caretpos = 0;
     }
-    
+
     public void launchController(Stage stage) {
         this.stage = stage;
         stage.setTitle("start");
         stage.setScene(scene);
-        stage.setResizable(true);
+        stage.setResizable(false);
         stage.hide();
         stage.show();
     }
 
     @FXML
     public void andButtonAction(ActionEvent event) {
-        
-        if(textFieldFocus == 1) { 
+
+        if (textFieldFocus == 1) {
             goalArea.insertText(caretpos, Symbol.AND.toString());
-        } else { 
+        } else {
             //startArea.setText(startArea.getText() + Symbol.AND);
             //startArea.requestFocus();
             startArea.insertText(startArea.getCaretPosition(), Symbol.AND.toString());
         }
-        
-        
+
     }
-    
+
     @FXML
     public void orButtonAction(ActionEvent event) {
-        if(textFieldFocus == 1) { 
+        if (textFieldFocus == 1) {
             goalArea.insertText(caretpos, Symbol.OR.toString());
-        } else { 
+        } else {
             startArea.insertText(startArea.getCaretPosition(), Symbol.OR.toString());
         }
     }
-    
+
     @FXML
     public void impliesButtonAction(ActionEvent event) {
-        if(textFieldFocus == 1) { 
+        if (textFieldFocus == 1) {
             goalArea.insertText(caretpos, Symbol.IMPLIES.toString());
-        } else { 
+        } else {
             startArea.insertText(startArea.getCaretPosition(), Symbol.IMPLIES.toString());
         }
     }
-    
+
     @FXML
     public void notButtonAction(ActionEvent event) {
-        if(textFieldFocus == 1) { 
+        if (textFieldFocus == 1) {
             goalArea.insertText(caretpos, Symbol.NOT.toString());
-        } else { 
+        } else {
             startArea.insertText(startArea.getCaretPosition(), Symbol.NOT.toString());
         }
     }
-    
+
     @FXML
     public void truthButtonAction(ActionEvent event) {
-        if(textFieldFocus == 1) { 
+        if (textFieldFocus == 1) {
             goalArea.insertText(caretpos, Symbol.TRUTH.toString());
-        } else { 
+        } else {
             startArea.insertText(startArea.getCaretPosition(), Symbol.TRUTH.toString());
         }
     }
-    
+
     @FXML
     public void thereesistsButtonAction(ActionEvent event) {
-        if(textFieldFocus == 1) { 
+        if (textFieldFocus == 1) {
             goalArea.insertText(caretpos, Symbol.THEREEXISTS.toString());
-        } else { 
+        } else {
             startArea.insertText(startArea.getCaretPosition(), Symbol.THEREEXISTS.toString());
         }
     }
-    
+
     @FXML
     public void iffButtonAction(ActionEvent event) {
-        if(textFieldFocus == 1) { 
+        if (textFieldFocus == 1) {
             goalArea.insertText(caretpos, Symbol.IFF.toString());
-        } else { 
+        } else {
             startArea.insertText(startArea.getCaretPosition(), Symbol.IFF.toString());
         }
     }
-    
+
     @FXML
     public void equalsButtonAction(ActionEvent event) {
-        if(textFieldFocus == 1) { 
+        if (textFieldFocus == 1) {
             goalArea.insertText(caretpos, Symbol.EQUALS.toString());
-        } else { 
+        } else {
             startArea.insertText(startArea.getCaretPosition(), Symbol.EQUALS.toString());
         }
     }
-    
+
     @FXML
     public void falsityButtonAction(ActionEvent event) {
-        if(textFieldFocus == 1) { 
-            
+        if (textFieldFocus == 1) {
+
             goalArea.insertText(caretpos, Symbol.FALSITY.toString());
-        } else { 
+        } else {
             startArea.insertText(startArea.getCaretPosition(), Symbol.FALSITY.toString());
         }
     }
-    
+
     @FXML
     public void forallButtonAction(ActionEvent event) {
-        if(textFieldFocus == 1) { 
+        if (textFieldFocus == 1) {
             goalArea.insertText(caretpos, Symbol.FORALL.toString());
-        } else { 
+        } else {
             startArea.insertText(startArea.getCaretPosition(), Symbol.FORALL.toString());
         }
     }
-    @FXML 
-    public void goalRelease(KeyEvent event) { 
+
+    @FXML
+    public void goalRelease(KeyEvent event) {
         caretpos = goalArea.getCaretPosition();
     }
+
     @FXML
     public void checkButtonAction(ActionEvent event) throws Exception {
         InputStream is;
-        
+
         Scanner sc = new Scanner(startArea.getText());
-        while (sc.hasNextLine()){
+        while (sc.hasNextLine()) {
             String line = sc.nextLine();
-            if (line.isEmpty())
+            if (line.isEmpty()) {
                 continue;
+            }
             initStartFormulas = line.split("\\s");
             for (String token : initStartFormulas) {
                 if (token.isEmpty()) {
                     continue;
-                } else { 
+                } else {
                     try {
                         is = new ByteArrayInputStream(token.getBytes("UTF-8"));
                         Lexer l = new Lexer(is);
@@ -220,29 +229,53 @@ public class Controller {
                     }
                 }
             }
-            
+
         }
-        
+
         try {
-            if(!goalArea.getText().isEmpty()) { 
-                
+            if (!goalArea.getText().isEmpty()) {
+
                 is = new ByteArrayInputStream(goalArea.getText().getBytes("UTF-8"));
                 Lexer l = new Lexer(is);
                 parser p = new parser(l);
                 goalFormula = (LogicStatement) p.parse().value;
-                
-                
-                
-                Node  currentSource = (Node)  event.getSource(); 
+
+                Node currentSource = (Node) event.getSource();
                 Stage currentStage = (Stage) currentSource.getScene().getWindow();
-                Prove prove = new Prove(); 
+                Prove prove = new Prove();
                 prove.redirectprove(currentStage, startFormulas, goalFormula);
                 //change when need resize
                 currentStage.setResizable(false);
-            } else { 
+            } else {
+                final Stage dialogStage = new Stage();
+                dialogStage.initModality(Modality.WINDOW_MODAL);
+
+                Label exitLabel = new Label("You should input a goal formula");
+                exitLabel.setAlignment(Pos.BASELINE_CENTER);
+
+                Button okButton = new Button("Yes");
+                okButton.setOnAction(new EventHandler<ActionEvent>() {
+
+                    @Override
+                    public void handle(ActionEvent arg0) {
+                        dialogStage.close();
+
+                    }
+                });
                 
-                System.out.println("You should input a goal formula");
-                
+                HBox hBox = new HBox();
+                hBox.setAlignment(Pos.BASELINE_CENTER);
+                hBox.setSpacing(40.0);
+                hBox.getChildren().addAll(okButton);
+
+                VBox vBox = new VBox();
+                vBox.setSpacing(40.0);
+                vBox.getChildren().addAll(exitLabel, hBox);
+
+                dialogStage.setScene(new Scene(vBox));
+                dialogStage.setResizable(false);
+                dialogStage.show();
+
             }
         } catch (UnsupportedEncodingException e1) {
             e1.printStackTrace();
@@ -251,107 +284,97 @@ public class Controller {
         }
         //TODO 
         //Transfer value is a shit thing to do. 
-        
-        
+
         /*
-        Parent root2 = FXMLLoader.load(getClass().getResource("proveWindow.fxml"));
-        Stage proveStage = new Stage();
-        Scene scene = new Scene(root2);
+         Parent root2 = FXMLLoader.load(getClass().getResource("proveWindow.fxml"));
+         Stage proveStage = new Stage();
+         Scene scene = new Scene(root2);
         
-        proveStage.setScene(scene);
-        proveStage.show();
-        */
-        
+         proveStage.setScene(scene);
+         proveStage.show();
+         */
         //Close the current stage
-        
         //currentStage.close();
-        
-        
-        
     }
-    
-   
-    
+
     @FXML
     public void cancelButtonAction(ActionEvent event) {
         startArea.setText("");
         goalArea.setText("");
     }
-    
+
     @FXML
-    public void setFocusZero() { 
-        textFieldFocus = 0; 
+    public void setFocusZero() {
+        textFieldFocus = 0;
         caretpos = startArea.getCaretPosition();
     }
-    
+
     @FXML
-    public void setFocusOne() { 
-        textFieldFocus = 1; 
+    public void setFocusOne() {
+        textFieldFocus = 1;
         caretpos = goalArea.getCaretPosition();
     }
-    
+
     @FXML //TODO
     public boolean checkTable(List<LogicStatement> ll, LogicStatement l) {
-        List<String> variables = new ArrayList(); 
-        for (LogicStatement str: ll) {
+        List<String> variables = new ArrayList();
+        for (LogicStatement str : ll) {
             addLists(variables, grabVariable(str));
         }
-        addLists(variables, grabVariable(l)); 
-        int[][] truthTable = new int[(int)Math.pow(2, variables.size())][variables.size()];
+        addLists(variables, grabVariable(l));
+        int[][] truthTable = new int[(int) Math.pow(2, variables.size())][variables.size()];
         int truth = 0;
-        for (int i = 0; i < variables.size(); i++) { 
-            int divider = (int)Math.pow(2, i);
-            for (int j = 0; j < Math.pow(2, variables.size()); j++) { 
-                if(j % divider != 0) { 
-                    truthTable[j][i] = truth; 
-                } else { 
+        for (int i = 0; i < variables.size(); i++) {
+            int divider = (int) Math.pow(2, i);
+            for (int j = 0; j < Math.pow(2, variables.size()); j++) {
+                if (j % divider != 0) {
+                    truthTable[j][i] = truth;
+                } else {
                     truth = flip(truth);
                     truthTable[j][i] = truth;
                 }
             }
         }
-        
+
         return true;
     }
-    
-    @FXML 
-    public int flip(int i) { 
-        if (i == 1) { 
-            i = 0; 
-        } else { 
+
+    @FXML
+    public int flip(int i) {
+        if (i == 1) {
+            i = 0;
+        } else {
             i = 1;
         }
         return i;
     }
-    
-    @FXML 
-    public List<String> grabVariable(LogicStatement l) { 
+
+    @FXML
+    public List<String> grabVariable(LogicStatement l) {
         List<String> result = new ArrayList();
-        if (l instanceof Variable) { 
-            result.add(((Variable)l).name);
-        } else if (l instanceof BinaryOpStatement) { 
+        if (l instanceof Variable) {
+            result.add(((Variable) l).name);
+        } else if (l instanceof BinaryOpStatement) {
             LogicStatement left = ((BinaryOpStatement) l).nestedStatementLeft;
             LogicStatement right = ((BinaryOpStatement) l).nestedStatementRight;
             addLists(result, grabVariable(left));
             addLists(result, grabVariable(right));
-        } else if(l instanceof UnaryOpStatement) { 
+        } else if (l instanceof UnaryOpStatement) {
             LogicStatement lll = ((UnaryOpStatement) l).nestedStatement;
             addLists(result, grabVariable(lll));
         }
-        
+
         return result;
     }
-    
-    @FXML 
+
+    @FXML
     public void addLists(List<String> l1, List<String> l2) {
-        for (String str: l2) { 
+        for (String str : l2) {
             if (!l1.contains(str)) {
                 l1.add(str);
             }
         }
-        
+
     }
-    
-    
-    
+
 }

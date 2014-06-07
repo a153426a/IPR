@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package main;
 
 import javafx.scene.control.Label;
@@ -17,16 +16,16 @@ public class ProblemAndErrors extends HBox {
 
     Label labelO;
     Label labelT;
-    
+
     public ProblemAndErrors(String i, String s) {
         labelO = new Label();
         labelT = new Label();
         labelO.setText(i);
         labelT.setText(s);
-        labelO.setPrefWidth(50); 
-        labelT.setPrefWidth(400);
+        labelO.setPrefWidth(50);
+        labelT.setPrefWidth(800);
         this.getChildren().add(labelO);
-        this.getChildren().add(labelT); 
+        this.getChildren().add(labelT);
     }
-    
+
 }
