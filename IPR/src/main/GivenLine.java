@@ -74,5 +74,18 @@ public class GivenLine extends HBox implements Serializable {
         rul.setText(s);
 
     }
+    
+    public void updateString(String s) { 
+        setFormula(s);
+        setFml(s);
+    }
+    
+    public void setFormula(String s) { 
+        formula = s;
+    }
+    
+    public void setFml(String s) { 
+        fml.setText(s);
+    }
 
 }

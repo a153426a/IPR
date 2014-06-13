@@ -8,7 +8,20 @@ public class NotStatement extends UnaryOpStatement {
 
     @Override
     public String toString() {
-        return "(" + symbol.toString() + nestedStatement + ")";
+        if(!getBracket()) { 
+            String right;
+            if(nestedStatement.symbol.compareTo(symbol)<0) { 
+                right = nestedStatement.toString();
+            } else { 
+                right = "(" + nestedStatement + ")";
+            }
+            return symbol.toString() + right;
+        } else { 
+            return symbol.toString() + "(" + nestedStatement + ")";
+        }
+        
+        
+        
     }
 
     @Override
@@ -20,5 +33,5 @@ public class NotStatement extends UnaryOpStatement {
         }
         return false;
     }
-
+    
 }

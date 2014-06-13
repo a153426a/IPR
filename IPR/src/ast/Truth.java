@@ -8,7 +8,7 @@ public class Truth extends Constant {
 
     @Override
     public String toString() {
-        return "(" + symbol.toString() + ")";
+        return symbol.toString();
     }
 
     @Override
@@ -18,5 +18,5 @@ public class Truth extends Constant {
         }
         return false;
     }
-
+    
 }

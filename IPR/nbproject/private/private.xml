@@ -4,10 +4,11 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/homes/zl2511/IPR/IPR/src/main/Prove.java</file>
-            <file>file:/homes/zl2511/IPR/IPR/src/main/Controller.java</file>
-            <file>file:/homes/zl2511/IPR/IPR/src/main/Prove.fxml</file>
-            <file>file:/homes/zl2511/IPR/IPR/src/main/ProblemAndErrors.java</file>
-            <file>file:/homes/zl2511/IPR/IPR/src/main/ProveLine.java</file>
+            <file>file:/homes/zl2511/IPR/IPR/src/main/SaveP/PBox.java</file>
+            <file>file:/homes/zl2511/IPR/IPR/src/main/SaveP/PNode.java</file>
+            <file>file:/homes/zl2511/IPR/IPR/src/main/SaveP/PLine.java</file>
+            <file>file:/homes/zl2511/IPR/IPR/src/main/SaveP/PRoot.java</file>
+            <file>file:/homes/zl2511/IPR/IPR/src/main/SaveP/PTwoBox.java</file>
         </group>
     </open-files>
 </project-private>

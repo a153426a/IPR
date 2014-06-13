@@ -10,7 +10,7 @@ public abstract class Constant extends LogicStatement {
 
     @Override
     public String toString() {
-        return "(" + symbol.toString() + ")";
+        return symbol.toString();
     }
 
 }

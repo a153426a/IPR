@@ -268,7 +268,12 @@ public class ProveLine extends HBox implements Serializable {
                 result[i] = 0;
             } else {
                 try {
-                    result[i] = Integer.parseInt(arguments[i].getText());
+                    int a = Integer.parseInt(arguments[i].getText());
+                    if(a>0) { 
+                        result[i] = a; 
+                    } else { 
+                        result[i] = 0;
+                    }
                 } catch (NumberFormatException e) {
                     result[i] = 0;
                 }

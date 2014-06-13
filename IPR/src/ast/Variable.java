@@ -11,7 +11,7 @@ public class Variable extends LogicStatement {
 
     @Override
     public String toString() {
-        return "(" + name + ")";
+        return name;
     }
 
     @Override

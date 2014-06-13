@@ -78,6 +78,7 @@ public class Controller {
     private Scene scene;
     private Stage stage;
     private int caretpos;
+    private boolean goon = true; 
 
     public Controller() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("start.fxml"));
@@ -93,7 +94,7 @@ public class Controller {
 
     public void launchController(Stage stage) {
         this.stage = stage;
-        stage.setTitle("start");
+        stage.setTitle("Propositional Proof Checker");
         stage.setScene(scene);
         stage.setResizable(false);
         stage.hide();
@@ -222,10 +223,16 @@ public class Controller {
                         LogicStatement ls = (LogicStatement) p.parse().value;
                         startFormulas.add(ls);
 
-                    } catch (UnsupportedEncodingException e1) {
-                        e1.printStackTrace();
                     } catch (Exception e1) {
-                        e1.printStackTrace();
+                        goon = false; 
+                        errorDialog("Unknown exception catched, try again please. ");
+                    } catch (java.lang.Error j) { 
+                        goon = false; 
+                        if(j.getMessage().equals("Syntax error. ")) { 
+                            errorDialog("Syntax error in start formula(s). ");
+                        } else { 
+                            errorDialog("Variable name is wrong in start formula(s). ");
+                        }
                     }
                 }
             }
@@ -234,26 +241,64 @@ public class Controller {
 
         try {
             if (!goalArea.getText().isEmpty()) {
-
-                is = new ByteArrayInputStream(goalArea.getText().getBytes("UTF-8"));
-                Lexer l = new Lexer(is);
-                parser p = new parser(l);
-                goalFormula = (LogicStatement) p.parse().value;
-
-                Node currentSource = (Node) event.getSource();
-                Stage currentStage = (Stage) currentSource.getScene().getWindow();
-                Prove prove = new Prove();
-                prove.redirectprove(currentStage, startFormulas, goalFormula);
-                //change when need resize
-                currentStage.setResizable(false);
+                try { 
+                    is = new ByteArrayInputStream(goalArea.getText().getBytes("UTF-8"));
+                    Lexer l = new Lexer(is);
+                    parser p = new parser(l);
+                    goalFormula = (LogicStatement) p.parse().value;
+                } catch (Exception e1) {
+                    goon = false; 
+                        errorDialog("Unknown exception catched, try again please. ");
+                    } catch (java.lang.Error j) { 
+                        goon = false; 
+                        if(j.getMessage().equals("Syntax error. ")) { 
+                            errorDialog("Syntax error in goal formula. ");
+                        } else { 
+                            errorDialog("Variable name is wrong in goal formula. ");
+                        }
+                    }
+                
+                if(goon) { 
+                    Node currentSource = (Node) event.getSource();
+                    Stage currentStage = (Stage) currentSource.getScene().getWindow();
+                    Prove prove = new Prove();
+                    prove.redirectprove(currentStage, startFormulas, goalFormula);
+                    //change when need resize
+                    currentStage.setResizable(false);
+                }
+                
+                
             } else {
-                final Stage dialogStage = new Stage();
+                errorDialog("You should input a goal formula");
+            }
+        } catch (UnsupportedEncodingException e1) {
+            e1.printStackTrace();
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+        //TODO 
+        //Transfer value is a shit thing to do. 
+
+        /*
+         Parent root2 = FXMLLoader.load(getClass().getResource("proveWindow.fxml"));
+         Stage proveStage = new Stage();
+         Scene scene = new Scene(root2);
+        
+         proveStage.setScene(scene);
+         proveStage.show();
+         */
+        //Close the current stage
+        //currentStage.close();
+    }
+    
+    private void errorDialog(String s) { 
+        final Stage dialogStage = new Stage();
                 dialogStage.initModality(Modality.WINDOW_MODAL);
 
-                Label exitLabel = new Label("You should input a goal formula");
+                Label exitLabel = new Label(s);
                 exitLabel.setAlignment(Pos.BASELINE_CENTER);
 
-                Button okButton = new Button("Yes");
+                Button okButton = new Button("Ok");
                 okButton.setOnAction(new EventHandler<ActionEvent>() {
 
                     @Override
@@ -275,26 +320,6 @@ public class Controller {
                 dialogStage.setScene(new Scene(vBox));
                 dialogStage.setResizable(false);
                 dialogStage.show();
-
-            }
-        } catch (UnsupportedEncodingException e1) {
-            e1.printStackTrace();
-        } catch (Exception e1) {
-            e1.printStackTrace();
-        }
-        //TODO 
-        //Transfer value is a shit thing to do. 
-
-        /*
-         Parent root2 = FXMLLoader.load(getClass().getResource("proveWindow.fxml"));
-         Stage proveStage = new Stage();
-         Scene scene = new Scene(root2);
-        
-         proveStage.setScene(scene);
-         proveStage.show();
-         */
-        //Close the current stage
-        //currentStage.close();
     }
 
     @FXML

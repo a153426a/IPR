@@ -123,7 +123,6 @@ public class Prove {
             scene = new Scene(parent);
         } catch (IOException e) {
         }
-        
         currentFile = null;
         menuItemSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN));
 
@@ -141,7 +140,7 @@ public class Prove {
                 configureFileChooser(fileChooser);
                 File file = fileChooser.showOpenDialog(stage);
                 if (file != null) {
-                    System.out.println("it should open something. ");
+                    //System.out.println("it should open something. ");
                 }
             }
 
@@ -278,7 +277,7 @@ public class Prove {
             }
 
             private void menuItemNewAction() {
-                System.out.println("oh my god");
+                //System.out.println("oh my god");
             }
         });
 
@@ -295,13 +294,13 @@ public class Prove {
 
                     @Override
                     public void handle(ActionEvent arg0) {
-                        Node  source = (Node)  arg0.getSource(); 
-                        Stage stage  = (Stage) scene.getWindow();
+                        Node source = (Node) arg0.getSource();
+                        Stage stage = (Stage) scene.getWindow();
                         dialogStage.close();
                         stage.close();
                     }
                 });
-                
+
                 Button noBtn = new Button("No");
 
                 noBtn.setOnAction(new EventHandler<ActionEvent>() {
@@ -314,7 +313,7 @@ public class Prove {
                 });
 
                 HBox hBox = new HBox();
-                hBox.setAlignment(Pos.BASELINE_CENTER);
+                hBox.setAlignment(Pos.CENTER);
                 hBox.setSpacing(40.0);
                 hBox.getChildren().addAll(yesBtn, noBtn);
 
@@ -328,23 +327,33 @@ public class Prove {
         });
 
         menuItemClearBracket.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
-                menuItemNewAction();
-            }
+            @Override
+            public void handle(ActionEvent event) {
+                for (int i = 0; i < startStatements.size(); i++) {
+                    startStatements.get(i).setBracket(false);
+                    ((GivenLine) starBox.getChildren().get(i)).updateString(startStatements.get(i).toString());
 
-            private void menuItemNewAction() {
-                System.out.println("oh my god");
+                }
+                //System.out.println(goalStatement.getBracket());
+                goalStatement.setBracket(false);
+                goalLine.updateString(goalStatement.toString());
             }
         });
 
         menuItemAddBracket.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
-                menuItemNewAction();
+
+            @Override
+            public void handle(ActionEvent event) {
+                for (int i = 0; i < startStatements.size(); i++) {
+                    startStatements.get(i).setBracket(true);
+                    ((GivenLine) starBox.getChildren().get(i)).updateString(startStatements.get(i).toString());
+
+                }
+                
+                goalStatement.setBracket(true);
+                goalLine.updateString(goalStatement.toString());
             }
 
-            private void menuItemNewAction() {
-                System.out.println("oh my god");
-            }
         });
 
         menuItemAbout.setOnAction(new EventHandler<ActionEvent>() {
@@ -513,13 +522,13 @@ public class Prove {
         provePane.add(starBox, 1, 0);
         provePane.add(goalLine, 1, 2);
         provePane.add(proveView, 1, 1);
-        starBox.setAlignment(Pos.CENTER);
-        goalLine.setAlignment(Pos.CENTER);
+        starBox.setAlignment(Pos.CENTER_LEFT);
+        goalLine.setAlignment(Pos.CENTER_LEFT);
 
         stage.setScene(scene);
         stage.hide();
         stage.show();
-
+        stage.setResizable(false);
     }
 
     @FXML
@@ -533,9 +542,10 @@ public class Prove {
         try {
             root = fxmlLoader.load();
             problemStage = new Stage();
-            problemStage.setTitle("Check");
+            problemStage.setTitle("Propositional Proof Checker");
             problemStage.setScene(new Scene(root, 600, 700));
             problemStage.show();
+            problemStage.setResizable(false);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -552,7 +562,7 @@ public class Prove {
         if (items.size() > 0) {
             if (result && !stringToLS(0, items.get(items.size() - 1).getFml().getText()).equalsTo(goalStatement)) {
                 addToProblemList("Result:", "You did well, carry on and get the result. ");
-            } else if (result && stringToLS(0,items.get(items.size() - 1).getFml().getText()).equalsTo(goalStatement)) {
+            } else if (result && stringToLS(0, items.get(items.size() - 1).getFml().getText()).equalsTo(goalStatement)) {
                 addToProblemList("Result:", "Congratulations! You have got the solution! ");
             } else {
                 addToProblemList("Result:", "Something's gone wrong. Keep calm and carry on! ");
@@ -1005,13 +1015,13 @@ public class Prove {
             parser p = new parser(l);
             ls = (LogicStatement) p.parse().value;
         } catch (Exception e1) {
-            addToProblemList(new Integer(i).toString(), "Unknown exception catched, try again please. "); 
-        } catch (java.lang.Error j) { 
-            
-            if(j.getMessage().equals("Syntax error. ")) { 
-                addToProblemList(new Integer(i).toString(), "Syntax error. "); 
-            } else { 
-                addToProblemList(new Integer(i).toString(), "Variable name is wrong. "); 
+            addToProblemList(new Integer(i).toString(), "Unknown exception catched, try again please. ");
+        } catch (java.lang.Error j) {
+
+            if (j.getMessage().equals("Syntax error. ")) {
+                addToProblemList(new Integer(i).toString(), "Syntax error. ");
+            } else {
+                addToProblemList(new Integer(i).toString(), "Variable name is wrong. ");
             }
         }
         return ls;
@@ -1538,15 +1548,59 @@ public class Prove {
 
         if (idx != -1) {
             ProveLine pl = items.get(idx);
-            deleteIdx(pl);
+            int lm = pl.getNum();
+            boolean b = deleteIdx(pl);
+            if(b) { 
+                for(ProveLine p:items) { 
+                    if(p.getNum()>lm) { 
+                        if(p.getRuled() && p.haveArguments())  { 
+                            for(Node n: p.getRulhb().getChildren()) { 
+                                if(n instanceof TextField) { 
+                                    if(!((TextField) n).getText().isEmpty()) { 
+                                        int i = 0; 
+                                        try {
+                                            i = Integer.parseInt(((TextField) n).getText());
+                                        } catch (NumberFormatException e) {
+                                            i = 0;
+                                        }
+                                        if(i!=0) { 
+                                            if(pl instanceof TwoBoxStartingLine) { 
+                                                if(i>lm+3) { 
+                                                    ((TextField) n).setText(new Integer(i-4).toString());
+                                                } else if(i==lm || i==lm+1 || i==lm+2 || i==lm+3){ 
+                                                    ((TextField) n).setText("");
+                                                }
+                                            } else if(pl instanceof boxStartingLine) { 
+                                                if(i>lm+1) { 
+                                                    ((TextField) n).setText(new Integer(i-2).toString());
+                                                } else if(i==lm || i==lm+1){ 
+                                                    ((TextField) n).setText("");
+                                                }
+                                            } else { 
+                                                if(i>lm) { 
+                                                    ((TextField) n).setText(new Integer(i-1).toString());
+                                                } else if(i==lm){ 
+                                                    ((TextField) n).setText("");
+                                                }
+                                            }
+                                            
+                                            
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
 
+                }
+            }
         }
 
     }
 
-    private void deleteIdx(ProveLine pl) {
+    private boolean deleteIdx(ProveLine pl) {
         int idx = pl.getNum() - givenLineNum - 1;
-        System.out.println("deleting number " + pl.getNum());
+        //System.out.println("deleting number " + pl.getNum());
         List<ProveLine> below = new ArrayList<ProveLine>();
 
         if (idx != items.size()) {
@@ -1555,23 +1609,23 @@ public class Prove {
             }
         }
         if (pl instanceof TwoBoxStartingLine) {
-            deleteTwoBS(pl, below, idx);
+            return deleteTwoBS(pl, below, idx);
 
         } else if (pl instanceof TwoBoxClosingLine) {
-            deleteTwoBC(pl, below, idx);
+            return deleteTwoBC(pl, below, idx);
         } else if (pl instanceof boxStartingLine) {
-            deleteBS(pl, below, idx);
+            return deleteBS(pl, below, idx);
         } else if (pl instanceof boxClosingLine) {
-            deleteBC(pl, below, idx);
+            return deleteBC(pl, below, idx);
         } else {
-            deleteL(pl, below, idx);
+            return deleteL(pl, below, idx);
         }
 
     }
 
-    private void deleteTwoBS(ProveLine pl, List<ProveLine> below, int idx) {
+    private boolean deleteTwoBS(ProveLine pl, List<ProveLine> below, int idx) {
         if (((TwoBoxStartingLine) pl).getFirst()) {
-            System.out.println(((boxStartingLine) pl).getLineInBox().size());
+            //System.out.println(((boxStartingLine) pl).getLineInBox().size());
             if (((boxStartingLine) pl).getLineInBox().size() == 2 && ((TwoBoxStartingLine) pl).getPair().getLineInBox().size() == 2) {
                 if (pl.isInBox()) {
                     findParentBox(pl).deleteLineInBox(pl);
@@ -1604,16 +1658,18 @@ public class Prove {
                 }
 
                 currentMaxLine -= 4;
+                return true;
             }
         }
+        return false;
     }
 
-    private void deleteTwoBC(ProveLine pl, List<ProveLine> below, int idx) {
-
+    private boolean deleteTwoBC(ProveLine pl, List<ProveLine> below, int idx) {
+        return false;
     }
 
-    private void deleteBS(ProveLine pl, List<ProveLine> below, int idx) {
-        System.out.println(((boxStartingLine) pl).getLineInBox());
+    private boolean deleteBS(ProveLine pl, List<ProveLine> below, int idx) {
+        //System.out.println(((boxStartingLine) pl).getLineInBox());
         if (((boxStartingLine) pl).getLineInBox().size() == 2) {
             //remove the selected pl
             if (pl.isInBox()) {
@@ -1638,15 +1694,17 @@ public class Prove {
                 updateLegalArgs(plpl);
             }
             currentMaxLine -= 2;
+            return true;
         }
+        return false;
 
     }
 
-    private void deleteBC(ProveLine pl, List<ProveLine> below, int idx) {
-
+    private boolean deleteBC(ProveLine pl, List<ProveLine> below, int idx) {
+        return false; 
     }
 
-    private void deleteL(ProveLine pl, List<ProveLine> below, int idx) {
+    private boolean deleteL(ProveLine pl, List<ProveLine> below, int idx) {
         if (pl.isInBox()) {
             findParentBox(pl).deleteLineInBox(pl);
             for (boxStartingLine bs : findParentBox(pl).getParentBox()) {
@@ -1667,6 +1725,7 @@ public class Prove {
             updateLegalArgs(plpl);
         }
         currentMaxLine -= 1;
+        return true;
     }
 
     private void reAssignAll(int idx) {
@@ -1710,7 +1769,7 @@ public class Prove {
             }
             pl.getRulhb().setPrefWidth(findParentBox(pl).getRulhb().getPrefWidth());
             pl.getRulhb().setStyle("-fx-border-color:white black white white;");
-            
+
         }
     }
 
