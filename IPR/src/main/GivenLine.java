@@ -29,7 +29,12 @@ public class GivenLine extends HBox implements Serializable {
         this.number = number;
         this.formula = formula;
         this.rule = rule;
-        num = new Label(new Integer(number).toString());
+        if(number == 0) { 
+            num = new Label("");
+        } else { 
+            num = new Label(new Integer(number).toString());
+        }
+        
         //Label num = new Label(new Integer(number).toString());
         fml = new Label(formula);
         rul = new Label(rule);

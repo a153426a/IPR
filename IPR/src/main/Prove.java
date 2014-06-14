@@ -39,6 +39,8 @@ import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -107,11 +109,15 @@ public class Prove {
     @FXML
     private Menu menuFile, menuView, menuHelp;
     @FXML
-    private MenuItem menuItemNew, menuItemOpen, menuItemSave, menuItemSaveAs, menuItemImport, menuItemClose, menuItemClearBracket, menuItemAddBracket, menuItemAbout;
+    private MenuItem menuItemNew, menuItemOpen, menuItemHelp, menuItemClose, menuItemClearBracket, menuItemAddBracket, menuItemAbout;
     @FXML
     private GridPane ruleBar;
     @FXML
     private Button MoveUp, MoveDown;
+    @FXML 
+    private Pane helpBackground;
+    @FXML 
+    private Stage helpStageT;
 
     public Prove() throws IOException {
 
@@ -124,7 +130,6 @@ public class Prove {
         } catch (IOException e) {
         }
         currentFile = null;
-        menuItemSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN));
 
         menuItemNew.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
@@ -134,150 +139,27 @@ public class Prove {
             }
         });
 
-        menuItemOpen.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
-                FileChooser fileChooser = new FileChooser();
-                configureFileChooser(fileChooser);
-                File file = fileChooser.showOpenDialog(stage);
-                if (file != null) {
-                    //System.out.println("it should open something. ");
+        menuItemHelp.setOnAction(new EventHandler<ActionEvent>() {
+            
+            @Override
+            public void handle(ActionEvent event) {
+                Parent root;
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("help1.fxml"));
+                fxmlLoader.setController(this);
+                try {
+                    root = fxmlLoader.load();
+                    helpStageT = new Stage();
+                    helpStageT.setTitle("Help");
+                    helpStageT.setScene(new Scene(root, 602, 399));
+                    Image image = new Image("main/Images/help1.png");
+                    ImageView iv1 = new ImageView();
+                    iv1.setImage(image);
+                    helpBackground.getChildren().add(iv1);
+                    helpStageT.show();
+                    helpStageT.setResizable(false);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            }
-
-            private void configureFileChooser(FileChooser fileChooser) {
-                fileChooser.setTitle("Choose which file to save to ");
-                fileChooser.getExtensionFilters().addAll(
-                        new FileChooser.ExtensionFilter("IPR", "*.ipr")
-                );
-            }
-        });
-
-        menuItemSave.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
-                if (currentFile != null) {
-                    PrintWriter writer = null;
-                    try {
-                        writer = new PrintWriter(currentFile, "UTF-8");
-                        saveInPrintWriter(writer);
-                    } catch (FileNotFoundException ex) {
-                        Logger.getLogger(Prove.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (UnsupportedEncodingException ex) {
-                        Logger.getLogger(Prove.class.getName()).log(Level.SEVERE, null, ex);
-                    } finally {
-                        writer.close();
-                    }
-                } else {
-                    FileChooser fileChooser = new FileChooser();
-                    configureFileChooser(fileChooser);
-                    File file = fileChooser.showSaveDialog(stage);
-
-                    if (file != null) {
-                        if (!file.getName().contains(".ipr")) {
-                            file = new File(file.getAbsolutePath() + ".ipr");
-                        }
-                        PrintWriter writer = null;
-                        try {
-                            writer = new PrintWriter(file, "UTF-8");
-                            saveInPrintWriter(writer);
-                        } catch (FileNotFoundException ex) {
-                            Logger.getLogger(Prove.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (UnsupportedEncodingException ex) {
-                            Logger.getLogger(Prove.class.getName()).log(Level.SEVERE, null, ex);
-                        } finally {
-                            currentFile = file;
-                            writer.close();
-                        }
-                    }
-                }
-
-            }
-
-            private void configureFileChooser(FileChooser fileChooser) {
-                fileChooser.setTitle("Save file ");
-                fileChooser.getExtensionFilters().addAll(
-                        new FileChooser.ExtensionFilter("IPR", "*.ipr")
-                );
-            }
-
-            private void saveInPrintWriter(PrintWriter writer) {
-                for (LogicStatement l : startStatements) {
-                    writer.println(l);
-                }
-                writer.println("\n");
-                for (ProveLine p : items) {
-                    writer.println(p);
-                }
-                writer.println("\n");
-                writer.println(goalStatement);
-            }
-
-        });
-
-        menuItemSaveAs.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
-                FileChooser fileChooser = new FileChooser();
-                configureFileChooser(fileChooser);
-                File file = fileChooser.showOpenDialog(stage);
-                if (file != null) {
-                    if (!file.getName().contains(".ipr")) {
-                        file = new File(file.getAbsolutePath() + ".ipr");
-                    }
-                    PrintWriter writer = null;
-                    try {
-                        writer = new PrintWriter(file, "UTF-8");
-                        saveInPrintWriter(writer);
-                    } catch (FileNotFoundException ex) {
-                        Logger.getLogger(Prove.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (UnsupportedEncodingException ex) {
-                        Logger.getLogger(Prove.class.getName()).log(Level.SEVERE, null, ex);
-                    } finally {
-                        currentFile = file;
-                        writer.close();
-                    }
-                }
-            }
-
-            private void configureFileChooser(FileChooser fileChooser) {
-                fileChooser.setTitle("Choose which file to save to ");
-                fileChooser.getExtensionFilters().addAll(
-                        new FileChooser.ExtensionFilter("IPR", "*.ipr")
-                );
-            }
-
-            private void saveInPrintWriter(PrintWriter writer) {
-                for (LogicStatement l : startStatements) {
-                    writer.println(l);
-                }
-                writer.println("0sf");
-                for (ProveLine p : items) {
-                    if (p instanceof TwoBoxStartingLine) {
-                        writer.println("0tbs");
-                    } else if (p instanceof TwoBoxClosingLine) {
-                        writer.println("0tbc");
-                    } else if (p instanceof boxStartingLine) {
-                        writer.println("0bs");
-                    } else if (p instanceof boxClosingLine) {
-                        writer.println("0bc");
-                    }
-                    if (p.getFml().getText().equals("")) {
-                        writer.println("0empty");
-                    } else {
-                        writer.println(p.getFml().getText());
-                    }
-                }
-                writer.println("0pf");
-                writer.println(goalStatement);
-            }
-
-        });
-
-        menuItemImport.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
-                menuItemNewAction();
-            }
-
-            private void menuItemNewAction() {
-                //System.out.println("oh my god");
             }
         });
 
@@ -661,7 +543,7 @@ public class Prove {
             switch (ruleName) {
                 case "⊤I":
                     return checkTruthI(p.getNum(), fml);
-                case "ass":
+                case "assume":
                     return checkAss(p.getNum(), p);
                 case "lemma":
                     return checkLemma(p.getNum(), fml);
@@ -1262,7 +1144,7 @@ public class Prove {
             if (p.getNum() - 1 == i2 && p2 instanceof boxClosingLine) {
                 if (p1 instanceof boxStartingLine) {
                     if (((boxClosingLine) p2).getStartLine().equals((boxStartingLine) p1)) {
-                        if (p1.getRule() == "ass") {
+                        if (p1.getRule() == "assume") {
                             LogicStatement l1 = stringToLS(ipp, findLineToString(i1));
                             LogicStatement l2 = stringToLS(ipp, findLineToString(i2));
                             LogicStatement pp = stringToLS(ipp, p.getFml().getText());
@@ -1293,7 +1175,7 @@ public class Prove {
             } else if (p.getNum() - 1 == i1 && p1 instanceof boxClosingLine) {
                 if (p2 instanceof boxStartingLine) {
                     if (((boxClosingLine) p1).getStartLine().equals((boxStartingLine) p2)) {
-                        if (p2.getRule() == "ass") {
+                        if (p2.getRule() == "assume") {
                             LogicStatement l1 = stringToLS(ipp, findLineToString(i2));
                             LogicStatement l2 = stringToLS(ipp, findLineToString(i1));
                             LogicStatement pp = stringToLS(ipp, p.getFml().getText());
@@ -1338,7 +1220,7 @@ public class Prove {
             if (p.getNum() - 1 == i2 && p2 instanceof boxClosingLine) {
                 if (p1 instanceof boxStartingLine) {
                     if (((boxClosingLine) p2).getStartLine().equals((boxStartingLine) p1)) {
-                        if (p1.getRule() == "ass") {
+                        if (p1.getRule() == "assume") {
                             LogicStatement l1 = stringToLS(ipp, findLineToString(i1));
                             LogicStatement l2 = stringToLS(ipp, findLineToString(i2));
                             LogicStatement pp = stringToLS(ipp, p.getFml().getText());
@@ -1374,7 +1256,7 @@ public class Prove {
             } else if (p.getNum() - 1 == i1 && p1 instanceof boxClosingLine) {
                 if (p2 instanceof boxStartingLine) {
                     if (((boxClosingLine) p1).getStartLine().equals((boxStartingLine) p2)) {
-                        if (p2.getRule() == "ass") {
+                        if (p2.getRule() == "assume") {
                             LogicStatement l1 = stringToLS(ipp, findLineToString(i2));
                             LogicStatement l2 = stringToLS(ipp, findLineToString(i1));
                             LogicStatement pp = stringToLS(ipp, p.getFml().getText());
@@ -1435,7 +1317,7 @@ public class Prove {
                     LogicStatement l5 = stringToLS(ipp, findLineToString(i5));
                     LogicStatement pp = stringToLS(ipp, pl.getFml().getText());
                     if (l1 instanceof OrStatement) {
-                        if (p2.getRule() == "ass" && p4.getRule() == "ass") {
+                        if (p2.getRule() == "assume" && p4.getRule() == "assume") {
                             if (((OrStatement) l1).nestedStatementLeft.equalsTo(l2) && ((OrStatement) l1).nestedStatementRight.equalsTo(l4) || ((OrStatement) pp).nestedStatementRight.equalsTo(l2) && ((OrStatement) pp).nestedStatementLeft.equalsTo(l4)) {
                                 if (l3.equalsTo(l5) && l5.equalsTo(pp)) {
                                     addToProblemList(new Integer(ipp).toString(), "✔");
@@ -1895,7 +1777,7 @@ public class Prove {
 
     @FXML
     public void applyAss(ActionEvent event) {
-        applyRule("ass", 0);
+        applyRule("assume", 0);
     }
 
     @FXML

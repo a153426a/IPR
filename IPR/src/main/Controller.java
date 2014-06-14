@@ -21,8 +21,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.VBoxBuilder;
 import javafx.scene.text.Text;
@@ -73,8 +76,13 @@ public class Controller {
     private TextArea startArea;
     @FXML
     private TextField goalArea;
+    @FXML 
+    private Button helpButton; 
+    @FXML 
+    private Pane helpBackground;
 
     private Parent parent;
+    private Stage helpStage;
     private Scene scene;
     private Stage stage;
     private int caretpos;
@@ -400,6 +408,27 @@ public class Controller {
             }
         }
 
+    }
+    
+    @FXML 
+    public void helpButtonAction(ActionEvent event) { 
+        Parent root;
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("help1.fxml"));
+        fxmlLoader.setController(this);
+        try {
+            root = fxmlLoader.load();
+            helpStage = new Stage();
+            helpStage.setTitle("Help");
+            helpStage.setScene(new Scene(root, 602, 399));
+            Image image = new Image("main/Images/help1.png");
+            ImageView iv1 = new ImageView();
+            iv1.setImage(image);
+            helpBackground.getChildren().add(iv1);
+            helpStage.show();
+            helpStage.setResizable(false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
