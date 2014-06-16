@@ -72,6 +72,8 @@ public class Prove {
     private int givenLineNum = 0;
     private int currentMaxLine = 0;
 
+    private Stage helpStageT;
+
     private VBox starBox;
     private ListView<ProveLine> proveView;
     private ObservableList<ProveLine> items;
@@ -80,8 +82,6 @@ public class Prove {
     private List<boxStartingLine> boxes;
 
     private ObservableList<HBox> problemHBox;
-
-    private File currentFile;
 
     /*
      @FXML
@@ -114,10 +114,8 @@ public class Prove {
     private GridPane ruleBar;
     @FXML
     private Button MoveUp, MoveDown;
-    @FXML 
-    private Pane helpBackground;
-    @FXML 
-    private Stage helpStageT;
+    @FXML
+    private Pane help2Background;
 
     public Prove() throws IOException {
 
@@ -129,7 +127,6 @@ public class Prove {
             scene = new Scene(parent);
         } catch (IOException e) {
         }
-        currentFile = null;
 
         menuItemNew.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
@@ -140,26 +137,10 @@ public class Prove {
         });
 
         menuItemHelp.setOnAction(new EventHandler<ActionEvent>() {
-            
+
             @Override
             public void handle(ActionEvent event) {
-                Parent root;
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("help1.fxml"));
-                fxmlLoader.setController(this);
-                try {
-                    root = fxmlLoader.load();
-                    helpStageT = new Stage();
-                    helpStageT.setTitle("Help");
-                    helpStageT.setScene(new Scene(root, 602, 399));
-                    Image image = new Image("main/Images/help1.png");
-                    ImageView iv1 = new ImageView();
-                    iv1.setImage(image);
-                    helpBackground.getChildren().add(iv1);
-                    helpStageT.show();
-                    helpStageT.setResizable(false);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                createHelp2();
             }
         });
 
@@ -231,7 +212,7 @@ public class Prove {
                     ((GivenLine) starBox.getChildren().get(i)).updateString(startStatements.get(i).toString());
 
                 }
-                
+
                 goalStatement.setBracket(true);
                 goalLine.updateString(goalStatement.toString());
             }
@@ -240,17 +221,65 @@ public class Prove {
 
         menuItemAbout.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
-                menuItemNewAction();
-            }
+                final Stage dialogStage = new Stage();
+                dialogStage.initModality(Modality.WINDOW_MODAL);
+                dialogStage.setTitle("Propositional Logic Proof Checker");
+                Label exitLabel = new Label("Author: Zhichao Li");
+                exitLabel.setAlignment(Pos.BASELINE_CENTER); 
+                Label exitLabel1 = new Label("Product Version:V1.0");
+                exitLabel1.setAlignment(Pos.BASELINE_CENTER); 
+                Label exitLabel2 = new Label("The MIT License (MIT)");
+                exitLabel2.setAlignment(Pos.BASELINE_CENTER); 
+                Label exitLabel3 = new Label("Copyright (c) <2014> <Zhichao Li>");
+                exitLabel3.setAlignment(Pos.BASELINE_CENTER); 
+                
+                Button yesBtn = new Button("Ok");
+                yesBtn.setOnAction(new EventHandler<ActionEvent>() {
 
-            private void menuItemNewAction() {
-                System.out.println("oh my god");
+                    @Override
+                    public void handle(ActionEvent arg0) {
+                        dialogStage.close();
+                    }
+                });
+
+                HBox hBox = new HBox();
+                hBox.setAlignment(Pos.CENTER);
+                hBox.setSpacing(40.0);
+                hBox.getChildren().addAll(yesBtn);
+
+                VBox vBox = new VBox();
+                vBox.setSpacing(20.0);
+                vBox.getChildren().addAll(exitLabel, exitLabel1, exitLabel2, exitLabel3, hBox);
+                dialogStage.setScene(new Scene(vBox, 400, 200));
+                dialogStage.setResizable(false);
+                dialogStage.show();
             }
         });
 
         createTooltip();
         colorRuleBar();
 
+    }
+
+    @FXML
+    private void createHelp2() {
+        Parent root;
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("help2.fxml"));
+        fxmlLoader.setController(this);
+        try {
+            root = fxmlLoader.load();
+            helpStageT = new Stage();
+            helpStageT.setTitle("Help");
+            helpStageT.setScene(new Scene(root, 1081, 691));
+            Image image = new Image("main/Images/help2.png");
+            ImageView iv1 = new ImageView();
+            iv1.setImage(image);
+            help2Background.getChildren().add(iv1);
+            helpStageT.show();
+            helpStageT.setResizable(false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void createTooltip() {
@@ -442,9 +471,9 @@ public class Prove {
             }
         }
         if (items.size() > 0) {
-            if (result && !stringToLS(0, items.get(items.size() - 1).getFml().getText()).equalsTo(goalStatement)) {
+            if (result && !stringToLS(0, items.get(items.size() - 1).getFml().getText(), 0).equalsTo(goalStatement)) {
                 addToProblemList("Result:", "You did well, carry on and get the result. ");
-            } else if (result && stringToLS(0, items.get(items.size() - 1).getFml().getText()).equalsTo(goalStatement)) {
+            } else if (result && stringToLS(0, items.get(items.size() - 1).getFml().getText(), 0).equalsTo(goalStatement)) {
                 addToProblemList("Result:", "Congratulations! You have got the solution! ");
             } else {
                 addToProblemList("Result:", "Something's gone wrong. Keep calm and carry on! ");
@@ -473,7 +502,7 @@ public class Prove {
             return false;
         }
         //check if correct
-        LogicStatement fml = stringToLS(p.getNum(), p.getFml().getText());
+        LogicStatement fml = stringToLS(p.getNum(), p.getFml().getText(), 1);
         //if it has arguments 
         if (p.haveArguments()) {
             //check if the given aruments is valid
@@ -489,7 +518,7 @@ public class Prove {
                     return false;
                 } else {
                     argumentLineNumber.add(findLine(p.getArguments()[i]));
-                    argumentsStatement[i] = stringToLS(p.getNum(), findLineToString(p.getArguments()[i]));
+                    argumentsStatement[i] = stringToLS(p.getNum(), findLineToString(p.getArguments()[i]), 0);
                 }
 
             }
@@ -887,7 +916,7 @@ public class Prove {
         }
     }
 
-    private LogicStatement stringToLS(int i, String s) throws Exception {
+    private LogicStatement stringToLS(int i, String s, int error) throws Exception {
 
         LogicStatement ls = null;
         InputStream is;
@@ -897,14 +926,19 @@ public class Prove {
             parser p = new parser(l);
             ls = (LogicStatement) p.parse().value;
         } catch (Exception e1) {
-            addToProblemList(new Integer(i).toString(), "Unknown exception catched, try again please. ");
-        } catch (java.lang.Error j) {
-
-            if (j.getMessage().equals("Syntax error. ")) {
-                addToProblemList(new Integer(i).toString(), "Syntax error. ");
-            } else {
-                addToProblemList(new Integer(i).toString(), "Variable name is wrong. ");
+            if(error == 1) { 
+                addToProblemList(new Integer(i).toString(), "Unknown exception catched, try again please. ");
             }
+            
+        } catch (java.lang.Error j) {
+            if(error == 1) { 
+                if (j.getMessage().equals("Syntax error. ")) {
+                    addToProblemList(new Integer(i).toString(), "Syntax error. ");
+                } else {
+                    addToProblemList(new Integer(i).toString(), "Variable name is wrong. ");
+                }
+            }
+            
         }
         return ls;
 
@@ -1145,9 +1179,9 @@ public class Prove {
                 if (p1 instanceof boxStartingLine) {
                     if (((boxClosingLine) p2).getStartLine().equals((boxStartingLine) p1)) {
                         if (p1.getRule() == "assume") {
-                            LogicStatement l1 = stringToLS(ipp, findLineToString(i1));
-                            LogicStatement l2 = stringToLS(ipp, findLineToString(i2));
-                            LogicStatement pp = stringToLS(ipp, p.getFml().getText());
+                            LogicStatement l1 = stringToLS(ipp, findLineToString(i1), 0);
+                            LogicStatement l2 = stringToLS(ipp, findLineToString(i2), 0);
+                            LogicStatement pp = stringToLS(ipp, p.getFml().getText(), 0);
                             if (pp instanceof ImpliesStatement) {
                                 if (((ImpliesStatement) pp).nestedStatementLeft.equalsTo(l1) && ((ImpliesStatement) pp).nestedStatementRight.equalsTo(l2)) {
                                     addToProblemList(new Integer(ipp).toString(), "✔");
@@ -1176,9 +1210,9 @@ public class Prove {
                 if (p2 instanceof boxStartingLine) {
                     if (((boxClosingLine) p1).getStartLine().equals((boxStartingLine) p2)) {
                         if (p2.getRule() == "assume") {
-                            LogicStatement l1 = stringToLS(ipp, findLineToString(i2));
-                            LogicStatement l2 = stringToLS(ipp, findLineToString(i1));
-                            LogicStatement pp = stringToLS(ipp, p.getFml().getText());
+                            LogicStatement l1 = stringToLS(ipp, findLineToString(i2), 0);
+                            LogicStatement l2 = stringToLS(ipp, findLineToString(i1), 0);
+                            LogicStatement pp = stringToLS(ipp, p.getFml().getText(), 0);
                             if (pp instanceof ImpliesStatement) {
                                 if (((ImpliesStatement) pp).nestedStatementLeft.equalsTo(l1) && ((ImpliesStatement) pp).nestedStatementRight.equalsTo(l2)) {
                                     addToProblemList(new Integer(ipp).toString(), "✔");
@@ -1221,9 +1255,9 @@ public class Prove {
                 if (p1 instanceof boxStartingLine) {
                     if (((boxClosingLine) p2).getStartLine().equals((boxStartingLine) p1)) {
                         if (p1.getRule() == "assume") {
-                            LogicStatement l1 = stringToLS(ipp, findLineToString(i1));
-                            LogicStatement l2 = stringToLS(ipp, findLineToString(i2));
-                            LogicStatement pp = stringToLS(ipp, p.getFml().getText());
+                            LogicStatement l1 = stringToLS(ipp, findLineToString(i1), 0);
+                            LogicStatement l2 = stringToLS(ipp, findLineToString(i2), 0);
+                            LogicStatement pp = stringToLS(ipp, p.getFml().getText(), 0);
                             if (pp instanceof NotStatement) {
                                 if (l2 instanceof Falsity) {
                                     if (pp.equalsTo(new NotStatement(l1))) {
@@ -1257,9 +1291,9 @@ public class Prove {
                 if (p2 instanceof boxStartingLine) {
                     if (((boxClosingLine) p1).getStartLine().equals((boxStartingLine) p2)) {
                         if (p2.getRule() == "assume") {
-                            LogicStatement l1 = stringToLS(ipp, findLineToString(i2));
-                            LogicStatement l2 = stringToLS(ipp, findLineToString(i1));
-                            LogicStatement pp = stringToLS(ipp, p.getFml().getText());
+                            LogicStatement l1 = stringToLS(ipp, findLineToString(i2), 0);
+                            LogicStatement l2 = stringToLS(ipp, findLineToString(i1), 0);
+                            LogicStatement pp = stringToLS(ipp, p.getFml().getText(), 0);
                             if (pp instanceof NotStatement) {
                                 if (l2 instanceof Falsity) {
                                     if (pp.equalsTo(new NotStatement(l1))) {
@@ -1310,12 +1344,12 @@ public class Prove {
             if (p2 instanceof TwoBoxStartingLine && p3 instanceof TwoBoxClosingLine && p4 instanceof TwoBoxStartingLine && p5 instanceof TwoBoxClosingLine) {
                 if (((TwoBoxStartingLine) p2).getFirst() && ((TwoBoxStartingLine) p2).getEndLine().equals(p3) && !((TwoBoxStartingLine) p4).getFirst() && ((TwoBoxStartingLine) p4).getEndLine().equals(p5)) {
 
-                    LogicStatement l1 = stringToLS(ipp, findLineToString(i1));
-                    LogicStatement l2 = stringToLS(ipp, findLineToString(i2));
-                    LogicStatement l3 = stringToLS(ipp, findLineToString(i3));
-                    LogicStatement l4 = stringToLS(ipp, findLineToString(i4));
-                    LogicStatement l5 = stringToLS(ipp, findLineToString(i5));
-                    LogicStatement pp = stringToLS(ipp, pl.getFml().getText());
+                    LogicStatement l1 = stringToLS(ipp, findLineToString(i1), 0);
+                    LogicStatement l2 = stringToLS(ipp, findLineToString(i2), 0);
+                    LogicStatement l3 = stringToLS(ipp, findLineToString(i3), 0);
+                    LogicStatement l4 = stringToLS(ipp, findLineToString(i4), 0);
+                    LogicStatement l5 = stringToLS(ipp, findLineToString(i5), 0);
+                    LogicStatement pp = stringToLS(ipp, pl.getFml().getText(), 0);
                     if (l1 instanceof OrStatement) {
                         if (p2.getRule() == "assume" && p4.getRule() == "assume") {
                             if (((OrStatement) l1).nestedStatementLeft.equalsTo(l2) && ((OrStatement) l1).nestedStatementRight.equalsTo(l4) || ((OrStatement) pp).nestedStatementRight.equalsTo(l2) && ((OrStatement) pp).nestedStatementLeft.equalsTo(l4)) {
@@ -1432,41 +1466,40 @@ public class Prove {
             ProveLine pl = items.get(idx);
             int lm = pl.getNum();
             boolean b = deleteIdx(pl);
-            if(b) { 
-                for(ProveLine p:items) { 
-                    if(p.getNum()>lm) { 
-                        if(p.getRuled() && p.haveArguments())  { 
-                            for(Node n: p.getRulhb().getChildren()) { 
-                                if(n instanceof TextField) { 
-                                    if(!((TextField) n).getText().isEmpty()) { 
-                                        int i = 0; 
+            if (b) {
+                for (ProveLine p : items) {
+                    if (p.getNum() > lm) {
+                        if (p.getRuled() && p.haveArguments()) {
+                            for (Node n : p.getRulhb().getChildren()) {
+                                if (n instanceof TextField) {
+                                    if (!((TextField) n).getText().isEmpty()) {
+                                        int i = 0;
                                         try {
                                             i = Integer.parseInt(((TextField) n).getText());
                                         } catch (NumberFormatException e) {
                                             i = 0;
                                         }
-                                        if(i!=0) { 
-                                            if(pl instanceof TwoBoxStartingLine) { 
-                                                if(i>lm+3) { 
-                                                    ((TextField) n).setText(new Integer(i-4).toString());
-                                                } else if(i==lm || i==lm+1 || i==lm+2 || i==lm+3){ 
+                                        if (i != 0) {
+                                            if (pl instanceof TwoBoxStartingLine) {
+                                                if (i > lm + 3) {
+                                                    ((TextField) n).setText(new Integer(i - 4).toString());
+                                                } else if (i == lm || i == lm + 1 || i == lm + 2 || i == lm + 3) {
                                                     ((TextField) n).setText("");
                                                 }
-                                            } else if(pl instanceof boxStartingLine) { 
-                                                if(i>lm+1) { 
-                                                    ((TextField) n).setText(new Integer(i-2).toString());
-                                                } else if(i==lm || i==lm+1){ 
+                                            } else if (pl instanceof boxStartingLine) {
+                                                if (i > lm + 1) {
+                                                    ((TextField) n).setText(new Integer(i - 2).toString());
+                                                } else if (i == lm || i == lm + 1) {
                                                     ((TextField) n).setText("");
                                                 }
-                                            } else { 
-                                                if(i>lm) { 
-                                                    ((TextField) n).setText(new Integer(i-1).toString());
-                                                } else if(i==lm){ 
+                                            } else {
+                                                if (i > lm) {
+                                                    ((TextField) n).setText(new Integer(i - 1).toString());
+                                                } else if (i == lm) {
                                                     ((TextField) n).setText("");
                                                 }
                                             }
-                                            
-                                            
+
                                         }
                                     }
                                 }
@@ -1583,7 +1616,7 @@ public class Prove {
     }
 
     private boolean deleteBC(ProveLine pl, List<ProveLine> below, int idx) {
-        return false; 
+        return false;
     }
 
     private boolean deleteL(ProveLine pl, List<ProveLine> below, int idx) {

@@ -158,7 +158,7 @@
                 <GridPane prefHeight="325.0" prefWidth="165.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
                   <children>
                     <Button fx:id="checkButton" mnemonicParsing="false" onAction="#checkButtonAction" text="Check" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
-                    <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#cancelButtonAction" text="Cancel" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
+                    <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#cancelButtonAction" text="Reset" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
                     <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deleteButtonAction" text="Delete" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
                     <Button id="deleteButton" fx:id="MoveUp" mnemonicParsing="false" onAction="#moveUpButton" text="Move Up" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                     <Button id="deleteButton" mnemonicParsing="false" onAction="#moveDownButton" text="Move Down" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
