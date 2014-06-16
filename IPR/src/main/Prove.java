@@ -948,7 +948,6 @@ public class Prove {
         if (s instanceof AndStatement) {
 
             if (((AndStatement) s).equalsTo(a)) {
-                addToProblemList(new Integer(ipp).toString(), "✔");
                 return true;
             } else {
                 addToProblemList(new Integer(ipp).toString(), "The provided two lines can not produce this line by AndI. ");
@@ -963,7 +962,6 @@ public class Prove {
     private boolean checkAndE(int ipp, LogicStatement s, LogicStatement a) {
         if (a instanceof AndStatement) {
             if (((AndStatement) a).nestedStatementLeft.equalsTo(s) || ((AndStatement) a).nestedStatementRight.equalsTo(s)) {
-                addToProblemList(new Integer(ipp).toString(), "✔");
                 return true;
             } else {
                 addToProblemList(new Integer(ipp).toString(), "The provided line can not produce this line by AndE. ");
@@ -984,7 +982,6 @@ public class Prove {
                 addToProblemList(new Integer(ipp).toString(), "This line should be on the right hand side of the second provided line. ");
                 return false;
             } else {
-                addToProblemList(new Integer(ipp).toString(), "✔");
                 return true;
             }
         } else {
@@ -996,7 +993,6 @@ public class Prove {
     private boolean checkOrI(int ipp, LogicStatement s, LogicStatement a) {
         if (s instanceof OrStatement) {
             if (((OrStatement) s).nestedStatementLeft.equalsTo(a) || ((OrStatement) s).nestedStatementRight.equalsTo(a)) {
-                addToProblemList(new Integer(ipp).toString(), "✔");
                 return true;
             } else {
                 addToProblemList(new Integer(ipp).toString(), "The given line is not part of this OrStatement. ");
@@ -1010,7 +1006,6 @@ public class Prove {
 
     private boolean checkTruthI(int ipp, LogicStatement s) {
         if (s instanceof Truth) {
-            addToProblemList(new Integer(ipp).toString(), "✔");
             return true;
         } else {
             addToProblemList(new Integer(ipp).toString(), "Truth should be introduced. ");
@@ -1022,7 +1017,6 @@ public class Prove {
         if (s instanceof Falsity) {
             if (a2 instanceof NotStatement) {
                 if (new NotStatement(a1).equalsTo(((NotStatement) a2))) {
-                    addToProblemList(new Integer(ipp).toString(), "✔");
                     return true;
                 } else {
                     addToProblemList(new Integer(ipp).toString(), "The second provided line should be a NotStatement created by first given line. ");
@@ -1030,7 +1024,6 @@ public class Prove {
                 }
             } else if (a1 instanceof NotStatement) {
                 if (new NotStatement(a2).equalsTo(((NotStatement) a1))) {
-                    addToProblemList(new Integer(ipp).toString(), "✔");
                     return true;
                 } else {
                     addToProblemList(new Integer(ipp).toString(), "The first provided line should be a NotStatement created by second given line. ");
@@ -1048,7 +1041,6 @@ public class Prove {
 
     private boolean checkFalsityE(int ipp, LogicStatement s, LogicStatement a) {
         if (a instanceof Falsity) {
-            addToProblemList(new Integer(ipp).toString(), "✔");
             return true;
         } else {
             addToProblemList(new Integer(ipp).toString(), "The givne line should be falsity. ");
@@ -1064,7 +1056,6 @@ public class Prove {
                             && ((ImpliesStatement) a1).nestedStatementRight.equalsTo(((ImpliesStatement) a2).nestedStatementLeft)) {
                         if (((IFFStatement) s).nestedStatementLeft.equalsTo(((ImpliesStatement) a1).nestedStatementLeft)
                                 && ((IFFStatement) s).nestedStatementRight.equalsTo(((ImpliesStatement) a1).nestedStatementRight)) {
-                            addToProblemList(new Integer(ipp).toString(), "✔");
                             return true;
                         } else {
                             addToProblemList(new Integer(ipp).toString(), "The provided two lines can not produce this formula by IFFI. ");
@@ -1092,10 +1083,10 @@ public class Prove {
         if (a1 instanceof IFFStatement) {
             if (((IFFStatement) a1).nestedStatementLeft.equalsTo(a2) || ((IFFStatement) a1).nestedStatementRight.equalsTo(a2)) {
                 if (((IFFStatement) a1).nestedStatementLeft.equalsTo(a2) && ((IFFStatement) a1).nestedStatementRight.equalsTo(s)) {
-                    addToProblemList(new Integer(ipp).toString(), "✔");
+
                     return true;
                 } else if (((IFFStatement) a1).nestedStatementLeft.equalsTo(s) && ((IFFStatement) a1).nestedStatementRight.equalsTo(a2)) {
-                    addToProblemList(new Integer(ipp).toString(), "✔");
+
                     return true;
                 } else {
                     addToProblemList(new Integer(ipp).toString(), "The second given line should not be on the same side with this line");
@@ -1108,10 +1099,10 @@ public class Prove {
         } else if (a2 instanceof IFFStatement) {
             if (((IFFStatement) a2).nestedStatementLeft.equalsTo(a1) || ((IFFStatement) a2).nestedStatementRight.equalsTo(a1)) {
                 if (((IFFStatement) a2).nestedStatementLeft.equalsTo(a1) && ((IFFStatement) a2).nestedStatementRight.equalsTo(s)) {
-                    addToProblemList(new Integer(ipp).toString(), "✔");
+
                     return true;
                 } else if (((IFFStatement) a2).nestedStatementLeft.equalsTo(s) && ((IFFStatement) a2).nestedStatementRight.equalsTo(a1)) {
-                    addToProblemList(new Integer(ipp).toString(), "✔");
+
                     return true;
                 } else {
                     addToProblemList(new Integer(ipp).toString(), "The first provided line should not be on the same side with this line");
@@ -1131,10 +1122,10 @@ public class Prove {
         if (s instanceof Falsity) {
             if (a1 instanceof NotStatement || a2 instanceof NotStatement) {
                 if (a1 instanceof NotStatement && new NotStatement(a2).equalsTo(a1)) {
-                    addToProblemList(new Integer(ipp).toString(), "✔");
+
                     return true;
                 } else if (a2 instanceof NotStatement && new NotStatement(a1).equalsTo(a2)) {
-                    addToProblemList(new Integer(ipp).toString(), "✔");
+
                     return true;
                 } else {
                     addToProblemList(new Integer(ipp).toString(), "One of the provided line should be a NotStatement produced by the other provided line. ");
@@ -1155,7 +1146,7 @@ public class Prove {
         if (a instanceof NotStatement) {
             if (((NotStatement) a).nestedStatement instanceof NotStatement) {
                 if (((NotStatement) ((NotStatement) a).nestedStatement).nestedStatement.equalsTo(s)) {
-                    addToProblemList(new Integer(ipp).toString(), "✔");
+
                     return true;
                 } else {
                     addToProblemList(new Integer(ipp).toString(), "This line should be a NotNotStatement produced by the first given line. ");
@@ -1184,7 +1175,7 @@ public class Prove {
                             LogicStatement pp = stringToLS(ipp, p.getFml().getText(), 0);
                             if (pp instanceof ImpliesStatement) {
                                 if (((ImpliesStatement) pp).nestedStatementLeft.equalsTo(l1) && ((ImpliesStatement) pp).nestedStatementRight.equalsTo(l2)) {
-                                    addToProblemList(new Integer(ipp).toString(), "✔");
+
                                     return true;
                                 } else {
                                     addToProblemList(new Integer(ipp).toString(), "This line should be produced by the provided two lines. ");
@@ -1215,7 +1206,7 @@ public class Prove {
                             LogicStatement pp = stringToLS(ipp, p.getFml().getText(), 0);
                             if (pp instanceof ImpliesStatement) {
                                 if (((ImpliesStatement) pp).nestedStatementLeft.equalsTo(l1) && ((ImpliesStatement) pp).nestedStatementRight.equalsTo(l2)) {
-                                    addToProblemList(new Integer(ipp).toString(), "✔");
+
                                     return true;
                                 } else {
                                     addToProblemList(new Integer(ipp).toString(), "This line should be produced by the provided two lines. ");
@@ -1261,7 +1252,7 @@ public class Prove {
                             if (pp instanceof NotStatement) {
                                 if (l2 instanceof Falsity) {
                                     if (pp.equalsTo(new NotStatement(l1))) {
-                                        addToProblemList(new Integer(ipp).toString(), "✔");
+
                                         return true;
                                     } else {
                                         addToProblemList(new Integer(ipp).toString(), "This line should be a notStatement produced by the first line. ");
@@ -1297,7 +1288,7 @@ public class Prove {
                             if (pp instanceof NotStatement) {
                                 if (l2 instanceof Falsity) {
                                     if (pp.equalsTo(new NotStatement(l1))) {
-                                        addToProblemList(new Integer(ipp).toString(), "✔");
+
                                         return true;
                                     } else {
                                         addToProblemList(new Integer(ipp).toString(), "This line should be a notStatement produced by the first line. ");
@@ -1354,7 +1345,7 @@ public class Prove {
                         if (p2.getRule() == "assume" && p4.getRule() == "assume") {
                             if (((OrStatement) l1).nestedStatementLeft.equalsTo(l2) && ((OrStatement) l1).nestedStatementRight.equalsTo(l4) || ((OrStatement) pp).nestedStatementRight.equalsTo(l2) && ((OrStatement) pp).nestedStatementLeft.equalsTo(l4)) {
                                 if (l3.equalsTo(l5) && l5.equalsTo(pp)) {
-                                    addToProblemList(new Integer(ipp).toString(), "✔");
+
                                     return true;
                                 } else {
                                     addToProblemList(new Integer(ipp).toString(), "The third and fifth provided lines should be same as this line. ");
@@ -1389,7 +1380,6 @@ public class Prove {
     private boolean checkPC(int ipp, LogicStatement pp, LogicStatement p1, LogicStatement p2) {
         if (p2 instanceof Falsity) {
             if (pp.equalsTo(new NotStatement(p1)) || p1.equalsTo(new NotStatement(pp))) {
-                addToProblemList(new Integer(ipp).toString(), "✔");
                 return true;
             } else {
                 addToProblemList(new Integer(ipp).toString(), "This line should be contract to one of the provided line. ");
@@ -1397,7 +1387,6 @@ public class Prove {
             }
         } else if (p1 instanceof Falsity) {
             if (pp.equalsTo(new NotStatement(p2)) || p2.equalsTo(new NotStatement(pp))) {
-                addToProblemList(new Integer(ipp).toString(), "✔");
                 return true;
             } else {
                 addToProblemList(new Integer(ipp).toString(), "This line should be contract to one of the provided line. ");
@@ -1412,7 +1401,6 @@ public class Prove {
 
     private boolean checkAss(int ipp, ProveLine pl) {
         if (pl instanceof boxStartingLine) {
-            addToProblemList(new Integer(ipp).toString(), "✔");
             return true;
         } else {
             addToProblemList(new Integer(ipp).toString(), "This line should should be a boxStartingLine. ");
@@ -1422,7 +1410,6 @@ public class Prove {
 
     private boolean checkTick(int ipp, LogicStatement ls, LogicStatement a) {
         if (ls.equalsTo(a)) {
-            addToProblemList(new Integer(ipp).toString(), "✔");
             return true;
         } else {
             addToProblemList(new Integer(ipp).toString(), "This line should be same as the provided line. ");
@@ -1433,7 +1420,7 @@ public class Prove {
     private boolean checkLemma(int ipp, LogicStatement ls) {
         if (ls instanceof OrStatement) {
             if (((OrStatement) ls).nestedStatementLeft.equalsTo(new NotStatement(((OrStatement) ls).nestedStatementRight)) || ((OrStatement) ls).nestedStatementRight.equalsTo(new NotStatement(((OrStatement) ls).nestedStatementLeft))) {
-                addToProblemList(new Integer(ipp).toString(), "✔");
+
                 return true;
             } else {
                 addToProblemList(new Integer(ipp).toString(), "The left part should be the oppsited of the right part or vise versa. ");

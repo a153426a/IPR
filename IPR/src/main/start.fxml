@@ -19,11 +19,11 @@
             <Button fx:id="andButton" mnemonicParsing="false" onAction="#andButtonAction" prefWidth="66.0" text="∧" GridPane.columnIndex="0" GridPane.rowIndex="0" />
             <Button fx:id="orButton" mnemonicParsing="false" onAction="#orButtonAction" prefWidth="66.0" text="∨" GridPane.columnIndex="0" GridPane.rowIndex="1" />
             <Button fx:id="impliesButton" mnemonicParsing="false" onAction="#impliesButtonAction" prefWidth="66.0" text="→" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-            <Button fx:id="notButton" mnemonicParsing="false" onAction="#notButtonAction" prefWidth="66.0" text="¬" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-            <Button fx:id="truthButton" mnemonicParsing="false" onAction="#truthButtonAction" prefWidth="66.0" text="⊤" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+            <Button fx:id="notButton" mnemonicParsing="false" onAction="#notButtonAction" prefWidth="66.0" text="¬" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+            <Button fx:id="truthButton" mnemonicParsing="false" onAction="#truthButtonAction" prefWidth="66.0" text="⊤" GridPane.columnIndex="2" GridPane.rowIndex="0" />
             <Button fx:id="iffButton" mnemonicParsing="false" onAction="#iffButtonAction" prefWidth="66.0" text="↔" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Button fx:id="equalsButton" mnemonicParsing="false" onAction="#equalsButtonAction" prefWidth="66.0" text="=" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-            <Button fx:id="falsityButton" mnemonicParsing="false" onAction="#falsityButtonAction" prefWidth="66.0" text="⊥" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+            
+            <Button fx:id="falsityButton" mnemonicParsing="false" onAction="#falsityButtonAction" prefWidth="66.0" text="⊥" GridPane.columnIndex="2" GridPane.rowIndex="1" />
           </children>
           <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
