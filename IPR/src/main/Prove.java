@@ -313,79 +313,79 @@ public class Prove {
         andET.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
         andE.setTooltip(andET);
 
-        impliesIT.setText("1  A\n2  B\n3  A→B  →I(1,2)\nasdf");
+        impliesIT.setText("1  A  assume\n2  B\n3  A→B  →I(1,2)");
         impliesIT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
         impliesI.setTooltip(impliesIT);
 
-        impliesET.setText("Tooltip for Button\nasdfasd");
+        impliesET.setText("1  A→B\n2  A\n3  B  →E(1,2)");
         impliesET.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
         impliesE.setTooltip(impliesET);
 
-        orIT.setText("Tooltip for Button\nasdfasd");
+        orIT.setText("1  A\n2  A∨B  ∨I(1)\n");
         orIT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
         orI.setTooltip(orIT);
 
-        orET.setText("Tooltip for Button\nasdfasd");
+        orET.setText("1  A∨B\n2  A  assume\n3  C\n4  B  assume\n5  C\n6  C  \n∨E(1,2,3,4,5)");
         orET.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
         orE.setTooltip(orET);
 
-        truthIT.setText("Tooltip for Button\nasdfasd");
+        truthIT.setText("1  ⊤  ⊤I");
         truthIT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
         truthI.setTooltip(truthIT);
 
-        falsityIT.setText("Tooltip for Button\nasdfasd");
+        falsityIT.setText("1  A assume\n2  ¬A\n3  ⊥  ⊥I(1,2)");
         falsityIT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
         falsityI.setTooltip(falsityIT);
 
-        falsityET.setText("Tooltip for Button\nasdfasd");
+        falsityET.setText("1  ⊥\n2  A  ⊥E(1)");
         falsityET.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
         falsityE.setTooltip(falsityET);
-
-        IFFIT.setText("Tooltip for Button\nasdfasd");
+        
+        IFFIT.setText("1  A→B\n2  B→A\n3  A↔B  ↔I(1,2)");
         IFFIT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
         IFFI.setTooltip(IFFIT);
 
-        IFFET.setText("Tooltip for Button\nasdfasd");
+        IFFET.setText("1  A↔B\n2  A\n3  B  ↔E(1,2)");
         IFFET.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
         IFFE.setTooltip(IFFET);
 
-        notIT.setText("Tooltip for Button\nasdfasd");
+        notIT.setText("1  A  assume\n2  ⊥\n3  ¬A  ¬I(1,2)");
         notIT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
         notI.setTooltip(notIT);
 
-        notET.setText("Tooltip for Button\nasdfasd");
+        notET.setText("1  ¬A\n2  A\n3  ⊥  ¬E(1,2)");
         notET.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
         notE.setTooltip(notET);
 
-        notnotT.setText("Tooltip for Button\nasdfasd");
+        notnotT.setText("1  ¬¬A\n2  A  ¬¬(1)");
         notnotT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
         notnot.setTooltip(notnotT);
 
-        assT.setText("Tooltip for Button\nasdfasd");
+        assT.setText("Apply assume");
         assT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
         ass.setTooltip(assT);
 
-        lemmaT.setText("Tooltip for Button\nasdfasd");
+        lemmaT.setText("Create a lemma");
         lemmaT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
         lemma.setTooltip(lemmaT);
 
-        tickT.setText("Tooltip for Button\nasdfasd");
+        tickT.setText("Apply ✔");
         tickT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
         tick.setTooltip(tickT);
 
-        createBoxT.setText("Tooltip for Button\nasdfasd");
+        createBoxT.setText("Create a box");
         createBoxT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
         createBox.setTooltip(createBoxT);
 
-        createBoxTwoT.setText("Tooltip for Button\nasdfasd");
+        createBoxTwoT.setText("Create a pair of\nboxes for ∨E");
         createBoxTwoT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
         createBoxTwo.setTooltip(createBoxTwoT);
 
-        createNewLineT.setText("Tooltip for Button\nasdfasd");
+        createNewLineT.setText("Create a new line");
         createNewLineT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
         createNewLine.setTooltip(createNewLineT);
 
-        PCT.setText("Tooltip for Button\nasdfasd");
+        PCT.setText("Apply prove by contradiction");
         PCT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
         PC.setTooltip(PCT);
 
