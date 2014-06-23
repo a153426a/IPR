@@ -127,8 +127,7 @@ public class Prove {
             scene = new Scene(parent);
         } catch (IOException e) {
         }
-        
-        
+
         menuItemNew.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
                 Stage newStage = new Stage();
@@ -226,14 +225,14 @@ public class Prove {
                 dialogStage.initModality(Modality.WINDOW_MODAL);
                 dialogStage.setTitle("Propositional Logic Proof Checker");
                 Label exitLabel = new Label("Author: Zhichao Li");
-                exitLabel.setAlignment(Pos.BASELINE_CENTER); 
+                exitLabel.setAlignment(Pos.BASELINE_CENTER);
                 Label exitLabel1 = new Label("Product Version:V1.0");
-                exitLabel1.setAlignment(Pos.BASELINE_CENTER); 
+                exitLabel1.setAlignment(Pos.BASELINE_CENTER);
                 Label exitLabel2 = new Label("The MIT License (MIT)");
-                exitLabel2.setAlignment(Pos.BASELINE_CENTER); 
+                exitLabel2.setAlignment(Pos.BASELINE_CENTER);
                 Label exitLabel3 = new Label("Copyright (c) <2014> <Zhichao Li>");
-                exitLabel3.setAlignment(Pos.BASELINE_CENTER); 
-                
+                exitLabel3.setAlignment(Pos.BASELINE_CENTER);
+
                 Button yesBtn = new Button("Ok");
                 yesBtn.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -341,7 +340,7 @@ public class Prove {
         falsityET.setText("1  ⊥\n2  A  ⊥E(1)");
         falsityET.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
         falsityE.setTooltip(falsityET);
-        
+
         IFFIT.setText("1  A→B\n2  B→A\n3  A↔B  ↔I(1,2)");
         IFFIT.setStyle("-fx-background-color:#fffacd; -fx-text-fill:black;");
         IFFI.setTooltip(IFFIT);
@@ -448,30 +447,21 @@ public class Prove {
 
         boolean result = true;
         //check args
-        
-        if(problemHBox.size()!=0) { 
-            problemHBox.removeAll(problemHBox);
-            System.out.println("1");
-        } else { 
-            System.out.println("2");
-            Parent root;
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("problemShooter.fxml"));
-            fxmlLoader.setController(this);
-            try {
-                root = fxmlLoader.load();
-                problemStage = new Stage();
-                problemStage.setTitle("Propositional Proof Checker");
-                problemStage.setScene(new Scene(root, 600, 700));
-                problemStage.show();
-                problemStage.setResizable(false);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
+        Parent root;
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("problemShooter.fxml"));
+        fxmlLoader.setController(this);
+        try {
+            root = fxmlLoader.load();
+            problemStage = new Stage();
+            problemStage.setTitle("Propositional Proof Checker");
+            problemStage.setScene(new Scene(root, 600, 700));
+            problemStage.show();
+            problemStage.setResizable(false);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        
-            
-        
-        
+
         problemList.setItems(problemHBox);
         problemHBox.removeAll(problemHBox);
         //check meaning 
@@ -937,19 +927,19 @@ public class Prove {
             parser p = new parser(l);
             ls = (LogicStatement) p.parse().value;
         } catch (Exception e1) {
-            if(error == 1) { 
+            if (error == 1) {
                 addToProblemList(new Integer(i).toString(), "Unknown exception catched, try again please. ");
             }
-            
+
         } catch (java.lang.Error j) {
-            if(error == 1) { 
+            if (error == 1) {
                 if (j.getMessage().equals("Syntax error. ")) {
                     addToProblemList(new Integer(i).toString(), "Syntax error. ");
                 } else {
                     addToProblemList(new Integer(i).toString(), "Variable name is wrong. ");
                 }
             }
-            
+
         }
         return ls;
 
