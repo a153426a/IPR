@@ -127,7 +127,8 @@ public class Prove {
             scene = new Scene(parent);
         } catch (IOException e) {
         }
-
+        
+        
         menuItemNew.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
                 Stage newStage = new Stage();
@@ -447,20 +448,30 @@ public class Prove {
 
         boolean result = true;
         //check args
-        Parent root;
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("problemShooter.fxml"));
-        fxmlLoader.setController(this);
-        try {
-            root = fxmlLoader.load();
-            problemStage = new Stage();
-            problemStage.setTitle("Propositional Proof Checker");
-            problemStage.setScene(new Scene(root, 600, 700));
-            problemStage.show();
-            problemStage.setResizable(false);
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        
+        if(problemHBox.size()!=0) { 
+            problemHBox.removeAll(problemHBox);
+            System.out.println("1");
+        } else { 
+            System.out.println("2");
+            Parent root;
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("problemShooter.fxml"));
+            fxmlLoader.setController(this);
+            try {
+                root = fxmlLoader.load();
+                problemStage = new Stage();
+                problemStage.setTitle("Propositional Proof Checker");
+                problemStage.setScene(new Scene(root, 600, 700));
+                problemStage.show();
+                problemStage.setResizable(false);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+        
+            
+        
+        
         problemList.setItems(problemHBox);
         problemHBox.removeAll(problemHBox);
         //check meaning 
