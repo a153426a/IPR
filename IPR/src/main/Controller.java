@@ -214,6 +214,7 @@ public class Controller {
         InputStream is;
 
         Scanner sc = new Scanner(startArea.getText());
+        startFormulas.removeAll(startFormulas);
         while (sc.hasNextLine()) {
             String line = sc.nextLine();
             if (line.isEmpty()) {
